@@ -153,8 +153,20 @@ function applyConfigToHead(config) {
 }
 
 async function loadClientConfig(form) {
-  const clientSlug = form?.dataset?.clientSlug;
-  if (!clientSlug) throw new Error("Missing data-client-slug on the lead form.");
+  // Resolution order:
+  // 1) URL param: ?client=formations
+  // 2) form data-client-slug, only if it's not a {{placeholder}}
+  // 3) fallback: "formations"
+  const params = new URLSearchParams(window.location.search);
+  const fromQuery = params.get("client");
+
+  const fromForm = form?.dataset?.clientSlug;
+  const fromFormIsPlaceholder =
+    typeof fromForm === "string" && (fromForm.includes("{{") || fromForm.includes("}}"));
+
+  const rawClientSlug = (fromQuery && fromQuery.trim()) || (!fromFormIsPlaceholder && fromForm) || "formations";
+  const clientSlug = rawClientSlug.trim();
+
   const url = `clients/${encodeURIComponent(clientSlug)}/config.json`;
   return fetchJson(url);
 }
