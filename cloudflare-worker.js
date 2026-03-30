@@ -18,23 +18,25 @@ const APPS_SCRIPT_URL =
  * Allow production domain + local dev.
  * - Keep this tight (do not use "*" with credentials).
  */
-const ALLOWED_ORIGINS = new Set([
-  "https://adsvizor.com",
-  "https://www.adsvizor.com",
-  "http://localhost:5500",
-  "http://127.0.0.1:5500"
-]);
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (origin === "https://adsvizor.com") return true;
+  if (origin === "https://www.adsvizor.com") return true;
+  if (origin === "http://localhost:5500") return true;
+  if (origin === "http://127.0.0.1:5500") return true;
+  // Allow any subdomain of adsvizor.com
+  if (origin.endsWith(".adsvizor.com")) return true;
+  return false;
+}
 
 function corsHeaders(origin) {
-  // If the Origin is not explicitly allowed, return null (no CORS headers).
-  if (!origin || !ALLOWED_ORIGINS.has(origin)) return null;
+  if (!isAllowedOrigin(origin)) return null;
 
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
-    // Helps CDNs/cache differentiate responses by Origin
     Vary: "Origin"
   };
 }
