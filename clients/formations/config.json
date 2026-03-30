@@ -33,7 +33,7 @@
   "testimonial_2_author": "Manager — PME",
   "form_title": "Demandez le programme et les prochaines sessions",
   "form_id": "lead-form",
-  "form_action": "https://adsvizor.com/api/leads",
+  "form_action": "https://formations.adsvizor.com/api/leads",
   "client_slug": "formations",
   "offer_id": "lead-gen-v1",
   "page_version": "1.0.0",
