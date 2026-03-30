@@ -48,6 +48,10 @@
   "field_message_rows": "5",
   "submit_label": "Envoyer ma demande",
   "form_disclaimer_text": "En envoyant ce formulaire, vous acceptez d’être recontacté au sujet de votre demande. Vos informations restent confidentielles.",
+  "thankyou_title": "Merci pour votre demande !",
+  "thankyou_message": "Nous avons bien reçu votre message et nous vous recontacterons dans les plus brefs délais.",
+  "thankyou_cta_label": "Retour à l'accueil",
+  "thankyou_cta_href": "/",
   "footer_text": "© FormaPro — Formations professionnelles."
 }
 

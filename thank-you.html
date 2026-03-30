@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="{{lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{meta_title}}</title>
+    <meta name="description" content="{{meta_description}}" />
+
+    <meta property="og:title" content="{{meta_title}}" />
+    <meta property="og:description" content="{{meta_description}}" />
+    <meta property="og:type" content="{{og_type}}" />
+    <meta property="og:url" content="{{og_url}}" />
+    <meta property="og:image" content="{{og_image_url}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}">{{logo_text}}</a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="thankyou" aria-labelledby="thankyou-title">
+        <div class="thankyou-card">
+          <div class="thankyou-icon" aria-hidden="true"></div>
+
+          <h1 id="thankyou-title">{{thankyou_title}}</h1>
+          <p>{{thankyou_message}}</p>
+
+          <p>
+            <a
+              class="btn"
+              href="{{thankyou_cta_href}}"
+              data-cta-id="thankyou-cta"
+              data-preserve-utm="true"
+              >{{thankyou_cta_label}}</a
+            >
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+  </body>
+</html>

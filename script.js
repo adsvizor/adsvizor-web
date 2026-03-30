@@ -184,6 +184,43 @@ function initUtmTracking(form) {
   setHiddenUtmFields(form, utm);
 }
 
+function preserveUtmOnLinks() {
+  // Keeps UTM params in URL when navigating via links that opt-in.
+  const utmFromUrl = parseUtmFromUrl();
+  const utmFromSession = readUtmFromSession();
+  const utm = { ...utmFromSession, ...utmFromUrl };
+  const hasAnyUtm = UTM_KEYS.some((k) => typeof utm[k] === "string" && utm[k].trim());
+  if (!hasAnyUtm) return;
+
+  const params = new URLSearchParams();
+  for (const key of UTM_KEYS) {
+    const value = utm[key];
+    if (value && value.trim()) params.set(key, value.trim());
+  }
+  const utmQuery = params.toString();
+  if (!utmQuery) return;
+
+  for (const a of document.querySelectorAll('a[data-preserve-utm="true"]')) {
+    const rawHref = a.getAttribute("href");
+    if (!rawHref || rawHref.startsWith("#")) continue;
+
+    let url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch {
+      continue;
+    }
+
+    // Only preserve for same-origin or relative navigation.
+    if (url.origin !== window.location.origin) continue;
+
+    for (const key of UTM_KEYS) {
+      if (!url.searchParams.get(key) && params.get(key)) url.searchParams.set(key, params.get(key));
+    }
+    a.setAttribute("href", url.pathname + (url.search ? url.search : "") + (url.hash ? url.hash : ""));
+  }
+}
+
 // =========================
 // 3) FORM HANDLING
 // =========================
@@ -319,31 +356,37 @@ function initCtaTracking() {
 // =========================
 
 async function init() {
-  const form = document.querySelector("form[data-client-slug]");
-  if (!form) {
-    emitEvent("page_view", { status: "no_form_found" });
-    return;
-  }
-
-  emitEvent("page_view", { path: window.location.pathname });
-
-  initCtaTracking();
-  initUtmTracking(form);
-
   try {
+    const form = document.querySelector("form[data-client-slug]");
+
+    emitEvent("page_view", { path: window.location.pathname, has_form: Boolean(form) });
+    initCtaTracking();
+
+    // UTM: always persist to session; only inject into hidden fields if a form exists.
+    if (form) initUtmTracking(form);
+    else persistUtmToSession({ ...readUtmFromSession(), ...parseUtmFromUrl() });
+
     const config = await loadClientConfig(form);
 
     // Apply config values to head first (title/meta), then render placeholders.
     applyConfigToHead(config);
     walkAndReplaceTextNodes(document.body, config);
     replacePlaceholdersInAttributes(document.body, config);
+    document.body.classList.add("ready");
 
-    // After placeholders: the form dataset may have changed, but we use config as source of truth.
-    initFormHandling(form, config);
+    // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
+    preserveUtmOnLinks();
+
+    // Form handling only applies on pages that include a form.
+    if (form) initFormHandling(form, config);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Impossible de charger la configuration.";
     emitEvent("page_view", { status: "config_error", message });
-    showFormError(form, message);
+    document.body.classList.add("ready");
+
+    const form = document.querySelector("form[data-client-slug]");
+    if (form) showFormError(form, message);
+    else console.error("[adsvizor_config_error]", message, err);
   }
 }
 
