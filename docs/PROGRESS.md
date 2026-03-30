@@ -7,6 +7,23 @@ Company: AdsVizor
 
 ## 1. Current state (what is already completed)
 
+### Completed today (repo + template foundation)
+
+1. Project structure created.
+2. `.cursorrules` created (dense read-first context for every session).
+3. All docs created and populated:
+   * `docs/PROJECT.md`
+   * `docs/ARCHITECTURE.md`
+   * `docs/PROGRESS.md`
+   * `docs/CONVENTIONS.md`
+   * `docs/PROMPTS.md`
+4. Generic `index.html` master template created:
+   * `{{placeholders}}` only (no real text)
+   * semantic HTML structure
+   * links `style.css` and `script.js` (defer)
+   * includes UTM hidden fields + `page_version`
+5. `clients/formations/config.json` created with French professional formations content.
+
 Infrastructure is already completed:
 
 1. **Domain** `adsvizor.com` on Porkbun (`$11/year`).
@@ -23,12 +40,13 @@ These items enable the operational model:
 
 ## 2. Near-term targets
 
-The remaining work typically clusters into four areas:
+Current next step sequence:
 
-1. Landing page production quality (performance, reliability, analytics correctness).
-2. Lead capture reliability (Apps Script validation + stable Sheet schema).
-3. Data readiness for the AI agent (inputs available daily with consistent schema).
-4. Daily optimization loop (recommendation output + optional application gate).
+1. Build `script.js` to load `clients/{client_slug}/config.json` and replace `{{placeholders}}` in `index.html`.
+2. Build `style.css`.
+3. Build `thank-you.html`.
+4. Test end-to-end (happy path: load -> fill form -> submit -> success flow).
+5. Set up the Google Apps Script endpoint (form backend) and connect it to Google Sheets.
 
 ## 3. Roadmap (phased)
 
@@ -40,14 +58,15 @@ Target outcome:
 
 Milestones:
 
-1. Landing page baseline:
-   * consistent CTA and form UX,
+1. Config loading + placeholder rendering (client-agnostic template, client config JSON).
+2. Landing page baseline UX:
+   * consistent CTA and form behavior,
    * robust input handling and client-side validation,
-   * reliable UTM capture.
-2. Analytics instrumentation:
-   * emit events consistently (page view, CTA click, form start, form submit),
-   * include attribution fields in event payloads.
-3. Thank-you page behavior:
+   * reliable UTM capture into hidden fields.
+3. Analytics instrumentation:
+   * emit events consistently (`page_view`, `cta_click`, `form_start`, `form_submit`),
+   * include attribution fields in payloads.
+4. Thank-you page behavior:
    * confirm submission,
    * preserve attribution identifiers when relevant.
 
