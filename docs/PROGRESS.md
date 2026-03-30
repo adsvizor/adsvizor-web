@@ -22,7 +22,23 @@ Company: AdsVizor
    * semantic HTML structure
    * links `style.css` and `script.js` (defer)
    * includes UTM hidden fields + `page_version`
-5. `clients/formations/config.json` created with French professional formations content.
+5. `clients/formations/config.json` created with French professional formations content (including thank-you copy).
+6. `script.js` built (vanilla JS):
+   * loads `clients/{client_slug}/config.json` (supports `?client=formations` for local testing)
+   * replaces `{{placeholders}}` in text + attributes
+   * sets `document.title` and meta/OG tags from config
+   * captures `utm_*` into hidden fields + `sessionStorage`
+   * intercepts form submit, posts JSON payload to Apps Script endpoint, redirects to `thank-you.html` on success
+   * console analytics events: `page_view`, `cta_click`, `form_start`, `form_submit`
+   * preserves UTM params on opt-in links (`data-preserve-utm="true"`) for the thank-you CTA
+7. `style.css` built:
+   * mobile-first responsive design, breakpoint `768px`
+   * trust-building styling for header/hero/benefits/testimonials/form/footer
+   * includes FOUC prevention (`body` hidden until `body.ready`)
+8. `thank-you.html` built:
+   * same header/footer as `index.html`
+   * placeholders-only confirmation UI + CSS-only checkmark icon
+   * links shared `style.css` and deferred `script.js`
 
 Infrastructure is already completed:
 
@@ -42,11 +58,11 @@ These items enable the operational model:
 
 Current next step sequence:
 
-1. Build `script.js` to load `clients/{client_slug}/config.json` and replace `{{placeholders}}` in `index.html`.
-2. Build `style.css`.
-3. Build `thank-you.html`.
-4. Test end-to-end (happy path: load -> fill form -> submit -> success flow).
-5. Set up the Google Apps Script endpoint (form backend) and connect it to Google Sheets.
+1. Test end-to-end locally (happy path: load with `?client=formations` -> fill form -> submit -> success flow -> thank-you -> return link preserves UTMs).
+2. Set up the Google Apps Script endpoint (form backend) and connect it to Google Sheets.
+3. Update `clients/formations/config.json` `form_action` from `APPS_SCRIPT_URL` to the real endpoint URL.
+4. Test end-to-end against the real endpoint (verify rows land in Sheets with correct schema + UTMs + `page_version`).
+5. Add basic operational logging/QA checks for the endpoint responses (error messages are user-friendly and deterministic).
 
 ## 3. Roadmap (phased)
 
