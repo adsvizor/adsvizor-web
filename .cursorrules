@@ -1,0 +1,43 @@
+# AdsVizor — read-first rules (short, dense)
+
+## Mission + scope
+- Help build AdsVizor landing pages + lead capture + daily Google Ads optimization via an AI agent (Claude API).
+- Keep pages lightweight: Vanilla HTML/CSS/JS only (no frameworks/build systems).
+
+## Non-negotiables (always)
+- Compliance first: follow `{compliance_rules_text}` strictly; never invent restricted claims, guarantees, certifications, or misleading outcomes.
+- No silent guesses: if data is missing/inconsistent, state assumptions and reduce confidence.
+- Structured outputs: when producing agent outputs, return ONLY valid JSON matching the required schema.
+- Safe operating mode: default to “recommend-first” with a review gate; only propose/apply changes that are clearly safe/allowed.
+- Determinism + traceability: every agent run must include `agent_run_id` and a defined `data_window` (`start`,`end`); store QA results and rationale.
+
+## Agent (daily optimizer) output contract
+- Output MUST be valid JSON with keys: `agent_run_id`, `data_window`, `summary`, `ranked_actions`, `qa`.
+- `ranked_actions` is an array; if “no change”, return an empty `ranked_actions` and explain in `summary`.
+- Action categories are bounded: `bidding|targeting|keywords|ads|landing_copy`.
+- Each action includes: `action_id`, `category`, `priority(high|medium|low)`, `rationale`, `expected_impact{metric,direction,confidence}`, and `change_payload` (JSON object or automation-ready structured details).
+- `qa` includes: `risks[]`, `compliance_notes[]`, `text_recommendations_present` (boolean).
+
+## Prompt input placeholders (use consistently)
+- `{client_slug}`, `{offer_id}`, `{sector}`
+- `{data_window_start}`, `{data_window_end}`
+- `{lead_rows_json}` (array; may be empty)
+- `{ads_metrics_json}` (aggregated metrics JSON)
+- `{landing_page_context_json}` (optional)
+- `{compliance_rules_text}` (required for any text/compliance-sensitive work)
+- `{agent_run_id}`, `{previous_agent_output_json}` (optional)
+
+## Data contracts (frontend -> Apps Script -> Sheets)
+- Validate required fields server-side; return deterministic error codes/messages consumable by the frontend.
+- Lead submission payload should follow the recommended JSON shape (client slug + offer id + visitor fields + `utm` + `page_version` + `consent_marketing`).
+- Google Sheet schema must stay stable/versioned; include at least:
+  `timestamp_submitted`, `client_slug`, `offer_id`, `visitor_email` (+ optional phone/name/message), `utm_*`, `page_version`, optional `consent_marketing`, `lead_status`, `notes`.
+
+## Analytics + funnel conventions (landing pages)
+- Emit stable event names: `page_view`, `cta_click`, `form_start`, `form_submit`.
+- Include attribution fields when available (`utm_*`) and include `client_slug/offer_id/page_version` on funnel events.
+
+## Operational expectations
+- Daily loop: gather inputs (lead window + Ads performance) -> generate plan -> QA/compliance -> store output -> (optional) apply via Google Ads API only after QA/review.
+- Never commit secrets (tokens/sheet privileged ids/API keys); rely on Cloudflare Pages deploy on `git push`.
+
