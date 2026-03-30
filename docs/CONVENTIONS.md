@@ -83,6 +83,21 @@ Goals:
 * no implicit globals,
 * clear error handling.
 
+### 4.0 FOUC prevention (placeholders)
+
+All landing pages must prevent visitors from seeing raw `{{placeholders}}` (flash of unrendered content).
+
+Standard approach:
+
+* In `style.css`, start with:
+  * `body { visibility: hidden; }`
+  * `body.ready { visibility: visible; }`
+* In `script.js`, add `document.body.classList.add("ready")`:
+  * after config loads and placeholder rendering finishes
+  * **and** in the error path (catch/failure) so the page still becomes visible
+
+This convention ensures the page only appears once it is rendered (or a controlled error state is shown), instead of flashing template placeholders.
+
 ### 4.1 Code style
 
 * Use `const` by default, `let` only when reassignment is needed.
