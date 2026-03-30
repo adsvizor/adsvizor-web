@@ -153,20 +153,34 @@ function applyConfigToHead(config) {
 }
 
 async function loadClientConfig(form) {
-  // Resolution order:
-  // 1) URL param: ?client=formations
-  // 2) form data-client-slug, only if it's not a {{placeholder}}
-  // 3) fallback: "formations"
-  const params = new URLSearchParams(window.location.search);
-  const fromQuery = params.get("client");
-
-  const fromForm = form?.dataset?.clientSlug;
-  const fromFormIsPlaceholder =
-    typeof fromForm === "string" && (fromForm.includes("{{") || fromForm.includes("}}"));
-
-  const rawClientSlug = (fromQuery && fromQuery.trim()) || (!fromFormIsPlaceholder && fromForm) || "formations";
-  const clientSlug = rawClientSlug.trim();
-
+  // 1) Try subdomain: formations.adsvizor.com → "formations"
+  const hostname = window.location.hostname;
+  const parts = hostname.split('.');
+  
+  let clientSlug = null;
+  
+  // If subdomain exists (e.g. formations.adsvizor.com)
+  if (parts.length >= 3) {
+    clientSlug = parts[0];
+  }
+  
+  // 2) Fallback to URL param ?client=formations
+  if (!clientSlug || clientSlug === 'www') {
+    const params = new URLSearchParams(window.location.search);
+    clientSlug = params.get('client');
+  }
+  
+  // 3) Fallback to form data-client-slug
+  if (!clientSlug) {
+    const fromForm = form?.dataset?.clientSlug;
+    const isPlaceholder = typeof fromForm === 'string' && 
+      (fromForm.includes('{{') || fromForm.includes('}}'));
+    if (!isPlaceholder) clientSlug = fromForm;
+  }
+  
+  // 4) Default fallback
+  clientSlug = (clientSlug || 'formations').trim();
+  
   const url = `clients/${encodeURIComponent(clientSlug)}/config.json`;
   return fetchJson(url);
 }
