@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="{{lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{meta_title}}</title>
+    <meta name="description" content="{{meta_description}}" />
+
+    <meta property="og:title" content="{{meta_title}}" />
+    <meta property="og:description" content="{{meta_description}}" />
+    <meta property="og:type" content="{{og_type}}" />
+    <meta property="og:url" content="{{og_url}}" />
+    <meta property="og:image" content="{{og_image_url}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}">{{logo_text}}</a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section aria-labelledby="hero-title">
+        <h1 id="hero-title">{{headline}}</h1>
+        <p>{{subheadline}}</p>
+        <p>
+          <a href="{{cta_href}}" data-cta-id="{{cta_id}}">{{cta_label}}</a>
+        </p>
+      </section>
+
+      <section aria-labelledby="benefits-title">
+        <h2 id="benefits-title">{{benefits_title}}</h2>
+
+        <ul>
+          <li>
+            <h3>{{benefit_1_title}}</h3>
+            <p>{{benefit_1_text}}</p>
+          </li>
+          <li>
+            <h3>{{benefit_2_title}}</h3>
+            <p>{{benefit_2_text}}</p>
+          </li>
+          <li>
+            <h3>{{benefit_3_title}}</h3>
+            <p>{{benefit_3_text}}</p>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="testimonials-title">
+        <h2 id="testimonials-title">{{testimonials_title}}</h2>
+
+        <div>
+          <figure>
+            <blockquote>
+              <p>{{testimonial_1_text}}</p>
+            </blockquote>
+            <figcaption>{{testimonial_1_author}}</figcaption>
+          </figure>
+
+          <figure>
+            <blockquote>
+              <p>{{testimonial_2_text}}</p>
+            </blockquote>
+            <figcaption>{{testimonial_2_author}}</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section aria-labelledby="lead-form-title">
+        <h2 id="lead-form-title">{{form_title}}</h2>
+
+        <form
+          id="{{form_id}}"
+          action="{{form_action}}"
+          method="post"
+          data-client-slug="{{client_slug}}"
+          data-offer-id="{{offer_id}}"
+        >
+          <div>
+            <label for="name">{{field_name_label}}</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              placeholder="{{field_name_placeholder}}"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="email">{{field_email_label}}</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="{{field_email_placeholder}}"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="phone">{{field_phone_label}}</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              placeholder="{{field_phone_placeholder}}"
+            />
+          </div>
+
+          <div>
+            <label for="message">{{field_message_label}}</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="{{field_message_rows}}"
+              placeholder="{{field_message_placeholder}}"
+            ></textarea>
+          </div>
+
+          <input type="hidden" id="utm_source" name="utm_source" value="" />
+          <input type="hidden" id="utm_medium" name="utm_medium" value="" />
+          <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+          <input type="hidden" id="utm_term" name="utm_term" value="" />
+          <input type="hidden" id="utm_content" name="utm_content" value="" />
+          <input
+            type="hidden"
+            id="page_version"
+            name="page_version"
+            value="{{page_version}}"
+          />
+
+          <div>
+            <button type="submit">{{submit_label}}</button>
+          </div>
+
+          <p>{{form_disclaimer_text}}</p>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+  </body>
+</html>
