@@ -54,6 +54,32 @@
   "thankyou_message": "Nous avons bien reçu votre message et nous vous recontacterons dans les plus brefs délais.",
   "thankyou_cta_label": "Retour à l'accueil",
   "thankyou_cta_href": "/",
-  "footer_text": "© FormaPro — Formations professionnelles."
+  "footer_text": "© FormaPro — Formations professionnelles.",
+
+  "blog_meta_title": "Blog — FormaPro",
+  "blog_meta_description": "Conseils, tendances et ressources pour développer vos compétences professionnelles.",
+  "blog_og_url": "https://formations.adsvizor.com/blog.html",
+  "blog_title": "Le Blog FormaPro",
+  "blog_subtitle": "Conseils pratiques, tendances RH et ressources pour développer les compétences de vos équipes.",
+  "blog_posts_aria_label": "Articles de blog",
+  "read_more_label": "Lire l'article",
+
+  "post_1_href": "#",
+  "post_1_date": "14 avril 2026",
+  "post_1_tag": "Conseils",
+  "post_1_title": "Comment choisir la bonne formation professionnelle pour votre équipe",
+  "post_1_excerpt": "Critères essentiels, questions à poser aux organismes de formation et pièges à éviter pour maximiser le retour sur investissement de vos formations.",
+
+  "post_2_href": "#",
+  "post_2_date": "7 avril 2026",
+  "post_2_tag": "Tendances",
+  "post_2_title": "Présentiel vs distanciel : quelle modalité choisir en 2026 ?",
+  "post_2_excerpt": "Les formats de formation ont évolué. On analyse les avantages et limites de chaque approche pour vous aider à faire le bon choix selon vos objectifs.",
+
+  "post_3_href": "#",
+  "post_3_date": "28 mars 2026",
+  "post_3_tag": "Ressources",
+  "post_3_title": "Comment mesurer concrètement l'impact d'une formation sur la performance",
+  "post_3_excerpt": "Du modèle de Kirkpatrick aux indicateurs terrain : méthodes simples pour évaluer si une formation a réellement changé les comportements et les résultats."
 }
 
