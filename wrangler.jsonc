@@ -1,0 +1,5 @@
+{
+  "name": "adsvizor-web",
+  "compatibility_date": "2026-04-19",
+  "main": "cloudflare-worker.js"
+}

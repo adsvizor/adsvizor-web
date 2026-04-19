@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="{{lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{blog_meta_title}}</title>
+    <meta name="description" content="{{blog_meta_description}}" />
+
+    <meta property="og:title" content="{{blog_meta_title}}" />
+    <meta property="og:description" content="{{blog_meta_description}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{blog_og_url}}" />
+    <meta property="og:image" content="{{og_image_url}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}">{{logo_text}}</a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="blog-hero" aria-labelledby="blog-hero-title">
+        <h1 id="blog-hero-title">{{blog_title}}</h1>
+        <p>{{blog_subtitle}}</p>
+      </section>
+
+      <section class="blog-grid" aria-label="{{blog_posts_aria_label}}">
+        <ul>
+          <li class="blog-card">
+            <a href="{{post_1_href}}" class="blog-card-link" aria-label="{{post_1_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_1_date}}</span>
+                <span class="blog-card-tag">{{post_1_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_1_title}}</h2>
+              <p class="blog-card-excerpt">{{post_1_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+
+          <li class="blog-card">
+            <a href="{{post_2_href}}" class="blog-card-link" aria-label="{{post_2_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_2_date}}</span>
+                <span class="blog-card-tag">{{post_2_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_2_title}}</h2>
+              <p class="blog-card-excerpt">{{post_2_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+
+          <li class="blog-card">
+            <a href="{{post_3_href}}" class="blog-card-link" aria-label="{{post_3_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_3_date}}</span>
+                <span class="blog-card-tag">{{post_3_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_3_title}}</h2>
+              <p class="blog-card-excerpt">{{post_3_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+  </body>
+</html>
