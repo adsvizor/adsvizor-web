@@ -159,8 +159,8 @@ async function loadClientConfig(form) {
   
   let clientSlug = null;
   
-  // If subdomain exists (e.g. formations.adsvizor.com)
-  if (parts.length >= 3) {
+  // If subdomain exists (e.g. formations.adsvizor.com), but not localhost/IP addresses
+  if (parts.length >= 3 && !hostname.includes('localhost') && !/^\d+/.test(hostname)) {
     clientSlug = parts[0];
   }
   
