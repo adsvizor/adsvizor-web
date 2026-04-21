@@ -273,7 +273,7 @@ function buildLeadPayload(form, config) {
     },
     page_version: fd.get("page_version") ? safeString(fd.get("page_version")).trim() : safeString(config.page_version || ""),
     consent_marketing: consentMarketing,
-    website: safeString(fd.get("website") ?? "").trim() // honeypot
+    hp_trap: safeString(fd.get("hp_trap") ?? "").trim() // honeypot
   };
 
   return payload;
@@ -327,7 +327,7 @@ function initFormHandling(form, config) {
     }
 
     // Honeypot check — bots fill hidden fields, humans don’t.
-    const honeypot = form.querySelector('input[name="website"]');
+    const honeypot = form.querySelector('input[name="hp_trap"]');
     if (honeypot && honeypot.value.trim()) return;
 
     if (submitButton) submitButton.disabled = true;
