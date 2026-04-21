@@ -76,10 +76,21 @@ export default {
       return jsonResponse(403, { status: "error", message: "Origin not allowed." }, origin);
     }
 
-    // Forward the request body as-is.
-    // Keep content-type if provided; Apps Script typically expects application/json.
+    // Parse body once so we can inspect it before forwarding.
     const contentType = request.headers.get("Content-Type") || "application/json";
-    const body = await request.arrayBuffer();
+    const bodyText = await request.text();
+
+    // Honeypot check — return a fake 200 so bots don't retry.
+    try {
+      const payload = JSON.parse(bodyText);
+      if (payload.hp_trap && String(payload.hp_trap).trim()) {
+        return jsonResponse(200, { status: "ok" }, origin);
+      }
+    } catch {
+      // Non-JSON body: fall through and let upstream handle it.
+    }
+
+    const body = new TextEncoder().encode(bodyText);
 
     const upstreamRes = await fetch(APPS_SCRIPT_URL, {
       method: "POST",
