@@ -35,6 +35,7 @@
           <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
           <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
           <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
         </ul>
       </nav>
     </header>
@@ -46,6 +47,12 @@
 
           <h1 id="thankyou-title">{{thankyou_title}}</h1>
           <p>{{thankyou_message}}</p>
+
+          <div class="security-code-block" id="security-code-block" hidden>
+            <p class="security-code-label">{{security_code_label}}</p>
+            <div class="security-code-value" id="security-code-value" aria-live="polite"></div>
+            <p class="security-code-notice">{{security_code_notice}}</p>
+          </div>
 
           <p>
             <a
