@@ -159,8 +159,8 @@ async function loadClientConfig(form) {
   
   let clientSlug = null;
   
-  // If subdomain exists (e.g. formations.adsvizor.com)
-  if (parts.length >= 3) {
+  // If subdomain exists (e.g. formations.adsvizor.com), but not localhost/IP addresses
+  if (parts.length >= 3 && !hostname.includes('localhost') && !/^\d+/.test(hostname)) {
     clientSlug = parts[0];
   }
   
@@ -245,15 +245,22 @@ function buildLeadPayload(form, config) {
   const clientSlug = safeString(config.client_slug || form.dataset.clientSlug || "");
   const offerId = safeString(config.offer_id || form.dataset.offerId || "");
 
-  const visitorName = fd.get("name");
+  // Support both split first/last name fields and legacy single name field.
+  const firstName = safeString(fd.get("first_name") ?? "").trim();
+  const lastName = safeString(fd.get("last_name") ?? "").trim();
+  const visitorName = firstName || lastName
+    ? [firstName, lastName].filter(Boolean).join(" ")
+    : (safeString(fd.get("name") ?? "").trim() || null);
+
   const visitorEmail = fd.get("email");
   const visitorPhone = fd.get("phone");
   const visitorMessage = fd.get("message");
+  const consentMarketing = fd.get("consent_marketing") === "on";
 
   const payload = {
     client_slug: clientSlug,
     offer_id: offerId,
-    visitor_name: visitorName ? safeString(visitorName).trim() : null,
+    visitor_name: visitorName || null,
     visitor_email: visitorEmail ? safeString(visitorEmail).trim() : "",
     visitor_phone: visitorPhone ? safeString(visitorPhone).trim() : null,
     visitor_message: visitorMessage ? safeString(visitorMessage).trim() : null,
@@ -265,7 +272,8 @@ function buildLeadPayload(form, config) {
       content: fd.get("utm_content") ? safeString(fd.get("utm_content")).trim() : null
     },
     page_version: fd.get("page_version") ? safeString(fd.get("page_version")).trim() : safeString(config.page_version || ""),
-    consent_marketing: null
+    consent_marketing: consentMarketing,
+    hp_trap: safeString(fd.get("hp_trap") ?? "").trim() // honeypot
   };
 
   return payload;
@@ -318,10 +326,17 @@ function initFormHandling(form, config) {
       return;
     }
 
+    // Honeypot check — bots fill hidden fields, humans don’t.
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot && honeypot.value.trim()) return;
+
     if (submitButton) submitButton.disabled = true;
 
     try {
+      // Generate security code before building payload so it is included in the lead record.
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
       const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
 
       emitEvent("form_submit", {
         status: "attempt",
@@ -337,8 +352,8 @@ function initFormHandling(form, config) {
 
       await postLead(config.form_action, payload);
 
-      emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id });
-      window.location.href = "thank-you.html";
+      emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
+      window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
       emitEvent("form_submit", { status: "error", message });
@@ -386,10 +401,34 @@ async function init() {
     applyConfigToHead(config);
     walkAndReplaceTextNodes(document.body, config);
     replacePlaceholdersInAttributes(document.body, config);
+
+    // Hide nav items whose label rendered to empty.
+    for (const li of document.querySelectorAll("nav li")) {
+      const a = li.querySelector("a");
+      if (a && !a.textContent.trim()) li.hidden = true;
+    }
+
+    // Hide optional sections based on config flags.
+    if (config.show_testimonials === false) {
+      const el = document.querySelector("[aria-labelledby='testimonials-title']");
+      if (el) el.hidden = true;
+    }
+
     document.body.classList.add("ready");
 
     // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
     preserveUtmOnLinks();
+
+    // Display security code on the thank-you page if present in URL.
+    const securityCodeParam = new URLSearchParams(window.location.search).get("code");
+    if (securityCodeParam && /^\d{6}$/.test(securityCodeParam)) {
+      const block = document.getElementById("security-code-block");
+      const valueEl = document.getElementById("security-code-value");
+      if (block && valueEl) {
+        valueEl.textContent = securityCodeParam;
+        block.hidden = false;
+      }
+    }
 
     // Form handling only applies on pages that include a form.
     if (form) initFormHandling(form, config);

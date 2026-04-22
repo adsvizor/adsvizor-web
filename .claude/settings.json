@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Bash(git status)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git pull*)",
+      "Bash(git checkout*)",
+      "Bash(git branch*)",
+      "Bash(git merge*)",
+      "Bash(ls*)",
+      "Bash(find*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth status)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr *)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" api repos/adsvizor/adsvizor-web/*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" repo *)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" run *)"
+    ]
+  }
+}
