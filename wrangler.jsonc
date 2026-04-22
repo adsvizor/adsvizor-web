@@ -1,5 +1,9 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "adsvizor-web",
   "compatibility_date": "2026-04-19",
-  "main": "cloudflare-worker.js"
+  "main": "cloudflare-worker.js",
+  "observability": {
+    "enabled": true
+  }
 }
