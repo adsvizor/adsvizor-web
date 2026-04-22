@@ -409,6 +409,10 @@ async function init() {
     }
 
     // Hide optional sections based on config flags.
+    if (config.show_stats === false) {
+      const el = document.querySelector(".stats-strip");
+      if (el) el.hidden = true;
+    }
     if (config.show_testimonials === false) {
       const el = document.querySelector("[aria-labelledby='testimonials-title']");
       if (el) el.hidden = true;

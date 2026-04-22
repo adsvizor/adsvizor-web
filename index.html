@@ -43,52 +43,74 @@
     <main>
       <div class="page-layout">
         <div class="page-content">
-          <section aria-labelledby="hero-title">
-            <h1 id="hero-title">{{headline}}</h1>
-            <p>{{subheadline}}</p>
-            <p>
-              <a href="{{cta_href}}" data-cta-id="{{cta_id}}">{{cta_label}}</a>
-            </p>
+
+          <!-- Hero: full-width image with dark gradient overlay -->
+          <section class="hero" aria-labelledby="hero-title">
+            <img class="hero-img" src="{{hero_image_url}}" alt="{{hero_image_alt}}" fetchpriority="high" />
+            <div class="hero-body">
+              <p class="hero-badge">{{hero_badge}}</p>
+              <h1 id="hero-title">{{headline}}</h1>
+              <p class="hero-sub">{{subheadline}}</p>
+              <a href="{{cta_href}}" class="hero-cta" data-cta-id="{{cta_id}}">{{cta_label}}</a>
+            </div>
           </section>
 
+          <!-- Stats strip -->
+          <div class="stats-strip" aria-label="{{stats_aria_label}}" hidden>
+            <div class="stat"><strong>{{stat_1_value}}</strong><span>{{stat_1_label}}</span></div>
+            <div class="stat"><strong>{{stat_2_value}}</strong><span>{{stat_2_label}}</span></div>
+            <div class="stat"><strong>{{stat_3_value}}</strong><span>{{stat_3_label}}</span></div>
+          </div>
+
+          <!-- Benefits with images -->
           <section aria-labelledby="benefits-title">
             <h2 id="benefits-title">{{benefits_title}}</h2>
-
-            <ul>
-              <li>
-                <h3>{{benefit_1_title}}</h3>
-                <p>{{benefit_1_text}}</p>
+            <ul class="benefit-list">
+              <li class="benefit-card">
+                <img src="{{benefit_1_image_url}}" alt="{{benefit_1_image_alt}}" class="benefit-img" loading="lazy" />
+                <div class="benefit-body">
+                  <h3>{{benefit_1_title}}</h3>
+                  <p>{{benefit_1_text}}</p>
+                </div>
               </li>
-              <li>
-                <h3>{{benefit_2_title}}</h3>
-                <p>{{benefit_2_text}}</p>
+              <li class="benefit-card">
+                <img src="{{benefit_2_image_url}}" alt="{{benefit_2_image_alt}}" class="benefit-img" loading="lazy" />
+                <div class="benefit-body">
+                  <h3>{{benefit_2_title}}</h3>
+                  <p>{{benefit_2_text}}</p>
+                </div>
               </li>
-              <li>
-                <h3>{{benefit_3_title}}</h3>
-                <p>{{benefit_3_text}}</p>
+              <li class="benefit-card">
+                <img src="{{benefit_3_image_url}}" alt="{{benefit_3_image_alt}}" class="benefit-img" loading="lazy" />
+                <div class="benefit-body">
+                  <h3>{{benefit_3_title}}</h3>
+                  <p>{{benefit_3_text}}</p>
+                </div>
               </li>
             </ul>
           </section>
 
-          <section aria-labelledby="testimonials-title">
+          <!-- Testimonials -->
+          <section aria-labelledby="testimonials-title" hidden>
             <h2 id="testimonials-title">{{testimonials_title}}</h2>
-
-            <div>
-              <figure>
-                <blockquote>
-                  <p>{{testimonial_1_text}}</p>
-                </blockquote>
-                <figcaption>{{testimonial_1_author}}</figcaption>
+            <div class="testimonial-grid">
+              <figure class="testimonial-card">
+                <blockquote><p>{{testimonial_1_text}}</p></blockquote>
+                <figcaption>
+                  <div class="testimonial-avatar" aria-hidden="true"></div>
+                  <span>{{testimonial_1_author}}</span>
+                </figcaption>
               </figure>
-
-              <figure>
-                <blockquote>
-                  <p>{{testimonial_2_text}}</p>
-                </blockquote>
-                <figcaption>{{testimonial_2_author}}</figcaption>
+              <figure class="testimonial-card">
+                <blockquote><p>{{testimonial_2_text}}</p></blockquote>
+                <figcaption>
+                  <div class="testimonial-avatar" aria-hidden="true"></div>
+                  <span>{{testimonial_2_author}}</span>
+                </figcaption>
               </figure>
             </div>
           </section>
+
         </div>
 
         <aside class="form-float">
