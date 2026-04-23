@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="{{lang}}" data-page-title-key="cpf_page_meta_title" data-page-desc-key="cpf_page_meta_description">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{cpf_page_meta_title}}</title>
+    <meta name="description" content="{{cpf_page_meta_description}}" />
+
+    <meta property="og:title" content="{{cpf_page_meta_title}}" />
+    <meta property="og:description" content="{{cpf_page_meta_description}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{cpf_page_og_url}}" />
+    <meta property="og:image" content="{{og_image_url}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}">{{logo_text}}</a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="cpf-hero" aria-labelledby="cpf-hero-title">
+        <span class="cpf-badge">Top 10 — 2025</span>
+        <h1 id="cpf-hero-title">{{cpf_page_title}}</h1>
+        <p class="cpf-hero-sub">{{cpf_page_subtitle}}</p>
+      </section>
+
+      <section class="cpf-grid-section" aria-label="Formations CPF disponibles">
+        <ul id="formation-list" class="formation-list">
+          <li class="formation-list-loading">Chargement des formations…</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+  </body>
+</html>

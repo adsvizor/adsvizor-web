@@ -134,31 +134,23 @@ function replacePlaceholdersInAttributes(root, config) {
 }
 
 function applyConfigToHead(config) {
-  // Allow individual pages to declare a page-specific title key via data-page-title-key on <html>.
+  // Pages declare page-specific meta keys via data-page-title-key / data-page-desc-key on <html>.
   const pageTitleKey = document.documentElement.getAttribute("data-page-title-key");
-  if (pageTitleKey && Object.prototype.hasOwnProperty.call(config, pageTitleKey)) {
-    document.title = safeString(config[pageTitleKey]);
-  } else if (Object.prototype.hasOwnProperty.call(config, "meta_title")) {
-    document.title = safeString(config.meta_title);
-  }
-  if (Object.prototype.hasOwnProperty.call(config, "meta_description")) {
-    setMetaContent('meta[name="description"]', config.meta_description);
-  }
+  const pageDescKey  = document.documentElement.getAttribute("data-page-desc-key");
+
+  const titleValue = (pageTitleKey && Object.prototype.hasOwnProperty.call(config, pageTitleKey))
+    ? config[pageTitleKey]
+    : (Object.prototype.hasOwnProperty.call(config, "meta_title") ? config.meta_title : null);
+  const descValue = (pageDescKey && Object.prototype.hasOwnProperty.call(config, pageDescKey))
+    ? config[pageDescKey]
+    : (Object.prototype.hasOwnProperty.call(config, "meta_description") ? config.meta_description : null);
+
+  if (titleValue !== null) document.title = safeString(titleValue);
+  if (descValue !== null) setMetaContent('meta[name="description"]', descValue);
 
   if (Object.prototype.hasOwnProperty.call(config, "og_type")) setMetaContent('meta[property="og:type"]', config.og_type);
   if (Object.prototype.hasOwnProperty.call(config, "og_url")) setMetaContent('meta[property="og:url"]', config.og_url);
   if (Object.prototype.hasOwnProperty.call(config, "og_image_url")) setMetaContent('meta[property="og:image"]', config.og_image_url);
-
-  // Keep OG title/description aligned with main meta if present; respect page-specific overrides.
-  const pageDescKey = pageTitleKey ? pageTitleKey.replace("_title", "_meta_description") : null;
-  const titleValue = (pageTitleKey && Object.prototype.hasOwnProperty.call(config, pageTitleKey))
-    ? config[pageTitleKey]
-    : (Object.prototype.hasOwnProperty.call(config, "meta_title") ? config.meta_title : getMetaContent('meta[property="og:title"]'));
-  const descValue = (pageDescKey && Object.prototype.hasOwnProperty.call(config, pageDescKey))
-    ? config[pageDescKey]
-    : (Object.prototype.hasOwnProperty.call(config, "meta_description")
-      ? config.meta_description
-      : getMetaContent('meta[property="og:description"]'));
   if (titleValue !== null) setMetaContent('meta[property="og:title"]', titleValue);
   if (descValue !== null) setMetaContent('meta[property="og:description"]', descValue);
 }
@@ -254,7 +246,8 @@ function buildLeadPayload(form, config) {
   const fd = new FormData(form);
 
   const clientSlug = safeString(config.client_slug || form.dataset.clientSlug || "");
-  const offerId = safeString(config.offer_id || form.dataset.offerId || "");
+  // Prefer per-page data-offer-id (e.g. formation detail pages) over global config.offer_id.
+  const offerId = safeString(form.dataset.offerId || config.offer_id || "");
 
   // Support both split first/last name fields and legacy single name field.
   const firstName = safeString(fd.get("first_name") ?? "").trim();
@@ -284,7 +277,8 @@ function buildLeadPayload(form, config) {
     },
     page_version: fd.get("page_version") ? safeString(fd.get("page_version")).trim() : safeString(config.page_version || ""),
     consent_marketing: consentMarketing,
-    hp_trap: safeString(fd.get("hp_trap") ?? "").trim() // honeypot
+    hp_trap: safeString(fd.get("hp_trap") ?? "").trim(), // honeypot
+    formation_interest: fd.get("formation_interest") ? safeString(fd.get("formation_interest")).trim() : null
   };
 
   return payload;
@@ -392,7 +386,79 @@ function initCtaTracking() {
 }
 
 // =========================
-// 5) STAT COUNTER ANIMATION
+// 5) FORMATION PAGES
+// =========================
+
+/**
+ * Formation detail page: reads ?f=slug from URL, finds the matching formation in
+ * config.cpf_formations, and injects all its fields as active_* keys into config
+ * so the {{active_*}} placeholders in formation-detail.html get replaced normally.
+ * Also auto-generates active_meta_title and active_meta_description for the <head>.
+ * Redirects to formations-cpf.html if slug is missing or unknown.
+ */
+function resolveActiveFormation(config) {
+  const detailContainer = document.getElementById("formation-detail-content");
+  if (!detailContainer) return; // not on the detail page
+
+  const slug = new URLSearchParams(window.location.search).get("f");
+  const formations = config.cpf_formations;
+
+  if (!slug || !Array.isArray(formations)) {
+    window.location.replace("formations-cpf.html");
+    return;
+  }
+
+  const formation = formations.find((f) => f.slug === slug);
+  if (!formation) {
+    window.location.replace("formations-cpf.html");
+    return;
+  }
+
+  for (const [key, value] of Object.entries(formation)) {
+    if (typeof value === "string") config[`active_${key}`] = value;
+  }
+
+  // Auto-generate meta title and description for the browser tab / OG tags.
+  if (!config.active_meta_title) {
+    config.active_meta_title = `${formation.title} — Formation CPF | ${safeString(config.logo_text || "AdsVizor")}`;
+  }
+  if (!config.active_meta_description) {
+    config.active_meta_description = `${formation.title} : formation éligible CPF. ${safeString(formation.excerpt || "")}`;
+  }
+}
+
+/**
+ * Formation listing page: builds the formation card grid from config.cpf_formations
+ * and injects it into <ul id="formation-list">.
+ */
+function renderFormationList(config) {
+  const container = document.getElementById("formation-list");
+  if (!container || !Array.isArray(config.cpf_formations)) return;
+
+  const cards = config.cpf_formations.map((f, i) => {
+    const rank = i + 1;
+    const href = `formation-detail.html?f=${encodeURIComponent(f.slug)}`;
+    return `<li class="formation-card">
+  <a href="${href}" class="formation-card-link" aria-label="${f.title}">
+    <div class="formation-card-img-wrap">
+      <img src="${f.image_url}" alt="${f.image_alt}" loading="${rank <= 2 ? "eager" : "lazy"}" />
+      <span class="formation-rank">#${rank}</span>
+      <span class="formation-tag">${f.tag}</span>
+    </div>
+    <div class="formation-card-body">
+      <h2 class="formation-card-title">${f.title}</h2>
+      <p class="formation-card-excerpt">${f.excerpt}</p>
+      <span class="formation-card-cta">Découvrir cette formation &rarr;</span>
+    </div>
+  </a>
+</li>`;
+  });
+
+  container.innerHTML = cards.join("\n");
+}
+
+// =========================
+// 6) STAT COUNTER ANIMATION
 // =========================
 
 function initStatCounters() {
@@ -458,6 +524,9 @@ async function init() {
 
     const config = await loadClientConfig(form);
 
+    // Inject active_* keys for formation detail page BEFORE placeholder rendering.
+    resolveActiveFormation(config);
+
     // Apply config values to head first (title/meta), then render placeholders.
     applyConfigToHead(config);
     walkAndReplaceTextNodes(document.body, config);
@@ -480,6 +549,9 @@ async function init() {
     }
 
     document.body.classList.add("ready");
+
+    // Build formation card grid on the listing page.
+    renderFormationList(config);
 
     // Animate stat counters once the strip scrolls into view.
     initStatCounters();
