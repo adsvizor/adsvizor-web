@@ -184,7 +184,8 @@ async function loadClientConfig(form) {
   // 4) Default fallback
   clientSlug = (clientSlug || 'formations').trim();
   
-  const url = `clients/${encodeURIComponent(clientSlug)}/config.json`;
+  // Absolute path so the fetch works regardless of the page URL (e.g. /formations-cpf/ with trailing slash).
+  const url = `/clients/${encodeURIComponent(clientSlug)}/config.json`;
   return fetchJson(url);
 }
 
@@ -404,13 +405,13 @@ function resolveActiveFormation(config) {
   const formations = config.cpf_formations;
 
   if (!slug || !Array.isArray(formations)) {
-    window.location.replace("formations-cpf.html");
+    window.location.replace("/formations-cpf.html");
     return;
   }
 
   const formation = formations.find((f) => f.slug === slug);
   if (!formation) {
-    window.location.replace("formations-cpf.html");
+    window.location.replace("/formations-cpf.html");
     return;
   }
 
@@ -437,7 +438,7 @@ function renderFormationList(config) {
 
   const cards = config.cpf_formations.map((f, i) => {
     const rank = i + 1;
-    const href = `formation-detail.html?f=${encodeURIComponent(f.slug)}`;
+    const href = `/formation-detail.html?f=${encodeURIComponent(f.slug)}`;
     return `<li class="formation-card">
   <a href="${href}" class="formation-card-link" aria-label="${f.title}">
     <div class="formation-card-img-wrap">
