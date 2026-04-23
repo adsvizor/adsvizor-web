@@ -757,6 +757,10 @@ async function init() {
       if (el) el.hidden = true;
     }
 
+    // Init multi-step form BEFORE body.ready so steps are in the right state
+    // when the page becomes visible (prevents flash of both steps showing).
+    if (form) initMultiStepForm(form, config);
+
     document.body.classList.add("ready");
 
     // Build formation card grid on the listing page.
@@ -778,9 +782,6 @@ async function init() {
         block.hidden = false;
       }
     }
-
-    // Form handling only applies on pages that include a form.
-    if (form) initMultiStepForm(form, config);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Impossible de charger la configuration.";
     emitEvent("page_view", { status: "config_error", message });
