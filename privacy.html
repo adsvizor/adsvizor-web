@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="{{lang}}" data-page-title-key="privacy_meta_title">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{privacy_meta_title}}</title>
+    <meta name="description" content="{{privacy_meta_description}}" />
+
+    <meta property="og:title" content="{{privacy_meta_title}}" />
+    <meta property="og:description" content="{{privacy_meta_description}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{privacy_og_url}}" />
+    <meta property="og:image" content="{{og_image_url}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}">{{logo_text}}</a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="privacy-wrap">
+        <article class="privacy-content" aria-labelledby="privacy-title">
+
+          <header class="privacy-header">
+            <p class="privacy-breadcrumb"><a href="{{home_href}}">Accueil</a> &rsaquo; Politique de confidentialité</p>
+            <h1 id="privacy-title">Politique de confidentialité</h1>
+            <p class="privacy-updated">Dernière mise à jour&nbsp;: <strong>{{privacy_effective_date}}</strong></p>
+          </header>
+
+          <!-- Intro -->
+          <section aria-labelledby="section-intro">
+            <p>
+              La présente politique de confidentialité décrit la manière dont <strong>{{privacy_company_name}}</strong>
+              (ci-après «&nbsp;nous&nbsp;», «&nbsp;notre&nbsp;», «&nbsp;nos&nbsp;») collecte, utilise et protège les données
+              à caractère personnel des visiteurs de notre site <strong>{{og_url}}</strong> (ci-après le «&nbsp;Site&nbsp;»).
+            </p>
+            <p>
+              Elle est rédigée conformément au <strong>Règlement (UE) 2016/679 (RGPD)</strong> et à la loi française
+              n°&nbsp;78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés
+              (modifiée par la loi n°&nbsp;2018-493 du 20 juin 2018).
+            </p>
+          </section>
+
+          <!-- 1. Responsable du traitement -->
+          <section aria-labelledby="section-controller">
+            <h2 id="section-controller">1. Responsable du traitement</h2>
+            <div class="privacy-card">
+              <p><strong>Dénomination&nbsp;:</strong> {{privacy_company_name}}</p>
+              <p><strong>Contact&nbsp;:</strong> <a href="mailto:{{privacy_contact_email}}">{{privacy_contact_email}}</a></p>
+            </div>
+            <p>
+              Pour toute question relative à la présente politique ou à l'exercice de vos droits,
+              vous pouvez nous contacter à l'adresse indiquée ci-dessus.
+            </p>
+          </section>
+
+          <!-- 2. Données collectées -->
+          <section aria-labelledby="section-data">
+            <h2 id="section-data">2. Données personnelles collectées</h2>
+            <p>Nous collectons les catégories de données suivantes&nbsp;:</p>
+
+            <h3>2.1 Données saisies dans le formulaire de contact</h3>
+            <ul>
+              <li>Prénom et nom de famille</li>
+              <li>Adresse e-mail professionnelle</li>
+              <li>Numéro de téléphone</li>
+              <li>Message libre (description de votre besoin en formation)</li>
+              <li>Consentement marketing (case à cocher)</li>
+            </ul>
+
+            <h3>2.2 Données collectées automatiquement</h3>
+            <ul>
+              <li>Adresse IP (collectée par notre hébergeur Cloudflare)</li>
+              <li>Type de navigateur, système d'exploitation, résolution d'écran</li>
+              <li>Pages visitées, durée de la visite, liens cliqués</li>
+              <li>Source de la visite (paramètres UTM&nbsp;: <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_term</code>, <code>utm_content</code>)</li>
+            </ul>
+
+            <h3>2.3 Cookies et identifiants publicitaires</h3>
+            <p>
+              Notre Site utilise des cookies publicitaires déposés par <strong>Google Ads</strong>.
+              Ces technologies collectent un identifiant de navigateur afin de mesurer l'efficacité
+              de nos campagnes et de vous présenter nos annonces.
+              Voir la section 5 pour le détail.
+            </p>
+          </section>
+
+          <!-- 3. Finalités et bases légales -->
+          <section aria-labelledby="section-purposes">
+            <h2 id="section-purposes">3. Finalités et bases légales du traitement</h2>
+
+            <div class="privacy-table-wrap">
+              <table class="privacy-table" aria-label="Finalités et bases légales">
+                <thead>
+                  <tr>
+                    <th scope="col">Finalité</th>
+                    <th scope="col">Base légale (RGPD, art. 6)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Traiter votre demande d'information sur nos formations</td>
+                    <td>Mesures précontractuelles à votre demande (art.&nbsp;6.1.b)</td>
+                  </tr>
+                  <tr>
+                    <td>Vous recontacter par téléphone ou e-mail à la suite de votre demande</td>
+                    <td>Intérêt légitime — suivi commercial (art.&nbsp;6.1.f)</td>
+                  </tr>
+                  <tr>
+                    <td>Envoi d'informations sur nos offres de formation (prospection commerciale)</td>
+                    <td>Consentement explicite (art.&nbsp;6.1.a) — case à cocher obligatoire</td>
+                  </tr>
+                  <tr>
+                    <td>Mesure des conversions publicitaires (Google Ads)</td>
+                    <td>Consentement (art.&nbsp;6.1.a) via acceptation des cookies</td>
+                  </tr>
+                  <tr>
+                    <td>Remarketing — diffusion de publicités aux visiteurs du Site</td>
+                    <td>Consentement (art.&nbsp;6.1.a) via acceptation des cookies</td>
+                  </tr>
+                  <tr>
+                    <td>Sécurité du Site, lutte anti-fraude et anti-robots</td>
+                    <td>Intérêt légitime (art.&nbsp;6.1.f)</td>
+                  </tr>
+                  <tr>
+                    <td>Respect de nos obligations légales</td>
+                    <td>Obligation légale (art.&nbsp;6.1.c)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="privacy-notice">
+              <strong>Retrait du consentement&nbsp;:</strong> lorsque le traitement est fondé sur votre consentement,
+              vous pouvez le retirer à tout moment, sans porter atteinte à la licéité des traitements effectués
+              avant ce retrait. Pour exercer ce droit, contactez-nous à
+              <a href="mailto:{{privacy_contact_email}}">{{privacy_contact_email}}</a>.
+            </div>
+          </section>
+
+          <!-- 4. Destinataires -->
+          <section aria-labelledby="section-recipients">
+            <h2 id="section-recipients">4. Destinataires des données</h2>
+            <p>Vos données peuvent être communiquées aux catégories de destinataires suivantes&nbsp;:</p>
+
+            <ul>
+              <li>
+                <strong>Notre équipe commerciale</strong> — pour le traitement et le suivi de votre demande.
+              </li>
+              <li>
+                <strong>Google LLC</strong> — en qualité de sous-traitant&nbsp;:
+                <ul>
+                  <li><em>Google Ads</em>&nbsp;: mesure de conversions et remarketing</li>
+                  <li><em>Google Sheets / Apps Script</em>&nbsp;: stockage des leads soumis via le formulaire</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Cloudflare, Inc.</strong> — en qualité de sous-traitant&nbsp;: hébergement et protection
+                du Site (pare-feu applicatif, protection anti-bots).
+              </li>
+            </ul>
+
+            <p>
+              Nous ne vendons, ne louons, ni ne partageons vos données personnelles à des tiers
+              à des fins de prospection commerciale externe.
+            </p>
+          </section>
+
+          <!-- 5. Cookies et publicité Google -->
+          <section aria-labelledby="section-cookies">
+            <h2 id="section-cookies">5. Cookies et publicité Google Ads</h2>
+
+            <h3>5.1 Qu'est-ce qu'un cookie&nbsp;?</h3>
+            <p>
+              Un cookie est un petit fichier texte déposé sur votre appareil lors de la visite d'un site web.
+              Il permet à ce dernier de mémoriser vos actions et préférences pendant une durée déterminée.
+            </p>
+
+            <h3>5.2 Cookies utilisés sur ce Site</h3>
+            <div class="privacy-table-wrap">
+              <table class="privacy-table" aria-label="Liste des cookies">
+                <thead>
+                  <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Fournisseur</th>
+                    <th scope="col">Finalité</th>
+                    <th scope="col">Durée</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>_gcl_au</code></td>
+                    <td>Google Ads</td>
+                    <td>Mesure de conversions publicitaires</td>
+                    <td>90 jours</td>
+                  </tr>
+                  <tr>
+                    <td><code>_gads</code></td>
+                    <td>Google Ads</td>
+                    <td>Remarketing / publicité personnalisée</td>
+                    <td>13 mois</td>
+                  </tr>
+                  <tr>
+                    <td><code>_ga</code>, <code>_ga_*</code></td>
+                    <td>Google Analytics</td>
+                    <td>Mesure d'audience (si activé)</td>
+                    <td>13 mois</td>
+                  </tr>
+                  <tr>
+                    <td><code>__cf_bm</code></td>
+                    <td>Cloudflare</td>
+                    <td>Protection anti-bots (technique)</td>
+                    <td>30 minutes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>5.3 Google Ads — suivi des conversions et remarketing</h3>
+            <p>
+              Notre Site utilise le service <strong>Google Ads</strong> de Google LLC
+              (1600&nbsp;Amphitheatre Parkway, Mountain View, CA&nbsp;94043, États-Unis).
+            </p>
+            <p>
+              Ce service nous permet de&nbsp;:
+            </p>
+            <ul>
+              <li>
+                <strong>Mesurer les conversions&nbsp;:</strong> lorsque vous soumettez notre formulaire après avoir
+                cliqué sur l'une de nos annonces Google, un événement de conversion est enregistré afin de mesurer
+                l'efficacité de nos campagnes. Ce suivi utilise un cookie déposé sur votre navigateur.
+              </li>
+              <li>
+                <strong>Remarketing (publicité ciblée)&nbsp;:</strong> si vous avez visité notre Site sans soumettre
+                de formulaire, nous pouvons vous présenter à nouveau nos annonces sur d'autres sites et applications
+                faisant partie du réseau Google. Ce ciblage repose sur un identifiant de cookie et non sur vos
+                données d'identification personnelle.
+              </li>
+            </ul>
+            <p>
+              Pour en savoir plus sur la manière dont Google utilise ces données&nbsp;:
+              <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">
+                Comment Google utilise les informations des sites qui utilisent ses services
+              </a>.
+            </p>
+
+            <h3>5.4 Comment refuser ou gérer les cookies publicitaires</h3>
+            <div class="privacy-optout">
+              <p><strong>Options disponibles&nbsp;:</strong></p>
+              <ul>
+                <li>
+                  <strong>Paramètres des annonces Google&nbsp;:</strong>
+                  <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer">
+                    adssettings.google.com
+                  </a>
+                  — vous permet de désactiver la publicité personnalisée de Google sur tous les sites.
+                </li>
+                <li>
+                  <strong>Désinscription globale Google Analytics&nbsp;:</strong>
+                  <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">
+                    tools.google.com/dlpage/gaoptout
+                  </a>
+                </li>
+                <li>
+                  <strong>Your Online Choices (EDAA)&nbsp;:</strong>
+                  <a href="https://www.youronlinechoices.com/fr/" target="_blank" rel="noopener noreferrer">
+                    youronlinechoices.com
+                  </a>
+                  — outil européen de gestion des cookies publicitaires.
+                </li>
+                <li>
+                  <strong>Paramètres de votre navigateur&nbsp;:</strong> vous pouvez à tout moment supprimer
+                  ou bloquer les cookies via les paramètres de votre navigateur (Réglages &rsaquo; Confidentialité
+                  &rsaquo; Cookies).
+                </li>
+              </ul>
+              <p>
+                Le refus des cookies publicitaires n'affecte pas votre accès au Site ni votre capacité
+                à soumettre notre formulaire. Vous pourrez simplement voir des publicités moins pertinentes
+                pour vous sur d'autres sites.
+              </p>
+            </div>
+          </section>
+
+          <!-- 6. Transferts hors UE -->
+          <section aria-labelledby="section-transfers">
+            <h2 id="section-transfers">6. Transferts de données hors Union européenne</h2>
+            <p>
+              Certains de nos sous-traitants (Google LLC, Cloudflare&nbsp;Inc.) sont établis aux États-Unis.
+              Les transferts de données vers ces entités sont encadrés par l'un ou plusieurs des mécanismes
+              suivants&nbsp;:
+            </p>
+            <ul>
+              <li>
+                <strong>Data Privacy Framework EU–US</strong> (décision d'adéquation de la Commission européenne
+                du 10 juillet 2023) — pour Google LLC et Cloudflare&nbsp;Inc.
+              </li>
+              <li>
+                <strong>Clauses Contractuelles Types (CCT)</strong> adoptées par la Commission européenne
+                (décision 2021/914).
+              </li>
+            </ul>
+            <p>
+              Vous pouvez consulter les politiques de confidentialité de ces sous-traitants pour
+              obtenir davantage d'informations sur leurs pratiques&nbsp;:
+            </p>
+            <ul>
+              <li>
+                Google&nbsp;:
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+                  policies.google.com/privacy
+                </a>
+              </li>
+              <li>
+                Cloudflare&nbsp;:
+                <a href="https://www.cloudflare.com/fr-fr/privacypolicy/" target="_blank" rel="noopener noreferrer">
+                  cloudflare.com/privacypolicy
+                </a>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 7. Durée de conservation -->
+          <section aria-labelledby="section-retention">
+            <h2 id="section-retention">7. Durée de conservation des données</h2>
+            <div class="privacy-table-wrap">
+              <table class="privacy-table" aria-label="Durées de conservation">
+                <thead>
+                  <tr>
+                    <th scope="col">Catégorie de données</th>
+                    <th scope="col">Durée de conservation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Données de formulaire (leads&nbsp;: nom, email, téléphone, message)</td>
+                    <td>3&nbsp;ans à compter du dernier contact commercial</td>
+                  </tr>
+                  <tr>
+                    <td>Données de navigation (logs Cloudflare)</td>
+                    <td>30&nbsp;jours maximum</td>
+                  </tr>
+                  <tr>
+                    <td>Cookies de mesure d'audience (Google Analytics)</td>
+                    <td>13&nbsp;mois (recommandation CNIL)</td>
+                  </tr>
+                  <tr>
+                    <td>Cookies publicitaires (Google Ads)</td>
+                    <td>Jusqu'à 13&nbsp;mois selon le cookie</td>
+                  </tr>
+                  <tr>
+                    <td>Consentements enregistrés</td>
+                    <td>5&nbsp;ans (preuve de licéité)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Au terme de la durée de conservation applicable, vos données sont supprimées ou anonymisées
+              de manière irréversible.
+            </p>
+          </section>
+
+          <!-- 8. Vos droits -->
+          <section aria-labelledby="section-rights">
+            <h2 id="section-rights">8. Vos droits (RGPD)</h2>
+            <p>
+              Conformément aux articles&nbsp;15 à 22 du RGPD, vous disposez des droits suivants sur vos données
+              personnelles&nbsp;:
+            </p>
+
+            <ul class="privacy-rights-list">
+              <li>
+                <strong>Droit d'accès (art.&nbsp;15)</strong>&nbsp;: obtenir une copie des données que nous détenons
+                sur vous.
+              </li>
+              <li>
+                <strong>Droit de rectification (art.&nbsp;16)</strong>&nbsp;: faire corriger des données inexactes
+                ou incomplètes.
+              </li>
+              <li>
+                <strong>Droit à l'effacement (art.&nbsp;17)</strong>&nbsp;: demander la suppression de vos données
+                (sous réserve de nos obligations légales).
+              </li>
+              <li>
+                <strong>Droit à la limitation du traitement (art.&nbsp;18)</strong>&nbsp;: suspendre temporairement
+                l'utilisation de vos données en cas de contestation.
+              </li>
+              <li>
+                <strong>Droit d'opposition (art.&nbsp;21)</strong>&nbsp;: vous opposer à tout moment au traitement
+                fondé sur l'intérêt légitime ou à des fins de prospection commerciale.
+              </li>
+              <li>
+                <strong>Droit à la portabilité (art.&nbsp;20)</strong>&nbsp;: recevoir vos données dans un format
+                structuré et lisible par machine.
+              </li>
+              <li>
+                <strong>Droit de retrait du consentement</strong>&nbsp;: retirer à tout moment votre consentement
+                aux traitements qui en dépendent, sans remettre en cause leur licéité antérieure.
+              </li>
+            </ul>
+
+            <div class="privacy-notice">
+              <strong>Comment exercer vos droits&nbsp;:</strong><br />
+              Envoyez votre demande par e-mail à
+              <a href="mailto:{{privacy_contact_email}}">{{privacy_contact_email}}</a>.
+              Nous nous engageons à vous répondre dans un délai d'un mois à compter de la réception
+              de votre demande (délai pouvant être prolongé de deux mois supplémentaires en cas de demande
+              complexe ou multiple, avec information préalable).
+              <br /><br />
+              Vous pouvez également déposer une réclamation auprès de la&nbsp;
+              <strong>Commission Nationale de l'Informatique et des Libertés (CNIL)</strong>&nbsp;:
+              <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">
+                cnil.fr/fr/plaintes
+              </a>.
+            </div>
+          </section>
+
+          <!-- 9. Sécurité -->
+          <section aria-labelledby="section-security">
+            <h2 id="section-security">9. Sécurité des données</h2>
+            <p>
+              Nous mettons en œuvre les mesures techniques et organisationnelles appropriées pour protéger
+              vos données contre tout accès non autorisé, modification, divulgation ou destruction&nbsp;:
+              chiffrement HTTPS (TLS), protection anti-bots via Cloudflare, limitation de l'accès interne
+              aux données, contrôle d'accès par identifiant et mot de passe.
+            </p>
+          </section>
+
+          <!-- 10. Modifications -->
+          <section aria-labelledby="section-updates">
+            <h2 id="section-updates">10. Modifications de la présente politique</h2>
+            <p>
+              Nous nous réservons le droit de modifier cette politique à tout moment afin de refléter
+              l'évolution de nos pratiques ou de la réglementation applicable. La date de la dernière mise
+              à jour est indiquée en haut de cette page.
+            </p>
+            <p>
+              En cas de modification substantielle (nouvelle finalité, nouveau destinataire), nous vous
+              en informerons par tout moyen approprié avant l'entrée en vigueur de la modification.
+            </p>
+          </section>
+
+          <!-- Back to home -->
+          <div class="privacy-footer-cta">
+            <a href="{{home_href}}" class="btn">Retour à l'accueil</a>
+          </div>
+
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+  </body>
+</html>

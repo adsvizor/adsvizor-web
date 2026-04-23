@@ -134,7 +134,13 @@ function replacePlaceholdersInAttributes(root, config) {
 }
 
 function applyConfigToHead(config) {
-  if (Object.prototype.hasOwnProperty.call(config, "meta_title")) document.title = safeString(config.meta_title);
+  // Allow individual pages to declare a page-specific title key via data-page-title-key on <html>.
+  const pageTitleKey = document.documentElement.getAttribute("data-page-title-key");
+  if (pageTitleKey && Object.prototype.hasOwnProperty.call(config, pageTitleKey)) {
+    document.title = safeString(config[pageTitleKey]);
+  } else if (Object.prototype.hasOwnProperty.call(config, "meta_title")) {
+    document.title = safeString(config.meta_title);
+  }
   if (Object.prototype.hasOwnProperty.call(config, "meta_description")) {
     setMetaContent('meta[name="description"]', config.meta_description);
   }
@@ -143,13 +149,18 @@ function applyConfigToHead(config) {
   if (Object.prototype.hasOwnProperty.call(config, "og_url")) setMetaContent('meta[property="og:url"]', config.og_url);
   if (Object.prototype.hasOwnProperty.call(config, "og_image_url")) setMetaContent('meta[property="og:image"]', config.og_image_url);
 
-  // Keep OG title/description aligned with main meta if present
-  const title = Object.prototype.hasOwnProperty.call(config, "meta_title") ? config.meta_title : getMetaContent('meta[property="og:title"]');
-  const desc = Object.prototype.hasOwnProperty.call(config, "meta_description")
-    ? config.meta_description
-    : getMetaContent('meta[property="og:description"]');
-  if (title !== null) setMetaContent('meta[property="og:title"]', title);
-  if (desc !== null) setMetaContent('meta[property="og:description"]', desc);
+  // Keep OG title/description aligned with main meta if present; respect page-specific overrides.
+  const pageDescKey = pageTitleKey ? pageTitleKey.replace("_title", "_meta_description") : null;
+  const titleValue = (pageTitleKey && Object.prototype.hasOwnProperty.call(config, pageTitleKey))
+    ? config[pageTitleKey]
+    : (Object.prototype.hasOwnProperty.call(config, "meta_title") ? config.meta_title : getMetaContent('meta[property="og:title"]'));
+  const descValue = (pageDescKey && Object.prototype.hasOwnProperty.call(config, pageDescKey))
+    ? config[pageDescKey]
+    : (Object.prototype.hasOwnProperty.call(config, "meta_description")
+      ? config.meta_description
+      : getMetaContent('meta[property="og:description"]'));
+  if (titleValue !== null) setMetaContent('meta[property="og:title"]', titleValue);
+  if (descValue !== null) setMetaContent('meta[property="og:description"]', descValue);
 }
 
 async function loadClientConfig(form) {

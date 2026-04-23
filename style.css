@@ -903,6 +903,218 @@ footer p {
   color: var(--color-accent);
 }
 
+/* =========================
+   Privacy policy page
+   ========================= */
+
+.privacy-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 36px 18px 72px;
+}
+
+.privacy-header {
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--color-accent-light);
+  padding-bottom: 28px;
+}
+
+.privacy-breadcrumb {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  margin: 0 0 18px;
+}
+
+.privacy-breadcrumb a {
+  color: var(--color-accent);
+}
+
+.privacy-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.privacy-header h1 {
+  margin: 0 0 10px;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.privacy-updated {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.privacy-content section {
+  padding: 0;
+  margin-bottom: 44px;
+}
+
+.privacy-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.privacy-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 22px 0 10px;
+}
+
+.privacy-content p {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  line-height: 1.7;
+}
+
+.privacy-content ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+
+.privacy-content li {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin-bottom: 6px;
+  color: var(--color-primary);
+}
+
+.privacy-content code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.82em;
+  background: var(--color-accent-light);
+  color: var(--color-accent-dark);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.privacy-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.privacy-content a:hover {
+  color: var(--color-accent-dark);
+}
+
+/* Info card (controller identity) */
+.privacy-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.privacy-card p {
+  margin: 0 0 6px;
+}
+
+.privacy-card p:last-child {
+  margin: 0;
+}
+
+/* Tables */
+.privacy-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.privacy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.privacy-table th {
+  background: var(--color-surface);
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.privacy-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary);
+  line-height: 1.55;
+  vertical-align: top;
+}
+
+.privacy-table tr:last-child td {
+  border-bottom: none;
+}
+
+.privacy-table tr:nth-child(even) td {
+  background: var(--color-surface);
+}
+
+/* Notice box (consent withdrawal, CNIL) */
+.privacy-notice {
+  background: var(--color-accent-light);
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 18px;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin-top: 16px;
+}
+
+/* Opt-out box */
+.privacy-optout {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-top: 16px;
+}
+
+.privacy-optout p {
+  margin: 0 0 10px;
+}
+
+/* Rights list */
+.privacy-rights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.privacy-rights-list li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin: 0;
+}
+
+/* Bottom CTA */
+.privacy-footer-cta {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
 /* ==========================================
    Responsive enhancements (>= 768px)
    ========================================== */
