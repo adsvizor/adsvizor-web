@@ -158,20 +158,21 @@ section {
 
 .form-float section[aria-labelledby="lead-form-title"] {
   background: #ffffff;
-  border: 1.5px solid rgba(37, 99, 235, 0.3);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-accent), 0 0 0 6px rgba(37, 99, 235, 0.05);
-  padding: 28px 22px 24px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.04), 0 20px 50px rgba(15, 23, 42, 0.1);
+  padding: 32px 28px 28px;
   margin: 24px 18px;
 }
 
 .form-float section[aria-labelledby="lead-form-title"] h2 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  margin: 0 0 20px;
-  color: var(--color-accent);
-  text-align: center;
-  letter-spacing: -0.01em;
+  margin: 0 0 26px;
+  color: var(--color-primary);
+  text-align: left;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 /* =========================
@@ -507,22 +508,23 @@ form[data-client-slug] > div {
 
 form label {
   font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--color-primary);
-  letter-spacing: 0.01em;
+  font-size: 0.82rem;
+  color: #374151;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 form input,
 form textarea {
   width: 100%;
-  padding: 11px 14px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-surface);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
   color: var(--color-primary);
   font-size: 0.97rem;
   font-family: var(--font-sans);
-  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
 form input:hover,
@@ -538,9 +540,8 @@ form textarea {
 form input:focus,
 form textarea:focus {
   outline: none;
-  background: #ffffff;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 /* Honeypot — must be invisible to humans */
@@ -604,10 +605,12 @@ form textarea:focus {
 
 .form-consent label {
   font-weight: 400;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
   line-height: 1.5;
   cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 form button[type="submit"] {
@@ -618,20 +621,20 @@ form button[type="submit"] {
   color: #ffffff;
   font-weight: 700;
   font-size: 1rem;
-  padding: 14px 18px;
-  border-radius: 999px;
+  padding: 15px 18px;
+  border-radius: 14px;
   cursor: pointer;
   letter-spacing: 0.01em;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-  box-shadow: var(--shadow-accent);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 form button[type="submit"]:hover {
   opacity: 0.92;
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.32);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38);
 }
 
 form button[type="submit"]:disabled {
@@ -642,7 +645,7 @@ form button[type="submit"]:disabled {
 
 form button[type="submit"]:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3), var(--shadow-accent);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
 }
 
 /* Invalid field highlight (set via JS on failed validation) */
@@ -670,49 +673,116 @@ form [data-form-error] {
 
 /* Step containers override: gap between fields inside a step */
 form[data-client-slug] > .form-step {
-  gap: 14px;
+  gap: 16px;
 }
 
 .form-step {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
-/* Progress bar */
+/* Step fade-in animation when a step becomes visible */
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-step:not([hidden]) {
+  animation: stepFadeIn 220ms ease both;
+}
+
+/* Progress bar — kept in DOM for JS, hidden visually (circles replace it) */
 .form-progress {
-  height: 5px;
-  background: var(--color-border);
-  border-radius: 999px;
-  overflow: hidden;
-  margin-bottom: 10px;
+  display: none;
 }
 
-.form-progress-fill {
-  height: 100%;
-  background: var(--gradient-accent);
-  border-radius: 999px;
-  width: 50%;
-  transition: width 320ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Step labels */
+/* Step indicator: numbered circles + connector line */
 .form-step-labels {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 22px;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 28px;
+  counter-reset: step;
 }
 
+/* Background connector track (behind circles) */
+.form-step-labels::before {
+  content: "";
+  position: absolute;
+  top: 15px;              /* vertically center with 32px circle (32/2 - 1) */
+  left: calc(25% + 16px); /* right edge of circle 1 */
+  right: calc(25% + 16px);/* left edge of circle 2 */
+  height: 2px;
+  background: rgba(15, 23, 42, 0.1);
+  transition: background 320ms ease;
+  z-index: 0;
+}
+
+/* Connector turns blue when step 2 is active */
+.form-step-labels:has(.form-step-label:last-child.is-active)::before {
+  background: var(--color-accent);
+}
+
+/* Each step label */
 .form-step-label {
-  font-size: 0.72rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  counter-increment: step;
+  font-size: 0.71rem;
   font-weight: 600;
   color: var(--color-muted);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  transition: color 200ms ease;
+  letter-spacing: 0.01em;
+  text-align: center;
+  transition: color 220ms ease;
 }
 
+/* Circle with step number */
+.form-step-label::before {
+  content: counter(step);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(15, 23, 42, 0.12);
+  background: #f8fafc;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: background 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 220ms ease;
+}
+
+/* Active step */
 .form-step-label.is-active {
   color: var(--color-accent);
+}
+
+.form-step-label.is-active::before {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* Step 1 "done" state — when step 2 is active, step 1 circle shows a checkmark */
+.form-step-labels:has(.form-step-label:last-child.is-active) .form-step-label:first-child {
+  color: var(--color-accent);
+}
+
+.form-step-labels:has(.form-step-label:last-child.is-active) .form-step-label:first-child::before {
+  content: "✓";
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+  font-size: 0.9rem;
+  box-shadow: none;
 }
 
 /* "Continuer" button (step 1) */
@@ -725,51 +795,52 @@ form[data-client-slug] > .form-step {
   font-size: 1.05rem;
   padding: 17px 24px;
   min-height: 54px;
-  border-radius: 999px;
+  border-radius: 14px;
   cursor: pointer;
   letter-spacing: 0.01em;
   touch-action: manipulation; /* removes 300ms tap delay on mobile */
   -webkit-tap-highlight-color: transparent;
   transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-  box-shadow: var(--shadow-accent);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .btn-next:hover {
   opacity: 0.92;
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.32);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38);
 }
 
 .btn-next:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3), var(--shadow-accent);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
 }
 
 /* Status radio cards */
 .status-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 9px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .status-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 14px 10px 12px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
+  gap: 7px;
+  padding: 16px 10px 14px;
+  border: 1.5px solid rgba(15, 23, 42, 0.1);
+  border-radius: 14px;
   cursor: pointer;
-  background: var(--color-surface);
+  background: #f8fafc;
   text-align: center;
   transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
   position: relative;
+  overflow: hidden;
 }
 
 .status-card:hover {
-  border-color: rgba(37, 99, 235, 0.45);
+  border-color: rgba(37, 99, 235, 0.4);
   background: var(--color-accent-light);
 }
 
@@ -783,15 +854,17 @@ form[data-client-slug] > .form-step {
 }
 
 .status-card-icon {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   line-height: 1;
 }
 
 .status-card-label {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--color-primary);
   line-height: 1.3;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* Selected state — :has() is supported in all modern browsers */
@@ -803,6 +876,25 @@ form[data-client-slug] > .form-step {
 
 .status-card:has(input[type="radio"]:checked) .status-card-label {
   color: var(--color-accent-dark);
+}
+
+/* Checkmark badge on selected card */
+.status-card:has(input[type="radio"]:checked)::after {
+  content: "✓";
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--color-accent);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 16px;
 }
 
 /* Focus ring forwarded from hidden radio to card */
@@ -824,17 +916,17 @@ form[data-client-slug] > .form-step {
 
 .btn-back {
   flex-shrink: 0;
-  border: 1.5px solid var(--color-border);
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
   background: #ffffff;
   color: var(--color-muted);
   font-weight: 600;
   font-size: 0.9rem;
   padding: 13px 16px;
-  border-radius: 999px;
+  border-radius: 14px;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color 140ms ease, color 140ms ease;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
   white-space: nowrap;
   line-height: 1;
 }
@@ -842,6 +934,7 @@ form[data-client-slug] > .form-step {
 .btn-back:hover {
   border-color: var(--color-accent);
   color: var(--color-accent);
+  background: var(--color-accent-light);
 }
 
 .btn-back:focus-visible {
@@ -1719,6 +1812,6 @@ footer p {
 
   .form-float section[aria-labelledby="lead-form-title"] {
     margin: 0;
-    padding: 28px 24px 24px;
+    padding: 32px 28px 28px;
   }
 }
