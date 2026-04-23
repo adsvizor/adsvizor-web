@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628">
+  <defs>
+    <linearGradient id="bgr2" x1="0" y1="0" x2="0" y2="628" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="628" fill="url(#bgr2)"/>
+
+  <!-- Top + bottom bars -->
+  <rect x="0" y="0" width="1200" height="12" fill="#2563eb"/>
+  <rect x="0" y="616" width="1200" height="12" fill="#2563eb"/>
+
+  <!-- Left side: Blue panel -->
+  <rect x="0" y="12" width="480" height="604" fill="#1e3a8a"/>
+  <circle cx="480" cy="314" r="300" fill="#2563eb" opacity="0.15"/>
+
+  <!-- Left content -->
+  <text x="240" y="130" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="3">ADSVIZOR</text>
+
+  <text x="240" y="220" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="white" text-anchor="middle">+2 400</text>
+  <text x="240" y="268" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">personnes accompagnées</text>
+
+  <rect x="80" y="300" width="320" height="2" fill="#2563eb"/>
+
+  <text x="240" y="360" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="white" text-anchor="middle">94%</text>
+  <text x="240" y="408" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">taux de satisfaction</text>
+
+  <rect x="80" y="440" width="320" height="2" fill="#2563eb"/>
+
+  <text x="240" y="500" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="#4ade80" text-anchor="middle">0 €</text>
+  <text x="240" y="548" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">pour demandeurs d'emploi</text>
+
+  <!-- Right content -->
+  <text x="840" y="90" font-family="Arial, sans-serif" font-size="26" fill="#6b7280" text-anchor="middle">Formation professionnelle · CPF</text>
+
+  <text x="840" y="180" font-family="Arial, sans-serif" font-size="66" font-weight="900" fill="#0f172a" text-anchor="middle">Reconvertissez-vous</text>
+  <text x="840" y="258" font-family="Arial, sans-serif" font-size="66" font-weight="900" fill="#2563eb" text-anchor="middle">sans payer.</text>
+
+  <text x="840" y="330" font-family="Arial, sans-serif" font-size="30" fill="#475569" text-anchor="middle">Votre CPF couvre 100 % du coût de votre</text>
+  <text x="840" y="370" font-family="Arial, sans-serif" font-size="30" fill="#475569" text-anchor="middle">formation certifiante. On s'occupe de tout,</text>
+  <text x="840" y="410" font-family="Arial, sans-serif" font-size="30" fill="#475569" text-anchor="middle">du dossier jusqu'à l'inscription officielle.</text>
+
+  <!-- Trust line -->
+  <rect x="520" y="440" width="640" height="68" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="840" y="482" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#166534" text-anchor="middle">✅ Aucun frais caché · Conseillers certifiés · Formations Qualiopi</text>
+
+  <!-- CTA -->
+  <rect x="540" y="530" width="580" height="72" rx="36" fill="#2563eb"/>
+  <text x="830" y="576" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="white" text-anchor="middle">Parler à un conseiller CPF →</text>
+</svg>

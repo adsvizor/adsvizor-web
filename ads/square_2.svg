@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="url(#bg2)"/>
+
+  <!-- Top bar -->
+  <rect x="0" y="0" width="1200" height="16" fill="#2563eb"/>
+
+  <!-- Decorative shape top right -->
+  <circle cx="1100" cy="200" r="400" fill="#2563eb" opacity="0.06"/>
+  <circle cx="100" cy="1000" r="300" fill="#4f46e5" opacity="0.05"/>
+
+  <!-- Urgency tag -->
+  <rect x="380" y="80" width="440" height="68" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="600" y="125" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#ef4444" text-anchor="middle">⚠ La participation augmente chaque année</text>
+
+  <!-- Main text -->
+  <text x="600" y="270" font-family="Arial, sans-serif" font-size="78" font-weight="900" fill="#0f172a" text-anchor="middle">Ne laissez pas</text>
+  <text x="600" y="370" font-family="Arial, sans-serif" font-size="78" font-weight="900" fill="#0f172a" text-anchor="middle">vos droits CPF</text>
+  <text x="600" y="470" font-family="Arial, sans-serif" font-size="78" font-weight="900" fill="#2563eb" text-anchor="middle">dormir.</text>
+
+  <!-- Cost evolution boxes -->
+  <rect x="100" y="540" width="280" height="200" rx="20" fill="white" stroke="#d1d5db" stroke-width="2"/>
+  <text x="240" y="610" font-family="Arial, sans-serif" font-size="26" fill="#6b7280" text-anchor="middle">Avant</text>
+  <text x="240" y="690" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#16a34a" text-anchor="middle">103€</text>
+  <text x="240" y="730" font-family="Arial, sans-serif" font-size="24" fill="#6b7280" text-anchor="middle">participation</text>
+
+  <text x="490" y="650" font-family="Arial, sans-serif" font-size="60" fill="#2563eb" text-anchor="middle">▶</text>
+
+  <rect x="520" y="540" width="280" height="200" rx="20" fill="white" stroke="#ef4444" stroke-width="2.5"/>
+  <text x="660" y="610" font-family="Arial, sans-serif" font-size="26" fill="#6b7280" text-anchor="middle">Aujourd'hui</text>
+  <text x="660" y="690" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#ef4444" text-anchor="middle">150€</text>
+  <text x="660" y="730" font-family="Arial, sans-serif" font-size="24" fill="#6b7280" text-anchor="middle">participation</text>
+
+  <text x="910" y="650" font-family="Arial, sans-serif" font-size="60" fill="#2563eb" text-anchor="middle">▶</text>
+
+  <rect x="940" y="540" width="260" height="200" rx="20" fill="white" stroke="#f97316" stroke-width="2.5" stroke-dasharray="10,5"/>
+  <text x="1070" y="610" font-family="Arial, sans-serif" font-size="26" fill="#6b7280" text-anchor="middle">Demain ?</text>
+  <text x="1070" y="690" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#f97316" text-anchor="middle">???</text>
+  <text x="1070" y="730" font-family="Arial, sans-serif" font-size="24" fill="#6b7280" text-anchor="middle">en hausse</text>
+
+  <!-- Chomage note -->
+  <rect x="150" y="790" width="900" height="110" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="600" y="840" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#166534" text-anchor="middle">✅ Demandeur d'emploi ? Participation : 0 €</text>
+  <text x="600" y="882" font-family="Arial, sans-serif" font-size="26" fill="#166534" text-anchor="middle">Formation prise en charge à 100 % via France Travail</text>
+
+  <!-- CTA -->
+  <rect x="250" y="960" width="700" height="110" rx="55" fill="#2563eb"/>
+  <text x="600" y="1027" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="white" text-anchor="middle">Vérifier mes droits maintenant →</text>
+
+  <!-- Sub CTA -->
+  <text x="600" y="1120" font-family="Arial, sans-serif" font-size="32" fill="#475569" text-anchor="middle">Gratuit · Sans engagement · Réponse sous 24h</text>
+
+  <!-- Brand -->
+  <text x="600" y="1170" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#2563eb" text-anchor="middle">AdsVizor</text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="1184" width="1200" height="16" fill="#2563eb"/>
+</svg>

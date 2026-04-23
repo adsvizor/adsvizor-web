@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1200" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="btn3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="url(#bg3)"/>
+
+  <!-- Grid pattern -->
+  <line x1="0" y1="300" x2="1200" y2="300" stroke="white" stroke-width="0.5" opacity="0.05"/>
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="white" stroke-width="0.5" opacity="0.05"/>
+  <line x1="0" y1="900" x2="1200" y2="900" stroke="white" stroke-width="0.5" opacity="0.05"/>
+  <line x1="300" y1="0" x2="300" y2="1200" stroke="white" stroke-width="0.5" opacity="0.05"/>
+  <line x1="600" y1="0" x2="600" y2="1200" stroke="white" stroke-width="0.5" opacity="0.05"/>
+  <line x1="900" y1="0" x2="900" y2="1200" stroke="white" stroke-width="0.5" opacity="0.05"/>
+
+  <!-- Glowing orb -->
+  <circle cx="600" cy="450" r="320" fill="#2563eb" opacity="0.15"/>
+  <circle cx="600" cy="450" r="200" fill="#2563eb" opacity="0.12"/>
+
+  <!-- Steps -->
+  <text x="600" y="120" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="4">COMMENT ÇA MARCHE ?</text>
+
+  <!-- Step cards -->
+  <!-- Step 1 -->
+  <rect x="80" y="170" width="480" height="200" rx="20" fill="white" fill-opacity="0.07" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+  <circle cx="150" cy="270" r="44" fill="#2563eb"/>
+  <text x="150" y="285" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="white" text-anchor="middle">1</text>
+  <text x="380" y="250" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white" text-anchor="middle">Vous nous contactez</text>
+  <text x="380" y="295" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">Formulaire en 2 minutes</text>
+
+  <!-- Step 2 -->
+  <rect x="640" y="170" width="480" height="200" rx="20" fill="white" fill-opacity="0.07" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+  <circle cx="710" cy="270" r="44" fill="#2563eb"/>
+  <text x="710" y="285" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="white" text-anchor="middle">2</text>
+  <text x="940" y="250" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white" text-anchor="middle">On vérifie vos droits</text>
+  <text x="940" y="295" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">Solde CPF en euros</text>
+
+  <!-- Step 3 -->
+  <rect x="80" y="400" width="480" height="200" rx="20" fill="white" fill-opacity="0.07" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+  <circle cx="150" cy="500" r="44" fill="#2563eb"/>
+  <text x="150" y="515" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="white" text-anchor="middle">3</text>
+  <text x="380" y="480" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white" text-anchor="middle">On choisit ensemble</text>
+  <text x="380" y="525" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">La meilleure formation</text>
+
+  <!-- Step 4 -->
+  <rect x="640" y="400" width="480" height="200" rx="20" fill="white" fill-opacity="0.07" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+  <circle cx="710" cy="500" r="44" fill="#2563eb"/>
+  <text x="710" y="515" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="white" text-anchor="middle">4</text>
+  <text x="940" y="480" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white" text-anchor="middle">Vous vous formez</text>
+  <text x="940" y="525" font-family="Arial, sans-serif" font-size="26" fill="#93c5fd" text-anchor="middle">Sans débourser un euro</text>
+
+  <!-- Result badge -->
+  <rect x="200" y="650" width="800" height="130" rx="20" fill="#2563eb" fill-opacity="0.3" stroke="#2563eb" stroke-width="2"/>
+  <text x="600" y="705" font-family="Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle">🏆 Résultat : certifié en moins d'une semaine</text>
+  <text x="600" y="755" font-family="Arial, sans-serif" font-size="28" fill="#93c5fd" text-anchor="middle">Accompagnement 100 % gratuit — aucun frais caché</text>
+
+  <!-- Main value prop -->
+  <text x="600" y="870" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="white" text-anchor="middle">Formez-vous.</text>
+  <text x="600" y="955" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#60a5fa" text-anchor="middle">Progressez.</text>
+  <text x="600" y="1040" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="white" text-anchor="middle">Décollezs.</text>
+
+  <!-- CTA -->
+  <rect x="250" y="1080" width="700" height="90" rx="45" fill="url(#btn3)"/>
+  <text x="600" y="1136" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="white" text-anchor="middle">Commencer gratuitement →</text>
+
+  <!-- Brand -->
+  <text x="600" y="1175" font-family="Arial, sans-serif" font-size="26" fill="#475569" text-anchor="middle">AdsVizor · formations.adsvizor.com</text>
+</svg>

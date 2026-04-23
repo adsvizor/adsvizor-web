@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e3a6e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="1050" cy="150" r="300" fill="#2563eb" opacity="0.08"/>
+  <circle cx="150" cy="1050" r="250" fill="#4f46e5" opacity="0.08"/>
+  <circle cx="600" cy="600" r="500" fill="none" stroke="#2563eb" stroke-width="1" opacity="0.1"/>
+
+  <!-- Top badge -->
+  <rect x="400" y="100" width="400" height="72" rx="36" fill="#2563eb"/>
+  <text x="600" y="147" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="white" text-anchor="middle" letter-spacing="2">FORMATION CPF</text>
+
+  <!-- Main headline -->
+  <text x="600" y="320" font-family="Arial, sans-serif" font-size="88" font-weight="900" fill="white" text-anchor="middle">Votre CPF</text>
+  <text x="600" y="430" font-family="Arial, sans-serif" font-size="88" font-weight="900" fill="#2563eb" text-anchor="middle">vaut de l'or.</text>
+  <text x="600" y="540" font-family="Arial, sans-serif" font-size="88" font-weight="900" fill="white" text-anchor="middle">Utilisez-le.</text>
+
+  <!-- Divider -->
+  <rect x="500" y="590" width="200" height="4" rx="2" fill="#2563eb"/>
+
+  <!-- Sub text -->
+  <text x="600" y="680" font-family="Arial, sans-serif" font-size="40" fill="#94a3b8" text-anchor="middle">Formation certifiante prise en charge</text>
+  <text x="600" y="735" font-family="Arial, sans-serif" font-size="40" fill="#94a3b8" text-anchor="middle">à 100 % — sans avancer un centime.</text>
+
+  <!-- Stats row -->
+  <rect x="100" y="820" width="300" height="160" rx="20" fill="url(#card)" stroke="#2563eb" stroke-width="1.5" stroke-opacity="0.4"/>
+  <text x="250" y="890" font-family="Arial, sans-serif" font-size="60" font-weight="900" fill="#2563eb" text-anchor="middle">+2400</text>
+  <text x="250" y="940" font-family="Arial, sans-serif" font-size="28" fill="#94a3b8" text-anchor="middle">clients accompagnés</text>
+
+  <rect x="450" y="820" width="300" height="160" rx="20" fill="url(#card)" stroke="#2563eb" stroke-width="1.5" stroke-opacity="0.4"/>
+  <text x="600" y="890" font-family="Arial, sans-serif" font-size="60" font-weight="900" fill="#2563eb" text-anchor="middle">94%</text>
+  <text x="600" y="940" font-family="Arial, sans-serif" font-size="28" fill="#94a3b8" text-anchor="middle">de satisfaction</text>
+
+  <rect x="800" y="820" width="300" height="160" rx="20" fill="url(#card)" stroke="#2563eb" stroke-width="1.5" stroke-opacity="0.4"/>
+  <text x="950" y="890" font-family="Arial, sans-serif" font-size="60" font-weight="900" fill="#2563eb" text-anchor="middle">0€</text>
+  <text x="950" y="940" font-family="Arial, sans-serif" font-size="28" fill="#94a3b8" text-anchor="middle">pour demandeurs d'emploi</text>
+
+  <!-- CTA Button -->
+  <rect x="300" y="1040" width="600" height="100" rx="50" fill="#2563eb"/>
+  <text x="600" y="1103" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="white" text-anchor="middle">Vérifier mes droits CPF →</text>
+
+  <!-- Brand -->
+  <text x="600" y="1170" font-family="Arial, sans-serif" font-size="28" fill="#475569" text-anchor="middle">formations.adsvizor.com</text>
+</svg>

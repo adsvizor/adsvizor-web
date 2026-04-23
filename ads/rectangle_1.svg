@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628">
+  <defs>
+    <linearGradient id="bgr1" x1="0" y1="0" x2="1200" y2="628" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e3a6e"/>
+    </linearGradient>
+    <linearGradient id="btnr1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="628" fill="url(#bgr1)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="950" cy="100" r="300" fill="#2563eb" opacity="0.07"/>
+  <circle cx="200" cy="550" r="200" fill="#4f46e5" opacity="0.07"/>
+
+  <!-- Left: text content -->
+  <!-- Badge -->
+  <rect x="60" y="60" width="320" height="54" rx="27" fill="#2563eb"/>
+  <text x="220" y="95" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="white" text-anchor="middle" letter-spacing="1">CPF · FORMATION</text>
+
+  <!-- Headline -->
+  <text x="60" y="210" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="white">Votre CPF finance</text>
+  <text x="60" y="295" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#2563eb">votre prochaine</text>
+  <text x="60" y="380" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="white">certification.</text>
+
+  <!-- Sub -->
+  <text x="60" y="440" font-family="Arial, sans-serif" font-size="28" fill="#94a3b8">Sans avance de frais · Accompagnement gratuit · Résultat en 5 jours</text>
+
+  <!-- CTA -->
+  <rect x="60" y="490" width="420" height="80" rx="40" fill="url(#btnr1)"/>
+  <text x="270" y="541" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="white" text-anchor="middle">Vérifier mes droits CPF →</text>
+
+  <!-- Right: stats panel -->
+  <rect x="720" y="40" width="440" height="548" rx="24" fill="white" fill-opacity="0.05" stroke="white" stroke-opacity="0.1" stroke-width="1"/>
+
+  <text x="940" y="110" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="2">VOS AVANTAGES</text>
+
+  <!-- Benefit lines -->
+  <circle cx="770" cy="175" r="18" fill="#2563eb"/>
+  <text x="770" y="182" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">✓</text>
+  <text x="810" y="182" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white">Formation 100 % financée</text>
+
+  <circle cx="770" cy="255" r="18" fill="#2563eb"/>
+  <text x="770" y="262" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">✓</text>
+  <text x="810" y="262" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white">Conseiller humain dédié</text>
+
+  <circle cx="770" cy="335" r="18" fill="#2563eb"/>
+  <text x="770" y="342" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">✓</text>
+  <text x="810" y="342" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white">Certifications reconnues</text>
+
+  <circle cx="770" cy="415" r="18" fill="#2563eb"/>
+  <text x="770" y="422" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">✓</text>
+  <text x="810" y="422" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white">Inscrit en moins d'une semaine</text>
+
+  <circle cx="770" cy="495" r="18" fill="#16a34a"/>
+  <text x="770" y="502" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white" text-anchor="middle">0€</text>
+  <text x="810" y="502" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#4ade80">Demandeurs d'emploi : gratuit</text>
+
+  <!-- Stats bottom -->
+  <text x="940" y="566" font-family="Arial, sans-serif" font-size="22" fill="#475569" text-anchor="middle">+2400 clients · 94% satisfaction · formations.adsvizor.com</text>
+</svg>
