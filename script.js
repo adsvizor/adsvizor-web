@@ -381,6 +381,56 @@ function initCtaTracking() {
 }
 
 // =========================
+// 5) STAT COUNTER ANIMATION
+// =========================
+
+function initStatCounters() {
+  const strip = document.querySelector('.stats-strip');
+  if (!strip || strip.hidden) return;
+  const statEls = Array.from(strip.querySelectorAll('.stat strong'));
+  if (!statEls.length) return;
+
+  const parsed = statEls.map(el => {
+    const text = el.textContent.trim();
+    // Match optional prefix, digits (with optional space thousands separator), optional suffix
+    const m = text.match(/^([^\d]*)([\d\s]+)([^\d]*)$/);
+    if (!m) return null;
+    const raw = m[2].replace(/\s/g, '');
+    return { el, prefix: m[1], target: parseInt(raw, 10), suffix: m[3], useSpace: m[2].includes(' ') };
+  }).filter(Boolean);
+
+  if (!parsed.length) return;
+
+  const DURATION = 1600;
+  const ease = t => 1 - (1 - t) ** 3;
+
+  function fmt(n, useSpace) {
+    if (useSpace && n >= 1000) {
+      return Math.floor(n / 1000) + '\u00a0' + String(n % 1000).padStart(3, '0');
+    }
+    return String(n);
+  }
+
+  function run() {
+    const t0 = performance.now();
+    function tick(now) {
+      const p = Math.min((now - t0) / DURATION, 1);
+      const e = ease(p);
+      for (const { el, prefix, target, suffix, useSpace } of parsed) {
+        el.textContent = prefix + fmt(Math.round(e * target), useSpace) + suffix;
+      }
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) { observer.disconnect(); run(); }
+  }, { threshold: 0.5 });
+  observer.observe(strip);
+}
+
+// =========================
 // Boot
 // =========================
 
@@ -419,6 +469,9 @@ async function init() {
     }
 
     document.body.classList.add("ready");
+
+    // Animate stat counters once the strip scrolls into view.
+    initStatCounters();
 
     // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
     preserveUtmOnLinks();
