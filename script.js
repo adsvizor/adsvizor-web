@@ -579,20 +579,33 @@ function initMultiStepForm(form, config) {
   }
 
   // ── Client-side validation for a single step ──
+  // Note: no input.focus() calls — on iOS they scroll the page and make it look
+  // like the button did nothing. Invalid fields are highlighted via CSS instead.
   function validateStep(stepEl) {
+    let valid = true;
+
     // Required text / email / tel inputs
     for (const input of stepEl.querySelectorAll("input[required], textarea[required]")) {
-      if (!input.value.trim()) { input.focus(); return false; }
-      if (input.type === "email" && !input.checkValidity()) { input.focus(); return false; }
+      const empty = !input.value.trim();
+      const badEmail = input.type === "email" && !empty && !input.checkValidity();
+      input.classList.toggle("input-error", empty || badEmail);
+      if (empty || badEmail) valid = false;
     }
-    // Radio groups (no required attr needed — checked via JS)
+
+    // Radio groups
     const groupNames = new Set(
       Array.from(stepEl.querySelectorAll("input[type='radio']")).map((r) => r.name)
     );
     for (const name of groupNames) {
-      if (!stepEl.querySelector(`input[type='radio'][name='${name}']:checked`)) return false;
+      if (!stepEl.querySelector(`input[type='radio'][name='${name}']:checked`)) valid = false;
     }
-    return true;
+
+    return valid;
+  }
+
+  // Clear error highlights when user starts typing
+  for (const input of form.querySelectorAll("input, textarea")) {
+    input.addEventListener("input", () => input.classList.remove("input-error"), { passive: true });
   }
 
   // ── Fire-and-forget partial POST (step 1 data) ──
