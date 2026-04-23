@@ -36,6 +36,11 @@ body.ready {
   --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
+/* Ensure [hidden] always wins — some CSS rules (display:grid on form > div) override the browser default */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   box-sizing: border-box;
@@ -647,6 +652,186 @@ form [data-form-error] {
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.92rem;
+}
+
+/* =========================
+   Multi-step form
+   ========================= */
+
+/* Step containers override: gap between fields inside a step */
+form[data-client-slug] > .form-step {
+  gap: 14px;
+}
+
+.form-step {
+  display: grid;
+  gap: 14px;
+}
+
+/* Progress bar */
+.form-progress {
+  height: 5px;
+  background: var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.form-progress-fill {
+  height: 100%;
+  background: var(--gradient-accent);
+  border-radius: 999px;
+  width: 50%;
+  transition: width 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Step labels */
+.form-step-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.form-step-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 200ms ease;
+}
+
+.form-step-label.is-active {
+  color: var(--color-accent);
+}
+
+/* "Continuer" button (step 1) */
+.btn-next {
+  width: 100%;
+  border: none;
+  background: var(--gradient-accent);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 14px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-next:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.32);
+}
+
+.btn-next:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3), var(--shadow-accent);
+}
+
+/* Status radio cards */
+.status-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 8px;
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px 12px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--color-surface);
+  text-align: center;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  position: relative;
+}
+
+.status-card:hover {
+  border-color: rgba(37, 99, 235, 0.45);
+  background: var(--color-accent-light);
+}
+
+/* Visually hide the radio input — keyboard + screen reader still works */
+.status-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.status-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.status-card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  line-height: 1.3;
+}
+
+/* Selected state — :has() is supported in all modern browsers */
+.status-card:has(input[type="radio"]:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.status-card:has(input[type="radio"]:checked) .status-card-label {
+  color: var(--color-accent-dark);
+}
+
+/* Focus ring forwarded from hidden radio to card */
+.status-card:has(input[type="radio"]:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Back button + submit row */
+.form-step-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-step-nav button[type="submit"] {
+  flex: 1;
+}
+
+.btn-back {
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border);
+  background: #ffffff;
+  color: var(--color-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 13px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.btn-back:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn-back:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 /* =========================

@@ -22,10 +22,10 @@ function isAllowedOrigin(origin) {
   if (!origin) return false;
   if (origin === "https://adsvizor.com") return true;
   if (origin === "https://www.adsvizor.com") return true;
-  if (origin === "http://localhost:5500") return true;
-  if (origin === "http://127.0.0.1:5500") return true;
   // Allow any subdomain of adsvizor.com
   if (origin.endsWith(".adsvizor.com")) return true;
+  // Allow localhost on any port for local development
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true;
   return false;
 }
 

@@ -104,10 +104,19 @@
           </section>
         </div>
 
-        <!-- RIGHT: floating form (identical structure to index.html aside) -->
+        <!-- RIGHT: floating form -->
         <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
             <h2 id="lead-form-title">{{active_form_cta}}</h2>
+
+            <!-- Progress bar -->
+            <div class="form-progress" aria-hidden="true">
+              <div class="form-progress-fill"></div>
+            </div>
+            <div class="form-step-labels" aria-hidden="true">
+              <span class="form-step-label is-active">Vos coordonnées</span>
+              <span class="form-step-label">Votre profil</span>
+            </div>
 
             <form
               id="{{form_id}}"
@@ -116,92 +125,122 @@
               data-client-slug="{{client_slug}}"
               data-offer-id="{{active_offer_id}}"
             >
-              <!-- hidden field: which formation this lead is about -->
-              <input type="hidden" name="formation_interest" value="{{active_title}}" />
+              <!-- ── Step 1 : contact info ── -->
+              <div class="form-step" data-step="0">
+                <div class="form-name-row">
+                  <div>
+                    <label for="first_name">{{field_first_name_label}}</label>
+                    <input
+                      id="first_name"
+                      name="first_name"
+                      type="text"
+                      autocomplete="given-name"
+                      placeholder="{{field_first_name_placeholder}}"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="last_name">{{field_last_name_label}}</label>
+                    <input
+                      id="last_name"
+                      name="last_name"
+                      type="text"
+                      autocomplete="family-name"
+                      placeholder="{{field_last_name_placeholder}}"
+                      required
+                    />
+                  </div>
+                </div>
 
-              <div class="form-name-row">
                 <div>
-                  <label for="first_name">{{field_first_name_label}}</label>
+                  <label for="phone">{{field_phone_label}}</label>
                   <input
-                    id="first_name"
-                    name="first_name"
-                    type="text"
-                    autocomplete="given-name"
-                    placeholder="{{field_first_name_placeholder}}"
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    autocomplete="tel"
+                    placeholder="{{field_phone_placeholder}}"
                     required
                   />
                 </div>
+
                 <div>
-                  <label for="last_name">{{field_last_name_label}}</label>
+                  <label for="email">{{field_email_label}}</label>
                   <input
-                    id="last_name"
-                    name="last_name"
-                    type="text"
-                    autocomplete="family-name"
-                    placeholder="{{field_last_name_placeholder}}"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="{{field_email_placeholder}}"
                     required
                   />
                 </div>
+
+                <button type="button" class="btn-next">Continuer <span aria-hidden="true">→</span></button>
               </div>
 
-              <div>
-                <label for="email">{{field_email_label}}</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="{{field_email_placeholder}}"
-                  required
-                />
-              </div>
+              <!-- ── Step 2 : professional profile + desired training ── -->
+              <div class="form-step" data-step="1" hidden>
+                <div>
+                  <label>{{field_status_label}}</label>
+                  <div class="status-cards" role="group" aria-label="Statut professionnel">
+                    <label class="status-card">
+                      <input type="radio" name="professional_status" value="chomage" />
+                      <span class="status-card-icon" aria-hidden="true">🔍</span>
+                      <span class="status-card-label">En recherche d'emploi</span>
+                    </label>
+                    <label class="status-card">
+                      <input type="radio" name="professional_status" value="salarie" />
+                      <span class="status-card-icon" aria-hidden="true">💼</span>
+                      <span class="status-card-label">Salarié(e)</span>
+                    </label>
+                    <label class="status-card">
+                      <input type="radio" name="professional_status" value="etudiant" />
+                      <span class="status-card-icon" aria-hidden="true">🎓</span>
+                      <span class="status-card-label">Étudiant(e)</span>
+                    </label>
+                    <label class="status-card">
+                      <input type="radio" name="professional_status" value="retraite" />
+                      <span class="status-card-icon" aria-hidden="true">🌅</span>
+                      <span class="status-card-label">Retraité(e)</span>
+                    </label>
+                  </div>
+                </div>
 
-              <div>
-                <label for="phone">{{field_phone_label}}</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  autocomplete="tel"
-                  placeholder="{{field_phone_placeholder}}"
-                  required
-                />
-              </div>
+                <!-- Formation interest (pre-filled for detail pages) -->
+                <input type="hidden" name="formation_interest" value="{{active_title}}" />
 
-              <div>
-                <label for="message">{{field_message_label}}</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="{{field_message_rows}}"
-                  placeholder="{{field_message_placeholder}}"
-                ></textarea>
-              </div>
+                <div>
+                  <label for="message">{{field_message_label}}</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="{{field_message_rows}}"
+                    placeholder="{{field_message_placeholder}}"
+                  ></textarea>
+                </div>
 
-              <!-- Honeypot: invisible to humans, bots will fill it — rejected server-side -->
-              <div class="form-honeypot" aria-hidden="true">
-                <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
-              </div>
+                <!-- Honeypot: invisible to humans, bots will fill it — rejected server-side -->
+                <div class="form-honeypot" aria-hidden="true">
+                  <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
+                </div>
 
-              <input type="hidden" id="utm_source" name="utm_source" value="" />
-              <input type="hidden" id="utm_medium" name="utm_medium" value="" />
-              <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
-              <input type="hidden" id="utm_term" name="utm_term" value="" />
-              <input type="hidden" id="utm_content" name="utm_content" value="" />
-              <input
-                type="hidden"
-                id="page_version"
-                name="page_version"
-                value="{{page_version}}"
-              />
+                <input type="hidden" id="utm_source" name="utm_source" value="" />
+                <input type="hidden" id="utm_medium" name="utm_medium" value="" />
+                <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+                <input type="hidden" id="utm_term" name="utm_term" value="" />
+                <input type="hidden" id="utm_content" name="utm_content" value="" />
+                <input type="hidden" id="page_version" name="page_version" value="{{page_version}}" />
 
-              <div class="form-consent">
-                <input type="checkbox" id="consent_marketing" name="consent_marketing" required />
-                <label for="consent_marketing">{{form_disclaimer_text}}</label>
-              </div>
+                <div class="form-consent">
+                  <input type="checkbox" id="consent_marketing" name="consent_marketing" required />
+                  <label for="consent_marketing">{{form_disclaimer_text}}</label>
+                </div>
 
-              <div>
-                <button type="submit">{{submit_label}}</button>
+                <div class="form-step-nav">
+                  <button type="button" class="btn-back"><span aria-hidden="true">←</span> Retour</button>
+                  <button type="submit">{{submit_label}}</button>
+                </div>
               </div>
             </form>
           </section>

@@ -262,6 +262,8 @@ function buildLeadPayload(form, config) {
   const visitorMessage = fd.get("message");
   const consentMarketing = fd.get("consent_marketing") === "on";
 
+  const professionalStatus = fd.get("professional_status");
+
   const payload = {
     client_slug: clientSlug,
     offer_id: offerId,
@@ -269,6 +271,7 @@ function buildLeadPayload(form, config) {
     visitor_email: visitorEmail ? safeString(visitorEmail).trim() : "",
     visitor_phone: visitorPhone ? safeString(visitorPhone).trim() : null,
     visitor_message: visitorMessage ? safeString(visitorMessage).trim() : null,
+    professional_status: professionalStatus ? safeString(professionalStatus).trim() : null,
     utm: {
       source: fd.get("utm_source") ? safeString(fd.get("utm_source")).trim() : null,
       medium: fd.get("utm_medium") ? safeString(fd.get("utm_medium")).trim() : null,
@@ -509,6 +512,200 @@ function initStatCounters() {
 }
 
 // =========================
+// 7) MULTI-STEP FORM
+// =========================
+
+/**
+ * Replaces single-step form handling.
+ * Step 1 — name / phone / email: validated locally, partial payload POSTed on "Continuer".
+ * Step 2 — professional status + desired training: full payload POSTed on submit.
+ */
+function initMultiStepForm(form, config) {
+  // DOM references
+  const steps      = Array.from(form.querySelectorAll(".form-step"));
+  const section    = form.closest("section");
+  const progressFill  = section ? section.querySelector(".form-progress-fill") : null;
+  const stepLabels = section
+    ? Array.from(section.querySelectorAll(".form-step-label"))
+    : [];
+
+  let currentStep = 0;
+
+  // ── form_start event (fires on first interaction) ──
+  const formStartOnce = (() => {
+    let fired = false;
+    return () => {
+      if (fired) return;
+      fired = true;
+      emitEvent("form_start", {
+        client_slug: config.client_slug,
+        offer_id: config.offer_id,
+        page_version: config.page_version
+      });
+    };
+  })();
+
+  for (const el of form.querySelectorAll("input, textarea, select")) {
+    el.addEventListener("focus", formStartOnce, { passive: true });
+    el.addEventListener("input", formStartOnce, { passive: true });
+  }
+
+  // ── Show / hide steps + update progress UI ──
+  function showStep(index) {
+    steps.forEach((step, i) => { step.hidden = i !== index; });
+
+    // Progress fill: 50 % at step 0, 100 % at step 1
+    if (progressFill) progressFill.style.width = index === 0 ? "50%" : "100%";
+
+    // Active label highlight
+    stepLabels.forEach((lbl, i) => lbl.classList.toggle("is-active", i === index));
+
+    currentStep = index;
+    clearFormError(form);
+
+    // On mobile, scroll the form card into view when advancing
+    if (section && index > 0) section.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // ── Client-side validation for a single step ──
+  function validateStep(stepEl) {
+    // Required text / email / tel inputs
+    for (const input of stepEl.querySelectorAll("input[required], textarea[required]")) {
+      if (!input.value.trim()) { input.focus(); return false; }
+      if (input.type === "email" && !input.checkValidity()) { input.focus(); return false; }
+    }
+    // Radio groups (no required attr needed — checked via JS)
+    const groupNames = new Set(
+      Array.from(stepEl.querySelectorAll("input[type='radio']")).map((r) => r.name)
+    );
+    for (const name of groupNames) {
+      if (!stepEl.querySelector(`input[type='radio'][name='${name}']:checked`)) return false;
+    }
+    return true;
+  }
+
+  // ── Fire-and-forget partial POST (step 1 data) ──
+  function sendPartial() {
+    if (!config.form_action || config.form_action === "APPS_SCRIPT_URL") return;
+    try {
+      const fd = new FormData(form);
+      const firstName = safeString(fd.get("first_name") ?? "").trim();
+      const lastName  = safeString(fd.get("last_name")  ?? "").trim();
+      const utm = readUtmFromSession();
+      const payload = {
+        client_slug: safeString(config.client_slug || form.dataset.clientSlug || ""),
+        offer_id:    safeString(form.dataset.offerId || config.offer_id || ""),
+        visitor_name:  [firstName, lastName].filter(Boolean).join(" ") || null,
+        visitor_email: safeString(fd.get("email") ?? "").trim() || null,
+        visitor_phone: safeString(fd.get("phone") ?? "").trim() || null,
+        formation_interest: fd.get("formation_interest")
+          ? safeString(fd.get("formation_interest")).trim() : null,
+        utm: {
+          source:   utm.utm_source   || null,
+          medium:   utm.utm_medium   || null,
+          campaign: utm.utm_campaign || null,
+          term:     utm.utm_term     || null,
+          content:  utm.utm_content  || null
+        },
+        page_version: safeString(config.page_version || ""),
+        partial: true,
+        step: 1,
+        hp_trap: ""
+      };
+      // Fire-and-forget — never block the UI, but log failures for debugging
+      postLead(config.form_action, payload)
+        .then(() => emitEvent("form_partial", { status: "success", step: 1 }))
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          emitEvent("form_partial", { status: "error", step: 1, message: msg });
+          console.warn("[adsvizor] Partial lead send failed (step 1):", msg);
+        });
+    } catch (err) {
+      console.warn("[adsvizor] sendPartial setup error:", err);
+    }
+  }
+
+  // ── "Continuer" button (step 1 → step 2) ──
+  const btnNext = form.querySelector(".btn-next");
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      clearFormError(form);
+      if (!validateStep(steps[0])) {
+        showFormError(form, "Veuillez remplir tous les champs obligatoires.");
+        return;
+      }
+      sendPartial();   // capture step-1 data even if user abandons
+      showStep(1);
+    });
+  }
+
+  // ── "← Retour" button (step 2 → step 1) ──
+  const btnBack = form.querySelector(".btn-back");
+  if (btnBack) {
+    btnBack.addEventListener("click", () => showStep(0));
+  }
+
+  // ── Final submit (step 2) ──
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearFormError(form);
+
+    if (!config.form_action || config.form_action === "APPS_SCRIPT_URL") {
+      showFormError(form, "Le formulaire n'est pas encore configuré. Veuillez réessayer plus tard.");
+      return;
+    }
+
+    // Honeypot — bots fill it, humans don't
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot && honeypot.value.trim()) return;
+
+    // Validate step 2 fields (status radio is checked via JS)
+    if (!validateStep(steps[1])) {
+      showFormError(form, "Veuillez sélectionner votre statut professionnel.");
+      return;
+    }
+
+    if (submitButton) submitButton.disabled = true;
+
+    try {
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
+      const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
+
+      emitEvent("form_submit", {
+        status:       "attempt",
+        client_slug:  payload.client_slug,
+        offer_id:     payload.offer_id,
+        page_version: payload.page_version,
+        utm_source:   payload.utm.source,
+        utm_medium:   payload.utm.medium,
+        utm_campaign: payload.utm.campaign,
+        utm_term:     payload.utm.term,
+        utm_content:  payload.utm.content
+      });
+
+      await postLead(config.form_action, payload);
+
+      emitEvent("form_submit", {
+        status: "success",
+        client_slug: payload.client_slug,
+        offer_id: payload.offer_id,
+        security_code: securityCode
+      });
+
+      window.location.href = `thank-you.html?code=${securityCode}`;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
+      emitEvent("form_submit", { status: "error", message });
+      showFormError(form, message);
+      if (submitButton) submitButton.disabled = false;
+    }
+  });
+}
+
+// =========================
 // Boot
 // =========================
 
@@ -572,7 +769,7 @@ async function init() {
     }
 
     // Form handling only applies on pages that include a form.
-    if (form) initFormHandling(form, config);
+    if (form) initMultiStepForm(form, config);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Impossible de charger la configuration.";
     emitEvent("page_view", { status: "config_error", message });
