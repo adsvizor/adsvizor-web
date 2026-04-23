@@ -10,7 +10,7 @@
   "nav_aria_label": "Navigation principale",
   "nav_item_1_href": "formations-cpf.html",
   "nav_item_1_label": "Nos Formations",
-  "nav_item_2_href": "#contact",
+  "nav_item_2_href": "contact.html",
   "nav_item_2_label": "Contactez Nous",
   "nav_item_3_href": "blog.html",
   "nav_item_3_label": "Blog",
@@ -287,6 +287,10 @@
       "offer_id": "cpf-ia"
     }
   ],
+
+  "contact_meta_title": "Contactez Nous — Conseil CPF Gratuit | AdsVizor",
+  "contact_meta_description": "Parlez à un conseiller CPF : créez votre identité numérique, vérifiez vos droits et choisissez la meilleure formation. Gratuit, sans engagement, réponse sous 24h.",
+  "contact_og_url": "https://formations.adsvizor.com/contact.html",
 
   "privacy_meta_title": "Politique de confidentialité — AdsVizor",
   "privacy_meta_description": "Politique de confidentialité d'AdsVizor : données collectées, cookies Google Ads, vos droits RGPD et comment nous contacter.",
