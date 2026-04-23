@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AdsVizor Web — Service Architecture</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #1a1a1a;
+      padding: 40px 50px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 10px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e40af;
+      margin: 28px 0 8px 0;
+      border-left: 4px solid #3b82f6;
+      padding-left: 10px;
+    }
+    h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 14px 0 4px 0;
+    }
+    p { margin-bottom: 8px; }
+    ul { margin: 6px 0 10px 20px; }
+    li { margin-bottom: 3px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px 0;
+      font-size: 12px;
+    }
+    th {
+      background: #eff6ff;
+      color: #1e40af;
+      font-weight: 700;
+      padding: 7px 10px;
+      text-align: left;
+      border: 1px solid #bfdbfe;
+    }
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .badge-live   { background: #dcfce7; color: #166534; }
+    .badge-planned{ background: #fef9c3; color: #854d0e; }
+    .badge-none   { background: #fee2e2; color: #991b1b; }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 14px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 10px 0 16px 0;
+      white-space: pre;
+    }
+    .note {
+      background: #eff6ff;
+      border-left: 3px solid #3b82f6;
+      padding: 8px 12px;
+      border-radius: 0 4px 4px 0;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #1e3a8a;
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 24px 0;
+    }
+    @media print {
+      body { padding: 20px 30px; }
+      h2 { page-break-before: auto; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>AdsVizor Web — Service Architecture</h1>
+  <div class="subtitle">Generated 2026-04-19 &nbsp;|&nbsp; adsvizor.com</div>
+
+  <!-- ─── 1. PORKBUN ─────────────────────────────────────────────────────── -->
+  <h2>1. Porkbun <span class="badge badge-live">LIVE</span></h2>
+  <p><strong>Role:</strong> Domain registrar — owns and manages <code>adsvizor.com</code>.</p>
+  <ul>
+    <li>Delegates DNS authority to Cloudflare nameservers</li>
+    <li>Email routing: <code>contact@adsvizor.com</code> → <code>adsvizor@gmail.com</code></li>
+    <li>No code artifacts — purely registrar/DNS level configuration</li>
+  </ul>
+  <div class="note">Porkbun is the entry point of the entire domain. Everything else depends on it pointing to Cloudflare.</div>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 2. CLOUDFLARE ──────────────────────────────────────────────────── -->
+  <h2>2. Cloudflare <span class="badge badge-live">LIVE</span></h2>
+  <p><strong>Role:</strong> CDN, static hosting, serverless proxy, DNS, and SSL for the entire platform.</p>
+  <p>Cloudflare operates in three distinct layers:</p>
+
+  <table>
+    <thead>
+      <tr><th>Layer</th><th>Service</th><th>What it does</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Static hosting</td>
+        <td>Cloudflare Pages</td>
+        <td>Auto-deploys the site on every <code>git push</code> to GitHub. Serves HTML, CSS, JS, and client config files.</td>
+      </tr>
+      <tr>
+        <td>API proxy</td>
+        <td>Cloudflare Workers</td>
+        <td>Acts as a CORS bridge between the visitor's browser and Google Apps Script. Configured in <code>wrangler.jsonc</code> / <code>cloudflare-worker.js</code>.</td>
+      </tr>
+      <tr>
+        <td>DNS + SSL</td>
+        <td>Cloudflare DNS</td>
+        <td>Routes <code>adsvizor.com</code> and all <code>*.adsvizor.com</code> subdomains. Provides free HTTPS and DDoS protection.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Worker — CORS Allowed Origins</h3>
+  <ul>
+    <li><code>https://adsvizor.com</code></li>
+    <li><code>https://www.adsvizor.com</code></li>
+    <li><code>https://*.adsvizor.com</code> (any client subdomain)</li>
+    <li><code>http://localhost:5500</code> / <code>http://127.0.0.1:5500</code> (local dev)</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 3. GITHUB ──────────────────────────────────────────────────────── -->
+  <h2>3. GitHub <span class="badge badge-live">LIVE</span></h2>
+  <p><strong>Role:</strong> Source control and deployment trigger.</p>
+  <ul>
+    <li>Repository: <code>adsvizor/adsvizor-web</code></li>
+    <li>A <code>git push</code> to <code>main</code> automatically triggers a Cloudflare Pages deployment</li>
+    <li>No separate CI/CD pipeline — Cloudflare Pages handles it natively</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 4. GOOGLE SERVICES ────────────────────────────────────────────── -->
+  <h2>4. Google Services <span class="badge badge-live">LIVE</span></h2>
+
+  <h3>4.1 Google Apps Script (Backend)</h3>
+  <p>Serverless backend that receives lead submissions forwarded by the Cloudflare Worker.</p>
+  <ul>
+    <li>Validates and normalizes the incoming JSON payload</li>
+    <li>Appends a row to Google Sheets</li>
+    <li>Returns a JSON success/failure response</li>
+  </ul>
+
+  <h3>Lead payload schema (POST body)</h3>
+  <pre>{
+  "client_slug":        "formations",
+  "offer_id":           "lead-gen-v1",
+  "visitor_name":       "string | null",
+  "visitor_email":      "string",
+  "visitor_phone":      "string | null",
+  "visitor_message":    "string | null",
+  "utm": {
+    "source":   "string | null",
+    "medium":   "string | null",
+    "campaign": "string | null",
+    "term":     "string | null",
+    "content":  "string | null"
+  },
+  "page_version":        "1.0.0",
+  "consent_marketing":   true | false | null
+}</pre>
+
+  <h3>4.2 Google Sheets (Lead Database)</h3>
+  <p>Acts as the lightweight CRM — every form submission becomes a row.</p>
+  <table>
+    <thead><tr><th>Column</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>timestamp_submitted</td><td>ISO datetime of submission</td></tr>
+      <tr><td>client_slug</td><td>e.g. "formations"</td></tr>
+      <tr><td>offer_id</td><td>e.g. "lead-gen-v1"</td></tr>
+      <tr><td>visitor_name / email / phone / message</td><td>Contact details</td></tr>
+      <tr><td>utm_source / medium / campaign / term / content</td><td>Attribution data</td></tr>
+      <tr><td>page_version</td><td>Landing page version string</td></tr>
+      <tr><td>consent_marketing</td><td>Boolean consent flag</td></tr>
+      <tr><td>lead_status</td><td>Updated manually/later</td></tr>
+      <tr><td>notes</td><td>Operator notes</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 Google Fonts</h3>
+  <p>Delivers the <strong>Inter</strong> typeface (weights 400/500/600/700) via Google's CDN to all landing pages.</p>
+
+  <h3>4.4 Google Ads API</h3>
+  <p class="badge badge-planned" style="display:inline;border-radius:4px;padding:2px 8px;">PLANNED</p>
+  <p style="margin-top:6px;">Future integration: provide daily campaign metrics (clicks, impressions, CTR, CVR, CPC, CPA) to the Claude API optimization agent, and optionally apply agent recommendations back to campaigns.</p>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 5. CLAUDE API ──────────────────────────────────────────────────── -->
+  <h2>5. Claude API (Anthropic) <span class="badge badge-planned">PLANNED</span></h2>
+  <p><strong>Role:</strong> AI optimization agent that runs daily to improve campaign performance.</p>
+  <ul>
+    <li>Reads leads from Google Sheets + metrics from Google Ads API</li>
+    <li>Generates ranked recommendations across 5 categories: <em>bidding, targeting, keywords, ads, landing copy</em></li>
+    <li>Performs compliance QA on generated text</li>
+    <li>Outputs structured JSON stored for human review (or auto-apply)</li>
+  </ul>
+  <div class="note">Prompt engineering documented in <code>docs/PROMPTS.md</code>. Not yet deployed.</div>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 6. BREVO ───────────────────────────────────────────────────────── -->
+  <h2>6. Brevo (Email) <span class="badge badge-none">NOT INTEGRATED</span></h2>
+  <p>No Brevo code references found in the current codebase.</p>
+  <ul>
+    <li>Current email: Porkbun routing → Gmail only</li>
+    <li>Planned use: transactional emails (lead confirmations, operator notifications)</li>
+  </ul>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 7. ANALYTICS ──────────────────────────────────────────────────── -->
+  <h2>7. Analytics <span class="badge badge-planned">PLACEHOLDER</span></h2>
+  <p>Events are currently emitted to <code>console.log</code> only — no third-party analytics tool is connected yet.</p>
+  <table>
+    <thead><tr><th>Event</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td>page_view</td><td>Page load</td></tr>
+      <tr><td>cta_click</td><td>CTA button click</td></tr>
+      <tr><td>form_start</td><td>First field interaction</td></tr>
+      <tr><td>form_submit</td><td>Form submission (attempt / success / error)</td></tr>
+    </tbody>
+  </table>
+  <p>Ready to plug in Google Analytics 4, Segment, or any other provider.</p>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 8. COMPLETE DATA FLOW ─────────────────────────────────────────── -->
+  <h2>8. Complete Data Flow</h2>
+
+  <pre>VISITOR JOURNEY
+───────────────
+Visitor → Cloudflare Pages (HTML / CSS / JS / client config)
+        → Google Fonts (Inter typeface)
+        → Form submit → Cloudflare Worker /api/leads (POST)
+                             → Google Apps Script
+                                   → Google Sheets (row append)
+
+DEPLOYMENT
+──────────
+Developer → git push → GitHub → Cloudflare Pages (auto-deploy)
+
+DNS CHAIN
+─────────
+Porkbun (registrar)
+  └─→ Cloudflare DNS (nameservers)
+        ├─→ adsvizor.com          → Cloudflare Pages
+        ├─→ www.adsvizor.com      → Cloudflare Pages
+        ├─→ *.adsvizor.com        → Cloudflare Workers (per client)
+        └─→ contact@adsvizor.com  → Gmail (Porkbun email routing)
+
+DAILY AI LOOP (planned)
+────────────────────────
+Scheduler → Google Sheets (READ leads)
+          → Google Ads API (READ metrics)
+          → Claude API (PROCESS → ranked recommendations JSON)
+          → Google Ads API (OPTIONAL: apply changes)
+          → Storage (log output with run_id)</pre>
+
+  <hr class="section-divider" />
+
+  <!-- ─── 9. SECURITY NOTES ──────────────────────────────────────────────── -->
+  <h2>9. Security &amp; Credentials</h2>
+  <ul>
+    <li>No API keys committed to the repository (<code>.cursorrules</code> enforces this)</li>
+    <li>Google Apps Script endpoint uses a deployment ID token in the URL (publicly visible but scoped)</li>
+    <li>Cloudflare Pages/Workers authentication is managed at the account level</li>
+    <li>Google Sheets access is granted via Apps Script built-in permissions — no explicit keys needed</li>
+    <li>Porkbun/DNS credentials are managed at the registrar level only</li>
+  </ul>
+
+</body>
+</html>
