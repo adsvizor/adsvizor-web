@@ -23,30 +23,45 @@
 
     <link rel="stylesheet" href="style.css?v=8" />
     <script defer src="script.js?v=8"></script>
-                <style>
+                      <style>
     .site-logo { height: 60px !important; width: auto !important; }
     @media (min-width: 768px) { .site-logo { height: 72px !important; } }
-    /* Show hamburger on ALL screen sizes for testing */
-    header nav { display: none !important; }
-    header nav.is-open {
-      display: block !important; position: fixed !important;
-      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-      background: rgba(255,255,255,0.98) !important; z-index: 8888 !important;
-      padding: 100px 24px 40px !important; overflow-y: auto !important;
-    }
-    header nav.is-open ul { display: flex !important; flex-direction: column !important; gap: 8px !important; list-style: none !important; padding: 0 !important; margin: 0 !important; }
-    header nav.is-open a { display: block !important; font-size: 1.3rem !important; font-weight: 700 !important; color: #0f172a !important; padding: 16px 20px !important; border-radius: 14px !important; background: #f8fafc !important; }
+    /* Nav toggle — outside header, no backdrop-filter parent */
     .nav-toggle {
-      display: flex !important; flex-direction: column !important;
-      justify-content: center !important; align-items: center !important;
-      gap: 6px !important; width: 52px !important; height: 52px !important;
-      background: #2563eb !important; border: none !important;
-      border-radius: 14px !important; cursor: pointer !important;
-      position: fixed !important; top: 16px !important; right: 16px !important;
+      display: none;
+      position: fixed !important;
+      top: 20px !important; right: 16px !important;
       z-index: 9999 !important;
-      box-shadow: 0 4px 16px rgba(37,99,235,0.5) !important;
+      width: 48px !important; height: 48px !important;
+      background: #2563eb !important; border: none !important;
+      border-radius: 12px !important; cursor: pointer !important;
+      flex-direction: column !important;
+      justify-content: center !important; align-items: center !important;
+      gap: 6px !important;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.45) !important;
     }
-    .nav-toggle span { display: block !important; width: 26px !important; height: 3px !important; background: #fff !important; border-radius: 3px !important; }
+    .nav-toggle span { display: block !important; width: 24px !important; height: 3px !important; background: #fff !important; border-radius: 3px !important; transition: transform 260ms ease, opacity 200ms ease !important; }
+    .nav-toggle[aria-expanded='true'] span:nth-child(1) { transform: translateY(9px) rotate(45deg) !important; }
+    .nav-toggle[aria-expanded='true'] span:nth-child(2) { opacity: 0 !important; }
+    .nav-toggle[aria-expanded='true'] span:nth-child(3) { transform: translateY(-9px) rotate(-45deg) !important; }
+    @media (max-width: 767px) {
+      .nav-toggle { display: flex !important; }
+      header nav { display: none !important; }
+      header nav.is-open {
+        display: flex !important; flex-direction: column !important;
+        position: fixed !important;
+        top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        background: #fff !important; z-index: 8000 !important;
+        padding: 90px 28px 40px !important; gap: 10px !important;
+        overflow-y: auto !important;
+      }
+      header nav.is-open ul { display: flex !important; flex-direction: column !important; gap: 10px !important; list-style: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
+      header nav.is-open li a { display: flex !important; align-items: center !important; font-size: 1.25rem !important; font-weight: 700 !important; color: #0f172a !important; padding: 18px 20px !important; border-radius: 14px !important; background: #f1f5f9 !important; border-left: 4px solid #2563eb !important; }
+    }
+    @media (min-width: 768px) {
+      .nav-toggle { display: none !important; }
+      header nav { display: block !important; }
+    }
     </style>
   </head>
 
@@ -64,12 +79,12 @@
           <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
         </ul>
       </nav>
-      <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </header>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true'); document.querySelector('header nav').classList.toggle('is-open')">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
     <main>
       <section class="cpf-hero" aria-labelledby="cpf-hero-title">
