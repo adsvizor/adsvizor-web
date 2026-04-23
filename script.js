@@ -806,7 +806,36 @@ async function init() {
   }
 }
 
+function initMobileNav() {
+  const toggle = document.querySelector(".nav-toggle");
+  const nav = document.querySelector("header nav");
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!isOpen));
+    nav.classList.toggle("is-open", !isOpen);
+  });
+
+  // Close on nav link click
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      toggle.setAttribute("aria-expanded", "false");
+      nav.classList.remove("is-open");
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("header")) {
+      toggle.setAttribute("aria-expanded", "false");
+      nav.classList.remove("is-open");
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  initMobileNav();
   init().catch((err) => {
     const message = err instanceof Error ? err.message : "Erreur inattendue.";
     console.error("[adsvizor_init_error]", message, err);
