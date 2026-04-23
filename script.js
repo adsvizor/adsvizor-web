@@ -531,6 +531,12 @@ function initMultiStepForm(form, config) {
 
   let currentStep = 0;
 
+  // Force correct initial state immediately (JS inline style beats any cached CSS)
+  steps.forEach((step, i) => {
+    step.hidden = i !== 0;
+    step.style.display = i !== 0 ? "none" : "";
+  });
+
   // ── form_start event (fires on first interaction) ──
   const formStartOnce = (() => {
     let fired = false;
@@ -551,8 +557,13 @@ function initMultiStepForm(form, config) {
   }
 
   // ── Show / hide steps + update progress UI ──
+  // Uses inline style (beats any CSS rule) so mobile browsers can't override it.
   function showStep(index) {
-    steps.forEach((step, i) => { step.hidden = i !== index; });
+    steps.forEach((step, i) => {
+      const hide = i !== index;
+      step.hidden = hide;
+      step.style.display = hide ? "none" : "";   // inline style overrides all CSS
+    });
 
     // Progress fill: 50 % at step 0, 100 % at step 1
     if (progressFill) progressFill.style.width = index === 0 ? "50%" : "100%";
