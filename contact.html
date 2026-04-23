@@ -23,7 +23,38 @@
 
     <link rel="stylesheet" href="style.css?v=8" />
     <script defer src="script.js?v=8"></script>
-  </head>
+    <style>
+    @media (max-width: 767px) {
+      header nav { display: none !important; }
+      header nav.is-open { display: block !important; }
+      .nav-toggle {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        width: 48px;
+        height: 48px;
+        background: #2563eb !important;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 8px;
+        flex-shrink: 0;
+      }
+      .nav-toggle span {
+        display: block !important;
+        width: 26px;
+        height: 3px;
+        background: #ffffff !important;
+        border-radius: 3px;
+      }
+    }
+    @media (min-width: 768px) {
+      .nav-toggle { display: none !important; }
+    }
+  </style>
+</head>
 
   <body>
     <header>
