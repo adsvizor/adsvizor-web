@@ -825,9 +825,11 @@ function initMobileNav() {
     });
   });
 
-  // Close on outside click
+  // Close on outside click (ignore clicks on the toggle button itself and inside the nav)
   document.addEventListener("click", (e) => {
-    if (!e.target.closest("header")) {
+    if (e.target.closest(".nav-toggle")) return;
+    if (e.target.closest("header nav")) return;
+    if (nav.classList.contains("is-open")) {
       toggle.setAttribute("aria-expanded", "false");
       nav.classList.remove("is-open");
     }
