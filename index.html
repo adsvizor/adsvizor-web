@@ -21,11 +21,21 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="style.css?v=11" />
-    <script defer src="script.js?v=11"></script>
+    <link rel="stylesheet" href="style.css?v=12" />
+    <script defer src="script.js?v=12"></script>
   <style>
+    /* Logo */
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }
+    /* Mobile nav — inline so it bypasses CDN cache */
+    @media (max-width: 767px) {
+      .nav-toggle { display: flex !important; }
+      header nav:not(.is-open) { display: none !important; }
+    }
+    @media (min-width: 768px) {
+      .nav-toggle { display: none !important; }
+      header nav { display: block !important; }
+    }
   </style>
   </head>
 

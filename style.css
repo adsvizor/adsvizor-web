@@ -155,7 +155,7 @@ header > div a:hover {
 /* ── Mobile: hamburger visible, nav hidden by default ── */
 @media (max-width: 767px) {
   .nav-toggle {
-    display: flex;
+    display: flex !important;
   }
 
   header nav {
