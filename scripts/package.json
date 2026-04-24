@@ -1,0 +1,10 @@
+{
+  "name": "adsvizor-blog-agent",
+  "version": "1.0.0",
+  "description": "Automated blog article generation agent for AdsVizor",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "cheerio": "^1.0.0"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "articles": [
+    {
+      "slug": "blog-sophie-marchand",
+      "title": "De secrétaire à cheffe de projet digital : comment Sophie a changé de vie grâce au CPF",
+      "type": "temoignage",
+      "date": "2026-04-22",
+      "keyword": "reconversion CPF management projets digitaux"
+    },
+    {
+      "slug": "blog-cpf-actualites-2026",
+      "title": "CPF 2025-2026 : tout ce qui change — et comment en profiter malgré les réformes",
+      "type": "actualites",
+      "date": "2026-04-24",
+      "keyword": "réforme CPF 2026 reste à charge"
+    },
+    {
+      "slug": "blog-formation-ia-generative",
+      "title": "Formation IA générative : la compétence la plus demandée de 2026",
+      "type": "formation",
+      "date": "2026-04-24",
+      "keyword": "formation intelligence artificielle CPF"
+    }
+  ]
+}

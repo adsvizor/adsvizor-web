@@ -1,0 +1,67 @@
+name: Blog Agent — Generate Article
+
+on:
+  schedule:
+    - cron: '0 8 1,15 * *'  # 1st and 15th of every month at 8am UTC
+  workflow_dispatch:          # Manual trigger from GitHub UI
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  generate-article:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: scripts
+
+      - name: Generate article
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/blog-agent.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "Blog Agent"
+          git config user.email "adsvizor@gmail.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "blog(agent): auto-publish article $(date +%Y-%m-%d)"
+          git push
+
+      - name: Create GitHub Issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Blog agent failed — ${new Date().toISOString().split('T')[0]}`,
+              body: [
+                '## Blog agent failed',
+                '',
+                `**Date:** ${new Date().toISOString()}`,
+                `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                '',
+                'Consultez les logs du workflow pour diagnostiquer l\'erreur.',
+                '',
+                'Causes fréquentes :',
+                '- Clé API Anthropic expirée ou manquante (`ANTHROPIC_API_KEY`)',
+                '- Réponse Claude invalide (JSON mal formé)',
+                '- Échec de validation (article trop court, structure incorrecte)',
+              ].join('\n'),
+              labels: ['bug', 'blog-agent']
+            });
