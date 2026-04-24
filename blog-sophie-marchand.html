@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="{{lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>De secrétaire à cheffe de projet digital : le témoignage de Sophie — AdsVizor</title>
+    <meta name="description" content="Après 11 ans comme assistante administrative, Sophie Marchand a utilisé son CPF pour se reconvertir en cheffe de projet digital. Découvrez son parcours et ses conseils." />
+
+    <meta property="og:title" content="De secrétaire à cheffe de projet digital : le témoignage de Sophie" />
+    <meta property="og:description" content="Après 11 ans comme assistante administrative, Sophie Marchand a utilisé son CPF pour se reconvertir en cheffe de projet digital." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://formations.adsvizor.com/blog-sophie-marchand.html" />
+    <meta property="og:image" content="https://formations.adsvizor.com/og-image.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="main.css" />
+    <script defer src="script.js?v=12"></script>
+  <style>
+    /* Logo */
+    .site-logo { height: 60px; width: auto; }
+    @media (min-width: 768px) { .site-logo { height: 72px; } }
+    /* Mobile nav — inline so it bypasses CDN cache */
+    @media (max-width: 767px) {
+      .nav-toggle { display: flex !important; }
+      header nav:not(.is-open) { display: none !important; }
+    }
+    @media (min-width: 768px) {
+      .nav-toggle { display: none !important; }
+      header nav { display: block !important; }
+    }
+
+    /* ── Article styles ── */
+    .article-wrap {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-muted, #64748b);
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: color 140ms;
+    }
+    .article-back:hover { color: var(--color-accent, #2563eb); text-decoration: none; }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .article-tag {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .article-date {
+      font-size: 0.88rem;
+      color: var(--color-muted, #64748b);
+    }
+
+    .article-wrap h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      margin: 0 0 24px;
+    }
+
+    .article-intro {
+      font-size: 1.1rem;
+      color: #334155;
+      line-height: 1.75;
+      margin-bottom: 36px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .article-quote {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 32px 0;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #1e3a8a;
+      line-height: 1.65;
+    }
+    .article-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2563eb;
+    }
+
+    .article-wrap h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 40px 0 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .article-wrap p {
+      font-size: 1rem;
+      color: #334155;
+      line-height: 1.8;
+      margin: 0 0 18px;
+    }
+
+    .article-highlight {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+    .article-highlight h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin: 0 0 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .article-highlight ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .article-highlight li {
+      font-size: 0.97rem;
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .article-cta-block {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      border-radius: 20px;
+      padding: 36px 32px;
+      margin: 48px 0 0;
+      text-align: center;
+      color: #fff;
+    }
+    .article-cta-block h2 {
+      color: #fff;
+      margin: 0 0 12px;
+      font-size: 1.4rem;
+    }
+    .article-cta-block p {
+      color: rgba(255,255,255,0.85);
+      margin: 0 0 24px;
+      font-size: 1rem;
+    }
+    .article-cta-block a {
+      display: inline-block;
+      background: #fff;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: opacity 140ms;
+    }
+    .article-cta-block a:hover { opacity: 0.9; text-decoration: none; }
+  </style>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <a href="{{home_href}}" class="site-logo-link"><img src="/logo.png" alt="{{logo_text}}" class="site-logo" /></a>
+      </div>
+
+      <nav aria-label="{{nav_aria_label}}">
+        <ul>
+          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
+        </ul>
+      </nav>
+    </header>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <main>
+      <div class="article-wrap">
+
+        <a href="blog.html" class="article-back">← Retour au blog</a>
+
+        <div class="article-meta">
+          <span class="article-tag">Témoignage</span>
+          <span class="article-date">22 avril 2026</span>
+        </div>
+
+        <h1>De secrétaire à cheffe de projet digital : comment Sophie a changé de vie grâce au CPF</h1>
+
+        <p class="article-intro">
+          Après onze ans comme assistante administrative dans une PME de logistique, Sophie Marchand, 37 ans, vivait une impasse professionnelle. Pas d'évolution, pas de reconnaissance, un salaire bloqué à 1 700 € nets. En octobre 2024, elle décide de tout changer — sans prendre le moindre risque financier — grâce à son Compte Personnel de Formation. Six mois plus tard, elle signe un CDI de cheffe de projet digital à Lyon avec une augmentation de 38 %.
+        </p>
+
+        <h2>Une carrière à l'arrêt depuis des années</h2>
+        <p>
+          Sophie intègre son poste d'assistante de gestion en 2013, juste après son BTS. Au départ, le travail lui convient : saisie de commandes, gestion des plannings, relation fournisseurs. Mais au fil des années, le sentiment de stagner s'installe. « J'envoyais des mails et je remplissais des tableurs. Rien ne changeait. J'avais 35 ans et je ne voyais pas où j'allais. »
+        </p>
+        <p>
+          Elle tente à plusieurs reprises d'obtenir une promotion interne, sans succès. Son manager reconnaît son sérieux mais n'a pas de poste à lui proposer. Sophie commence alors à regarder les offres d'emploi — mais se heurte à un problème récurrent : les postes qui l'intéressent exigent des compétences qu'elle n'a pas.
+        </p>
+
+        <div class="article-quote">
+          « J'avais l'impression d'être coincée dans une boîte. Je voulais évoluer, mais sans le bon diplôme ou la bonne formation, personne ne me rappelait. »
+          <cite>— Sophie Marchand, 37 ans, Lyon</cite>
+        </div>
+
+        <h2>La découverte du CPF : un déclic inattendu</h2>
+        <p>
+          C'est une collègue qui lui parle du Compte Personnel de Formation. Sophie se connecte pour la première fois à l'application Mon Compte Formation et découvre qu'elle a accumulé <strong>5 200 € de droits</strong> sur 11 ans de carrière — sans jamais les avoir utilisés. « Je ne savais même pas que cet argent existait. »
+        </p>
+        <p>
+          Elle passe plusieurs semaines à explorer les formations disponibles. Son objectif : se reconvertir vers un métier du digital, plus porteur et mieux rémunéré. Elle identifie rapidement le titre professionnel <strong>« Manager de Projets Digitaux »</strong> (niveau RNCP 6, équivalent Bac+4), proposé par un organisme certifié Qualiopi à Lyon.
+        </p>
+
+        <div class="article-highlight">
+          <h3>Le programme suivi par Sophie</h3>
+          <ul>
+            <li>Formation : Manager de Projets Digitaux — Titre RNCP Niveau 6</li>
+            <li>Organisme : centre certifié Qualiopi, Lyon 2e</li>
+            <li>Durée : 6 mois, en alternance présentiel / distanciel</li>
+            <li>Financement : 100 % CPF — 0 € à charge</li>
+            <li>Contenu : gestion de projet (Agile, Scrum), outils digitaux, management d'équipe, pilotage de budget</li>
+          </ul>
+        </div>
+
+        <h2>Six mois de formation, un équilibre à trouver</h2>
+        <p>
+          Sophie suit la formation en parallèle de son emploi : deux journées en présentiel par semaine, le reste en e-learning le soir et le week-end. « C'était intense. Mais j'avais un objectif clair, ça m'a aidée à tenir. »
+        </p>
+        <p>
+          Elle découvre des outils qu'elle ne connaissait pas : Notion, Jira, Figma, les méthodes Agile. Surtout, elle apprend à <em>piloter des projets</em> de A à Z, à arbitrer entre les contraintes et à animer une équipe. « Pour la première fois depuis des années, je me sentais progresser. »
+        </p>
+        <p>
+          En mars 2025, elle soutient son titre professionnel devant un jury. Résultat : reçue avec mention.
+        </p>
+
+        <h2>Un CDI signé en moins d'un mois</h2>
+        <p>
+          Dès la fin de sa formation, Sophie postule à une dizaine d'offres. Elle décroche trois entretiens en deux semaines. Le 14 avril 2025, elle signe un CDI de <strong>cheffe de projet digital</strong> dans une agence web lyonnaise spécialisée en e-commerce — avec un salaire de <strong>2 350 € nets</strong>, soit 38 % de plus qu'avant.
+        </p>
+
+        <div class="article-quote">
+          « Le recruteur m'a dit que mon profil atypique était un avantage. J'avais la rigueur d'une administrative et les nouvelles compétences d'une cheffe de projet. C'est exactement ce qu'il cherchait. »
+          <cite>— Sophie Marchand</cite>
+        </div>
+
+        <h2>Ses conseils pour ceux qui veulent se lancer</h2>
+        <p>
+          Un an après sa reconversion, Sophie n'a aucun regret. Elle donne volontiers quelques conseils à ceux qui hésitent encore :
+        </p>
+        <p>
+          <strong>1. Vérifiez votre solde CPF maintenant.</strong> Beaucoup ignorent les droits qu'ils ont accumulés. Connectez-vous sur Mon Compte Formation — la démarche prend cinq minutes.
+        </p>
+        <p>
+          <strong>2. Choisissez une formation certifiante reconnue.</strong> Les titres RNCP sont reconnus par tous les employeurs. C'est une vraie porte d'entrée.
+        </p>
+        <p>
+          <strong>3. Ne restez pas seul face aux démarches.</strong> Sophie a été accompagnée par un conseiller CPF qui l'a guidée dans le choix de la formation et dans les formalités administratives. « Sans lui, j'aurais peut-être abandonné à la première complication. »
+        </p>
+
+        <div class="article-highlight" style="margin-top:48px;">
+          <h3>Sources</h3>
+          <ul>
+            <li><a href="https://www.moncompteformation.gouv.fr" target="_blank" rel="noopener">Mon Compte Formation — moncompteformation.gouv.fr</a> : plateforme officielle CPF, droits acquis et catalogue de formations certifiantes.</li>
+            <li><a href="https://www.francecompetences.fr/recherche/rncp/" target="_blank" rel="noopener">France Compétences — Répertoire National des Certifications Professionnelles (RNCP)</a> : référentiel officiel des titres reconnus par l'État, dont le titre « Manager de Projets Digitaux » Niveau 6.</li>
+          </ul>
+        </div>
+
+        <div class="article-cta-block">
+          <h2>Votre histoire commence maintenant</h2>
+          <p>Comme Sophie, vous avez peut-être des droits CPF que vous n'avez jamais utilisés. Nos conseillers vérifient votre solde avec vous et vous orientent vers la formation la plus adaptée à votre profil — gratuitement, sans engagement.</p>
+          <a href="contact.html">Parler à un conseiller →</a>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>
+      <p>{{footer_text}}</p>
+    </footer>
+
+  </body>
+</html>
