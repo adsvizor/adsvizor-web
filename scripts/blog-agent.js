@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import * as cheerio from 'cheerio';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const MODEL = 'claude-sonnet-4-6';
 const MIN_WORDS = 800;
+const MAX_BLOG_POSTS = 10;
 const ARTICLE_TYPES = ['temoignage', 'actualites', 'formation'];
 
 const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
@@ -364,33 +365,50 @@ function validate(html, keyword) {
 function updateConfig(article, date) {
   const config = readJSON('clients/formations/config.json');
 
-  // Shift existing posts down
-  config.post_3_href    = config.post_2_href;
-  config.post_3_date    = config.post_2_date;
-  config.post_3_tag     = config.post_2_tag;
-  config.post_3_title   = config.post_2_title;
-  config.post_3_excerpt = config.post_2_excerpt;
+  // Collect current posts (newest first, skip empty slots)
+  const posts = [];
+  for (let i = 1; i <= MAX_BLOG_POSTS; i++) {
+    const href = config[`post_${i}_href`];
+    if (href) posts.push({
+      href,
+      date: config[`post_${i}_date`],
+      tag:  config[`post_${i}_tag`],
+      title:   config[`post_${i}_title`],
+      excerpt: config[`post_${i}_excerpt`],
+    });
+  }
 
-  config.post_2_href    = config.post_1_href;
-  config.post_2_date    = config.post_1_date;
-  config.post_2_tag     = config.post_1_tag;
-  config.post_2_title   = config.post_1_title;
-  config.post_2_excerpt = config.post_1_excerpt;
+  // Prepend new article
+  posts.unshift({
+    href:    `${article.slug}.html`,
+    date,
+    tag:     article.article_tag,
+    title:   article.h1,
+    excerpt: article.intro.replace(/<[^>]+>/g, '').slice(0, 200) + '…',
+  });
 
-  // New article becomes post_1
-  config.post_1_href    = `${article.slug}.html`;
-  config.post_1_date    = date;
-  config.post_1_tag     = article.article_tag;
-  config.post_1_title   = article.h1;
-  config.post_1_excerpt = article.intro.replace(/<[^>]+>/g, '').slice(0, 200) + '…';
+  // Evict oldest if over limit, return them for cleanup
+  const evicted = [];
+  while (posts.length > MAX_BLOG_POSTS) evicted.push(posts.pop());
+
+  // Write all 10 slots (empty string for unused slots)
+  for (let i = 1; i <= MAX_BLOG_POSTS; i++) {
+    const p = posts[i - 1];
+    config[`post_${i}_href`]    = p ? p.href    : '';
+    config[`post_${i}_date`]    = p ? p.date    : '';
+    config[`post_${i}_tag`]     = p ? p.tag     : '';
+    config[`post_${i}_title`]   = p ? p.title   : '';
+    config[`post_${i}_excerpt`] = p ? p.excerpt : '';
+  }
 
   writeJSON('clients/formations/config.json', config);
   console.log('✅ config.json updated');
+  return evicted;
 }
 
 // ── History update ─────────────────────────────────────────────────────────
 
-function updateHistory(article, type) {
+function updateHistory(article, type, evicted = []) {
   const history = readJSON('data/blog-history.json');
   history.articles.push({
     slug: article.slug,
@@ -401,6 +419,19 @@ function updateHistory(article, type) {
   });
   if (history.articles.length > 20)
     history.articles = history.articles.slice(-20);
+
+  // Remove evicted articles from history and delete their HTML files
+  if (evicted.length > 0) {
+    const evictedSlugs = new Set(evicted.map(e => e.href.replace('.html', '')));
+    history.articles = history.articles.filter(a => !evictedSlugs.has(a.slug));
+    for (const ev of evicted) {
+      try {
+        unlinkSync(path.join(ROOT, ev.href));
+        console.log(`🗑️  Deleted evicted article: ${ev.href}`);
+      } catch { console.warn(`⚠️  Could not delete ${ev.href}`); }
+    }
+  }
+
   writeJSON('data/blog-history.json', history);
   console.log('✅ blog-history.json updated');
 }
@@ -453,8 +484,8 @@ async function main() {
   console.log(`✅ Written: ${article.slug}.html`);
 
   // Step 6 — Update config.json + history
-  updateConfig(article, date);
-  updateHistory(article, type);
+  const evicted = updateConfig(article, date);
+  updateHistory(article, type, evicted);
 
   console.log('');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

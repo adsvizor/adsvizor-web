@@ -36,6 +36,8 @@
       .nav-toggle { display: none !important; }
       header nav { display: block !important; }
     }
+    /* Hide blog cards that have no article yet */
+    .blog-card:has(a[href=""]) { display: none; }
   </style>
   </head>
 
@@ -98,6 +100,83 @@
               </div>
               <h2 class="blog-card-title">{{post_3_title}}</h2>
               <p class="blog-card-excerpt">{{post_3_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_4_href}}" class="blog-card-link" aria-label="{{post_4_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_4_date}}</span>
+                <span class="blog-card-tag">{{post_4_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_4_title}}</h2>
+              <p class="blog-card-excerpt">{{post_4_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_5_href}}" class="blog-card-link" aria-label="{{post_5_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_5_date}}</span>
+                <span class="blog-card-tag">{{post_5_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_5_title}}</h2>
+              <p class="blog-card-excerpt">{{post_5_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_6_href}}" class="blog-card-link" aria-label="{{post_6_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_6_date}}</span>
+                <span class="blog-card-tag">{{post_6_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_6_title}}</h2>
+              <p class="blog-card-excerpt">{{post_6_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_7_href}}" class="blog-card-link" aria-label="{{post_7_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_7_date}}</span>
+                <span class="blog-card-tag">{{post_7_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_7_title}}</h2>
+              <p class="blog-card-excerpt">{{post_7_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_8_href}}" class="blog-card-link" aria-label="{{post_8_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_8_date}}</span>
+                <span class="blog-card-tag">{{post_8_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_8_title}}</h2>
+              <p class="blog-card-excerpt">{{post_8_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_9_href}}" class="blog-card-link" aria-label="{{post_9_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_9_date}}</span>
+                <span class="blog-card-tag">{{post_9_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_9_title}}</h2>
+              <p class="blog-card-excerpt">{{post_9_excerpt}}</p>
+              <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
+            </a>
+          </li>
+          <li class="blog-card">
+            <a href="{{post_10_href}}" class="blog-card-link" aria-label="{{post_10_title}}">
+              <div class="blog-card-meta">
+                <span class="blog-card-date">{{post_10_date}}</span>
+                <span class="blog-card-tag">{{post_10_tag}}</span>
+              </div>
+              <h2 class="blog-card-title">{{post_10_title}}</h2>
+              <p class="blog-card-excerpt">{{post_10_excerpt}}</p>
               <span class="blog-card-read-more">{{read_more_label}} &rarr;</span>
             </a>
           </li>
