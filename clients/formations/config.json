@@ -78,13 +78,11 @@
   "thankyou_cta_label": "Retour à l'accueil",
   "thankyou_cta_href": "/",
   "footer_text": "© 2026 AdsVizor — Formations professionnelles en ligne.",
-
   "cpf_page_meta_title": "Top 10 des formations CPF les plus demandées en 2025 — AdsVizor",
   "cpf_page_meta_description": "Découvrez les 10 formations CPF les plus demandées en 2025 : bilan de compétences, anglais TOEIC, bureautique, marketing digital et plus. 100 % finançable CPF.",
   "cpf_page_og_url": "https://formations.adsvizor.com/formations-cpf.html",
   "cpf_page_title": "Les 10 formations CPF les plus demandées en 2025",
   "cpf_page_subtitle": "Toutes ces formations sont éligibles au Compte Personnel de Formation. Mobilisez vos droits CPF pour vous former sans avancer un euro.",
-
   "cpf_formations": [
     {
       "slug": "bilan-competences",
@@ -287,18 +285,15 @@
       "offer_id": "cpf-ia"
     }
   ],
-
   "contact_meta_title": "Contactez Nous — Conseil CPF Gratuit | AdsVizor",
   "contact_meta_description": "Parlez à un conseiller CPF : créez votre identité numérique, vérifiez vos droits et choisissez la meilleure formation. Gratuit, sans engagement, réponse sous 24h.",
   "contact_og_url": "https://formations.adsvizor.com/contact.html",
-
   "privacy_meta_title": "Politique de confidentialité — AdsVizor",
   "privacy_meta_description": "Politique de confidentialité d'AdsVizor : données collectées, cookies Google Ads, vos droits RGPD et comment nous contacter.",
   "privacy_og_url": "https://formations.adsvizor.com/privacy.html",
   "privacy_company_name": "AdsVizor",
   "privacy_contact_email": "adsvizor@gmail.com",
   "privacy_effective_date": "23 avril 2026",
-
   "blog_meta_title": "Blog — AdsVizor Formations CPF",
   "blog_meta_description": "Témoignages et conseils pour réussir votre reconversion professionnelle grâce au CPF.",
   "blog_og_url": "https://formations.adsvizor.com/blog.html",
@@ -306,22 +301,19 @@
   "blog_subtitle": "Témoignages inspirants et conseils concrets pour transformer votre carrière grâce à la formation professionnelle.",
   "blog_posts_aria_label": "Articles de blog",
   "read_more_label": "Lire l'article",
-
-  "post_1_href": "blog-sophie-marchand.html",
-  "post_1_date": "22 avril 2026",
+  "post_1_href": "blog-reconversion-cpf-technicien-cybersecurite.html",
+  "post_1_date": "25 avril 2026",
   "post_1_tag": "Témoignage",
-  "post_1_title": "De secrétaire à cheffe de projet digital : comment Sophie a changé de vie grâce au CPF",
-  "post_1_excerpt": "Après 11 ans dans un poste administratif sans perspectives, Sophie Marchand a utilisé son CPF pour se former au management de projets digitaux. Six mois plus tard, elle signait un CDI avec 38 % d'augmentation — sans débourser un centime.",
-
-  "post_2_href": "blog-cpf-actualites-2026.html",
-  "post_2_date": "24 avril 2026",
-  "post_2_tag": "Actualités",
-  "post_2_title": "CPF 2025-2026 : tout ce qui change — et comment en profiter malgré les réformes",
-  "post_2_excerpt": "Reste à charge de 150 €, nouveaux plafonds de prise en charge, FranceConnect+ obligatoire : le tour complet des réformes CPF 2025-2026 et les stratégies pour se former encore à coût zéro.",
-
-  "post_3_href": "blog-formation-ia-generative.html",
+  "post_1_title": "Reconversion professionnelle en cybersécurité via le CPF : comment Julien a tout misé à 38 ans",
+  "post_1_excerpt": "Julien Marchand n'avait pas prévu de changer de vie à 38 ans. Magasinier depuis quinze ans dans un entrepôt logistique de Clermont-Ferrand, il voyait ses perspectives s'amenuiser année après année : a…",
+  "post_2_href": "blog-sophie-marchand.html",
+  "post_2_date": "22 avril 2026",
+  "post_2_tag": "Témoignage",
+  "post_2_title": "De secrétaire à cheffe de projet digital : comment Sophie a changé de vie grâce au CPF",
+  "post_2_excerpt": "Après 11 ans dans un poste administratif sans perspectives, Sophie Marchand a utilisé son CPF pour se former au management de projets digitaux. Six mois plus tard, elle signait un CDI avec 38 % d'augmentation — sans débourser un centime.",
+  "post_3_href": "blog-cpf-actualites-2026.html",
   "post_3_date": "24 avril 2026",
-  "post_3_tag": "Formation",
-  "post_3_title": "Formation IA générative : la compétence la plus demandée de 2026 — et comment l'acquérir avec votre CPF",
-  "post_3_excerpt": "ChatGPT, Copilot, automatisation sans code : la formation en intelligence artificielle générative est devenue la plus recherchée sur le marché du travail. Programme détaillé, débouchés, salaires et financement CPF."
+  "post_3_tag": "Actualités",
+  "post_3_title": "CPF 2025-2026 : tout ce qui change — et comment en profiter malgré les réformes",
+  "post_3_excerpt": "Reste à charge de 150 €, nouveaux plafonds de prise en charge, FranceConnect+ obligatoire : le tour complet des réformes CPF 2025-2026 et les stratégies pour se former encore à coût zéro."
 }
