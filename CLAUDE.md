@@ -12,8 +12,24 @@ A separate **Cloudflare Worker** (`cloudflare-worker.js`) acts as a CORS proxy, 
 
 - `git push` to `main` → Cloudflare Pages deploys static assets automatically
 - Worker is deployed via `npx wrangler versions upload` (configured in `wrangler.jsonc`)
-- No build command, no package.json, no bundler
-- Local testing: serve from root with Live Server; use `?client=formations` to load a specific client config
+- No build step, no bundler
+
+## Local development
+
+Use `wrangler pages dev` (NOT Live Server) — required to run `functions/_middleware.js` locally:
+
+```bash
+npm run dev          # starts wrangler pages dev on port 5500
+# or directly:
+npx wrangler pages dev . --port 5500 --compatibility-date 2026-04-19
+```
+
+Then open `http://localhost:5500/?client=formations` for the landing page.
+Client-specific pages work automatically: `http://localhost:5500/formations-cpf.html?client=formations`
+
+> **Why not Live Server?** Client-specific pages (`formations-cpf.html`, blog articles) are stored under
+> `clients/{slug}/pages/` and `clients/{slug}/blog/`. The middleware routes them at runtime based on
+> the subdomain (production) or `?client=` param (local). Live Server has no middleware support.
 
 ## How the template system works
 
