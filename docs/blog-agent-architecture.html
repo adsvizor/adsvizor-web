@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog Agent — Architecture V1 & V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 40px 20px 80px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 48px;
+    }
+
+    .versions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .versions { grid-template-columns: 1fr; }
+    }
+
+    /* ── Column ── */
+    .version {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px 32px;
+      box-shadow: 0 4px 24px rgba(15,23,42,0.08);
+    }
+
+    .version-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .version-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .v1 .version-badge { background: #dcfce7; color: #15803d; }
+    .v2 .version-badge { background: #eff6ff; color: #2563eb; }
+
+    .version-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .version-goal {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* ── Steps ── */
+    .step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 6px;
+      position: relative;
+    }
+
+    .step-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .step-line {
+      width: 2px;
+      flex: 1;
+      min-height: 16px;
+      margin: 4px 0;
+    }
+
+    .step-body {
+      padding-bottom: 20px;
+      flex: 1;
+    }
+
+    .step-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .step-desc {
+      font-size: 0.8rem;
+      color: #475569;
+      line-height: 1.55;
+    }
+    .step-desc ul {
+      padding-left: 14px;
+      margin-top: 4px;
+    }
+    .step-desc li { margin-bottom: 2px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* V1 colors */
+    .v1 .step-icon.trigger  { background: #f0fdf4; color: #16a34a; }
+    .v1 .step-icon.topic    { background: #fefce8; color: #ca8a04; }
+    .v1 .step-icon.write    { background: #eff6ff; color: #2563eb; }
+    .v1 .step-icon.seo      { background: #faf5ff; color: #7c3aed; }
+    .v1 .step-icon.cta      { background: #fff1f2; color: #e11d48; }
+    .v1 .step-icon.validate { background: #fff7ed; color: #ea580c; }
+    .v1 .step-icon.history  { background: #f0fdf4; color: #16a34a; }
+    .v1 .step-icon.deploy   { background: #0f172a; color: #f8fafc; }
+    .v1 .step-icon.notify   { background: #eff6ff; color: #2563eb; }
+
+    .v1 .step-line { background: #e2e8f0; }
+
+    /* V2 colors */
+    .v2 .step-icon.trigger    { background: #f0fdf4; color: #16a34a; }
+    .v2 .step-icon.idem       { background: #fefce8; color: #ca8a04; }
+    .v2 .step-icon.topic      { background: #fefce8; color: #ca8a04; }
+    .v2 .step-icon.write      { background: #eff6ff; color: #2563eb; }
+    .v2 .step-icon.seo        { background: #faf5ff; color: #7c3aed; }
+    .v2 .step-icon.cta        { background: #fff1f2; color: #e11d48; }
+    .v2 .step-icon.linking    { background: #ecfdf5; color: #059669; }
+    .v2 .step-icon.validate   { background: #fff7ed; color: #ea580c; }
+    .v2 .step-icon.review     { background: #fdf4ff; color: #a21caf; }
+    .v2 .step-icon.gate       { background: #f0fdf4; color: #15803d; }
+    .v2 .step-icon.history    { background: #f0fdf4; color: #16a34a; }
+    .v2 .step-icon.deploy     { background: #0f172a; color: #f8fafc; }
+    .v2 .step-icon.notify     { background: #eff6ff; color: #2563eb; }
+    .v2 .step-icon.fallback   { background: #fff1f2; color: #e11d48; }
+
+    .v2 .step-line { background: #bfdbfe; }
+
+    .tag-claude { background: #ede9fe; color: #6d28d9; }
+    .tag-github { background: #f1f5f9; color: #334155; }
+    .tag-node   { background: #dcfce7; color: #15803d; }
+    .tag-cf     { background: #fff7ed; color: #c2410c; }
+    .tag-new    { background: #fce7f3; color: #be185d; }
+    .tag-critical { background: #fee2e2; color: #b91c1c; }
+
+    /* Error path */
+    .error-path {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 0 0 20px 54px;
+      font-size: 0.8rem;
+      color: #be123c;
+    }
+    .error-path strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; color: #9f1239; }
+
+    /* Divider */
+    .section-divider {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin: 4px 0 16px 54px;
+    }
+
+    /* Legend */
+    .legend {
+      max-width: 1200px;
+      margin: 32px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: #475569;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Blog Agent — Architecture</h1>
+  <p class="subtitle">Pipeline de génération automatique d'articles · AdsVizor</p>
+
+  <div class="versions">
+
+    <!-- ═══════════════════════════════════════════ V1 ═══ -->
+    <div class="version v1">
+      <div class="version-header">
+        <div>
+          <div class="version-badge">V1</div>
+        </div>
+        <div>
+          <div class="version-title">Pipeline fonctionnel</div>
+          <div class="version-goal">Objectif : publier le premier article automatique</div>
+        </div>
+      </div>
+
+      <!-- 1. TRIGGER -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon trigger">⏰</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">1. Déclencheur — GitHub Actions Cron</div>
+          <div class="step-desc">
+            Workflow YAML qui tourne automatiquement toutes les 2 semaines, sans intervention humaine. Peut aussi être déclenché manuellement via <code>workflow_dispatch</code>.
+            <ul>
+              <li>Schedule : <code>0 8 1,15 * *</code> (1er et 15 du mois, 8h)</li>
+              <li>Environnement : Ubuntu, Node.js 20</li>
+            </ul>
+          </div>
+          <span class="tag tag-github">GitHub Actions</span>
+        </div>
+      </div>
+
+      <!-- 2. TOPIC -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon topic">🎯</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">2. Choix du sujet</div>
+          <div class="step-desc">
+            Rotation automatique entre 3 types d'articles pour varier le contenu :
+            <ul>
+              <li><strong>Témoignage</strong> — histoire de reconversion CPF</li>
+              <li><strong>Actualités</strong> — réformes, nouvelles règles CPF</li>
+              <li><strong>Formation</strong> — spotlight sur une formation tendance</li>
+            </ul>
+            Le type suivant est déterminé en lisant <code>data/blog-history.json</code>.
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 3. GENERATE -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon write">✍️</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">3. Génération de l'article — Prompt 1</div>
+          <div class="step-desc">
+            Appel Claude API avec un prompt structuré qui impose le template HTML exact (copié depuis <code>blog-sophie-marchand.html</code>). Claude génère le contenu dans la structure.
+            <ul>
+              <li>Modèle : claude-opus-4 ou claude-sonnet-4-5</li>
+              <li>Output : HTML complet + titre + excerpt pour config.json</li>
+              <li>Contraintes : date du jour, liens internes, style cohérent</li>
+            </ul>
+          </div>
+          <span class="tag tag-claude">Claude API</span>
+        </div>
+      </div>
+
+      <!-- Error path -->
+      <div class="error-path">
+        <strong>⚠️ Gestion d'erreur — à chaque étape</strong>
+        Si Claude renvoie une erreur ou un contenu vide → <code>process.exit(1)</code> → le workflow échoue → GitHub crée automatiquement une Issue "Blog agent failed" avec le log d'erreur.
+      </div>
+
+      <!-- 4. SEO -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon seo">🔍</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">4. Optimisation SEO — Prompt 2</div>
+          <div class="step-desc">
+            Second appel Claude : relit l'article généré et optimise sans réécrire.
+            <ul>
+              <li>Mot-clé principal dans le title, H1 et premier paragraphe</li>
+              <li>Meta description ≤ 155 caractères</li>
+              <li>Balises alt sur les éventuelles images</li>
+              <li>Structure des H2 logique pour les crawlers</li>
+            </ul>
+          </div>
+          <span class="tag tag-claude">Claude API</span>
+        </div>
+      </div>
+
+      <!-- 5. CTA -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon cta">📣</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">5. Injection CTA automatique</div>
+          <div class="step-desc">
+            Le script injecte le bloc CTA standard en fin d'article — sans passer par Claude, donc toujours identique et jamais oublié.
+            <ul>
+              <li>Bloc HTML hardcodé (copié depuis les articles existants)</li>
+              <li>Lien toujours vers <code>contact.html</code></li>
+              <li>Texte du CTA varié selon le type d'article</li>
+            </ul>
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 6. VALIDATE -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon validate">✅</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">6. Vérification avant commit</div>
+          <div class="step-desc">
+            Parse le HTML avec <strong>cheerio</strong> et vérifie :
+            <ul>
+              <li>Aucun <code>&#123;&#123;placeholder&#125;&#125;</code> non résolu</li>
+              <li>Un seul H1, au moins 2 H2</li>
+              <li>Longueur ≥ 800 mots</li>
+              <li>CTA présent (<code>.article-cta-block</code>)</li>
+              <li>Liens internes valides (<code>contact.html</code>, <code>blog.html</code>)</li>
+              <li>Mot-clé principal dans le H1</li>
+            </ul>
+            Échec sur n'importe quel point → arrêt immédiat.
+          </div>
+          <span class="tag tag-node">cheerio</span>
+          <span class="tag tag-critical">Critique</span>
+        </div>
+      </div>
+
+      <!-- 7. HISTORY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon history">📚</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">7. Mise à jour historique</div>
+          <div class="step-desc">
+            Écrit dans <code>data/blog-history.json</code> : titre, slug, type, date, mot-clé. Commité avec l'article pour persister entre les runs.
+            <ul>
+              <li>Évite les doublons de sujets</li>
+              <li>Détermine le prochain type d'article (rotation)</li>
+              <li>Met à jour <code>config.json</code> (post_1, post_2, post_3)</li>
+            </ul>
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 8. DEPLOY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon deploy">🚀</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">8. Commit + Push → Déploiement auto</div>
+          <div class="step-desc">
+            <code>git add</code> + <code>git commit</code> + <code>git push origin main</code> → Cloudflare Pages détecte le push et redéploie automatiquement en ~60 secondes.
+          </div>
+          <span class="tag tag-github">git</span>
+          <span class="tag tag-cf">Cloudflare Pages</span>
+        </div>
+      </div>
+
+      <!-- 9. NOTIFY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon notify">📧</div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">9. Notification email</div>
+          <div class="step-desc">
+            Email automatique via GitHub Actions (ou SendGrid) avec : titre de l'article, URL, mot-clé ciblé, type de contenu. Pour savoir ce qui a été publié sans aller sur le site.
+          </div>
+          <span class="tag tag-github">GitHub Actions</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════ V2 ═══ -->
+    <div class="version v2">
+      <div class="version-header">
+        <div>
+          <div class="version-badge">V2</div>
+        </div>
+        <div>
+          <div class="version-title">Pipeline production-ready</div>
+          <div class="version-goal">Objectif : zéro erreur factuelle, SEO maximal</div>
+        </div>
+      </div>
+
+      <!-- 1. TRIGGER -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon trigger">⏰</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">1. Déclencheur — identique V1</div>
+          <div class="step-desc">
+            Même cron GitHub Actions. La différence : le workflow pousse sur <code>blog-drafts</code> au lieu de <code>main</code>.
+          </div>
+          <span class="tag tag-github">GitHub Actions</span>
+        </div>
+      </div>
+
+      <!-- 2. IDEM -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon idem">🔒</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">2. Idempotence — protection double-run <span class="tag tag-new">Nouveau</span></div>
+          <div class="step-desc">
+            Avant de générer quoi que ce soit, calcule un hash du sujet+date et vérifie dans <code>blog-history.json</code>.
+            <ul>
+              <li>Si le hash existe déjà → arrêt propre (pas d'erreur, juste skip)</li>
+              <li>Protège contre les crons qui se déclenchent 2 fois</li>
+              <li>Protège contre les relances manuelles accidentelles</li>
+            </ul>
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 3. TOPIC -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon topic">🎯</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">3. Choix du sujet — identique V1</div>
+          <div class="step-desc">
+            Rotation témoignage / actualités / formation basée sur l'historique.
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- FALLBACK -->
+      <div class="error-path">
+        <strong>🔄 Fallback si Claude échoue</strong>
+        Retry automatique 1 fois avec un prompt simplifié. Si le second appel échoue aussi → <code>process.exit(1)</code> + GitHub Issue. Le sujet est conservé dans une file pour le prochain run.
+      </div>
+
+      <!-- 4. WRITE -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon write">✍️</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">4. Génération + Template strict <span class="tag tag-new">Amélioré</span></div>
+          <div class="step-desc">
+            Même appel Claude, mais avec un <strong>template XML imposé</strong> dans le prompt system. Claude doit remplir des balises prédéfinies — pas de HTML libre.
+            <ul>
+              <li>Zéro dérive de structure dans le temps</li>
+              <li>Output parsé via XML avant injection dans le template HTML</li>
+              <li>Garantit que le style reste cohérent après 20 articles</li>
+            </ul>
+          </div>
+          <span class="tag tag-claude">Claude API</span>
+        </div>
+      </div>
+
+      <!-- 5. SEO -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon seo">🔍</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">5. Optimisation SEO — identique V1</div>
+          <div class="step-desc">Second prompt Claude dédié SEO.</div>
+          <span class="tag tag-claude">Claude API</span>
+        </div>
+      </div>
+
+      <!-- 6. LINKING -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon linking">🔗</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">6. Internal linking automatique <span class="tag tag-new">Nouveau</span></div>
+          <div class="step-desc">
+            Le script lit la liste des articles existants dans <code>blog-history.json</code> et injecte 1 à 2 liens internes contextuels dans le corps de l'article.
+            <ul>
+              <li>Ex : un article sur l'IA → lien vers l'article Sophie (reconversion)</li>
+              <li>Ex : un article CPF → lien vers la page <code>formations-cpf.html</code></li>
+              <li>Impact SEO majeur : réduit le taux de rebond, améliore le maillage</li>
+            </ul>
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 7. CTA -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon cta">📣</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">7. Injection CTA — identique V1</div>
+          <div class="step-desc">Bloc CTA hardcodé injecté en fin d'article.</div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 8. VALIDATE -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon validate">✅</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">8. Vérification — identique V1</div>
+          <div class="step-desc">Cheerio + checks structure, mots, placeholders, CTA, liens.</div>
+          <span class="tag tag-node">cheerio</span>
+        </div>
+      </div>
+
+      <!-- 9. REVIEW -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon review">🧠</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">9. Auto-review factuelle — Prompt 3 <span class="tag tag-new">Nouveau</span></div>
+          <div class="step-desc">
+            Troisième appel Claude avec un rôle de <strong>fact-checker CPF</strong>. Lit l'article et vérifie :
+            <ul>
+              <li>Montants CPF corrects (500 €/an, plafond 5 000 €, reste à charge 150 €…)</li>
+              <li>Références légales exactes (RNCP, Qualiopi, France Compétences)</li>
+              <li>Aucune promesse commerciale excessive ou non vérifiable</li>
+              <li>Clarté et crédibilité du discours</li>
+            </ul>
+            Output : <code>PASS</code> ou <code>FAIL + raisons</code>. En cas de FAIL → arrêt + GitHub Issue.
+          </div>
+          <span class="tag tag-claude">Claude API</span>
+          <span class="tag tag-critical">Critique CPF</span>
+        </div>
+      </div>
+
+      <!-- 10. GATE -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon gate">🚦</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">10. Smart Gate — branch blog-drafts <span class="tag tag-new">Nouveau</span></div>
+          <div class="step-desc">
+            L'article est poussé sur <code>blog-drafts</code>, pas sur <code>main</code>. Cloudflare génère une <strong>URL de preview</strong> automatiquement.
+            <ul>
+              <li>Preview live accessible avant publication</li>
+              <li>Auto-merge vers <code>main</code> après 24h si aucun blocage</li>
+              <li>Ou merge manuel si tu veux relire</li>
+            </ul>
+          </div>
+          <span class="tag tag-github">GitHub</span>
+          <span class="tag tag-cf">Cloudflare Preview</span>
+        </div>
+      </div>
+
+      <!-- 11. HISTORY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon history">📚</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">11. Mise à jour historique — identique V1</div>
+          <div class="step-desc">
+            <code>data/blog-history.json</code> mis à jour et commité. Inclut maintenant le score de fact-check et le hash d'idempotence.
+          </div>
+          <span class="tag tag-node">Node.js</span>
+        </div>
+      </div>
+
+      <!-- 12. DEPLOY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon deploy">🚀</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">12. Déploiement — via merge vers main</div>
+          <div class="step-desc">
+            Après auto-merge (ou merge manuel) de <code>blog-drafts</code> → <code>main</code>, Cloudflare Pages déploie en production.
+          </div>
+          <span class="tag tag-cf">Cloudflare Pages</span>
+        </div>
+      </div>
+
+      <!-- 13. NOTIFY -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-icon notify">📧</div>
+        </div>
+        <div class="step-body">
+          <div class="step-name">13. Notification — email + URL preview <span class="tag tag-new">Amélioré</span></div>
+          <div class="step-desc">
+            Email avec : titre, URL preview Cloudflare, URL production, mot-clé, score fact-check, lien pour merger manuellement si besoin.
+          </div>
+          <span class="tag tag-github">GitHub Actions</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#6d28d9"></div> Claude API (Anthropic)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#334155"></div> GitHub Actions / git</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#15803d"></div> Node.js script</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c2410c"></div> Cloudflare Pages</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#be185d"></div> Nouveauté V2</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b91c1c"></div> Étape critique</div>
+  </div>
+
+</body>
+</html>
