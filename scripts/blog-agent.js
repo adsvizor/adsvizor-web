@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import * as cheerio from 'cheerio';
-import { readFileSync, writeFileSync, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync, mkdirSync } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -207,7 +207,7 @@ function assembleHTML(article, type, date) {
     <meta property="og:title" content="${article.h1}" />
     <meta property="og:description" content="${article.meta_description}" />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="${agentConfig.base_url}/${article.slug}.html" />
+    <meta property="og:url" content="${agentConfig.base_url}/blog/${article.slug.replace(/^blog-/, '')}.html" />
     <meta property="og:image" content="${agentConfig.base_url}/og-image.jpg" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -341,7 +341,7 @@ function updateConfig(article, date) {
 
   // Prepend new article
   posts.unshift({
-    href:    `${article.slug}.html`,
+    href:    `blog/${article.slug.replace(/^blog-/, '')}.html`,
     date,
     tag:     article.article_tag,
     title:   article.h1,
@@ -387,9 +387,9 @@ function updateHistory(article, type, evicted = []) {
     history.articles = history.articles.filter(a => !evictedSlugs.has(a.slug));
     for (const ev of evicted) {
       try {
-        unlinkSync(path.join(ROOT, ev.href));
-        console.log(`🗑️  Deleted evicted article: ${ev.href}`);
-      } catch { console.warn(`⚠️  Could not delete ${ev.href}`); }
+        unlinkSync(path.join(ROOT, `clients/${CLIENT_SLUG}/${ev.href}`));
+        console.log(`🗑️  Deleted evicted article: clients/${CLIENT_SLUG}/${ev.href}`);
+      } catch { console.warn(`⚠️  Could not delete clients/${CLIENT_SLUG}/${ev.href}`); }
     }
   }
 
@@ -440,9 +440,12 @@ async function main() {
   }
 
   // Step 5 — Write file
-  const filePath = path.join(ROOT, `${article.slug}.html`);
+  const filename = article.slug.replace(/^blog-/, '');
+  const blogDir = path.join(ROOT, `clients/${CLIENT_SLUG}/blog`);
+  mkdirSync(blogDir, { recursive: true });
+  const filePath = path.join(blogDir, `${filename}.html`);
   writeFileSync(filePath, html, 'utf-8');
-  console.log(`✅ Written: ${article.slug}.html`);
+  console.log(`✅ Written: clients/${CLIENT_SLUG}/blog/${filename}.html`);
 
   // Step 6 — Update config.json + history
   const evicted = updateConfig(article, date);
@@ -453,7 +456,7 @@ async function main() {
   console.log(`📰 ${article.h1}`);
   console.log(`🔑 Keyword : ${article.keyword}`);
   console.log(`📅 Date    : ${date}`);
-  console.log(`🔗 File    : ${article.slug}.html`);
+  console.log(`🔗 File    : clients/${CLIENT_SLUG}/blog/${filename}.html`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }
 
