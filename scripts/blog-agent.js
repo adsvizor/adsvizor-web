@@ -11,11 +11,13 @@ const MODEL = 'claude-sonnet-4-6';
 const MIN_WORDS = 800;
 const ARTICLE_TYPES = ['temoignage', 'actualites', 'formation'];
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error('❌ ANTHROPIC_API_KEY environment variable is not set');
+const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
+if (!apiKey) {
+  console.error('❌ ANTHROPIC_API_KEY is not set or empty');
   process.exit(1);
 }
-const client = new Anthropic();
+console.log(`🔑 API key loaded (length: ${apiKey.length}, prefix: ${apiKey.slice(0, 10)}...)`);
+const client = new Anthropic({ apiKey });
 
 // ── File helpers ───────────────────────────────────────────────────────────
 
