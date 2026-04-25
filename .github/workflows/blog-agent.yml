@@ -71,8 +71,16 @@ jobs:
           git config user.name "Blog Agent"
           git config user.email "adsvizor@gmail.com"
           git add -A
-          git diff --staged --quiet || git commit -m "blog(${{ matrix.client }}): auto-publish article $(date +%Y-%m-%d)"
-          git push
+          git diff --staged --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "blog(${{ matrix.client }}): auto-publish article $(date +%Y-%m-%d)"
+          # Retry up to 3× to survive concurrent pushes from other matrix jobs
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Push attempt $attempt failed — retrying after rebase…"
+            sleep $((attempt * 2))
+          done
+          echo "❌ Push failed after 3 attempts"
+          exit 1
 
       - name: Create GitHub Issue on failure
         if: failure()
