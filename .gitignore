@@ -7,3 +7,7 @@
 
 # Claude worktrees (local dev only, must not be deployed)
 .claude/worktrees/
+
+# Node dependencies
+node_modules/
+scripts/node_modules/
