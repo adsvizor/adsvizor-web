@@ -10,7 +10,18 @@ const ROOT = path.join(__dirname, '..');
 const MODEL = 'claude-sonnet-4-6';
 const MIN_WORDS = 800;
 const MAX_BLOG_POSTS = 10;
-const ARTICLE_TYPES = ['temoignage', 'actualites', 'formation'];
+
+// ── Client resolution ──────────────────────────────────────────────────────
+const CLIENT_SLUG = (process.env.CLIENT_SLUG || 'formations').trim();
+console.log(`📦 Client: ${CLIENT_SLUG}`);
+let agentConfig;
+try {
+  agentConfig = JSON.parse(readFileSync(path.join(ROOT, `clients/${CLIENT_SLUG}/agent.config.json`), 'utf-8'));
+} catch (err) {
+  console.error(`❌ Cannot load clients/${CLIENT_SLUG}/agent.config.json: ${err.message}`);
+  process.exit(1);
+}
+const ARTICLE_TYPES = agentConfig.article_types;
 
 const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
 if (!apiKey) {
@@ -56,44 +67,11 @@ function selectNextType(history) {
 
 // ── Claude prompts ─────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `Tu es un rédacteur web expert en formation professionnelle et CPF (Compte Personnel de Formation) en France. Tu écris en français, avec un style clair, pédagogique et orienté action.
-
-Règles strictes :
-- Informations CPF exactes : 500 €/an, plafond 5 000 €, reste à charge 150 €, certifications RNCP, organismes Qualiopi
-- Pas de promesses de résultats garantis
-- Chiffres plausibles et cohérents avec le marché français
-- Ton professionnel mais accessible
-- Minimum 900 mots de contenu
-
-Types d'articles :
-- temoignage : histoire composite d'une reconversion réussie grâce au CPF (prénom fictif, ville réelle, métier précis)
-- actualites : analyse d'une réforme ou nouveauté CPF / formation professionnelle
-- formation : focus détaillé sur une formation tendance éligible CPF (programme, débouchés, salaires, certifications)`;
-
 async function generateArticle(type, history) {
   const recentArticles = history.articles
     .slice(-6)
     .map(a => `- [${a.type}] ${a.title}`)
     .join('\n');
-
-  const typeInstructions = {
-    temoignage: `Écris un témoignage de reconversion professionnelle grâce au CPF.
-- Personne fictive mais crédible (prénom français, 30-50 ans, ville de province)
-- Métier de départ : poste peu qualifié sans perspectives (pas secrétaire/assistante, déjà utilisé)
-- Métier d'arrivée : métier en tension ou bien rémunéré (pas cheffe de projet digital, déjà utilisé)
-- Formation CPF précise avec titre RNCP et organisme Qualiopi
-- Chiffres concrets : durée, coût, augmentation salariale`,
-
-    actualites: `Écris un article d'actualité sur le CPF ou la formation professionnelle en France 2025-2026.
-- Sujet différent de : reste à charge 150€, plafonds 2026, FranceConnect+ (déjà couverts)
-- Exemples : nouvelles certifications populaires, évolutions marché emploi, conseils pratiques CPF
-- Informations factuelles et vérifiables`,
-
-    formation: `Écris un article détaillé sur une formation professionnelle tendance, éligible CPF.
-- Formation différente de : IA générative, management projets digitaux (déjà couverts)
-- Exemples : cybersécurité, data analyst, développeur web, product manager, UX design, comptabilité
-- Programme complet, certifications reconnues, débouchés, fourchettes salariales`
-  };
 
   const response = await client.messages.create({
     model: MODEL,
@@ -101,14 +79,14 @@ async function generateArticle(type, history) {
     system: [
       {
         type: 'text',
-        text: SYSTEM_PROMPT,
+        text: agentConfig.system_prompt,
         cache_control: { type: 'ephemeral' }
       }
     ],
     messages: [
       {
         role: 'user',
-        content: `${typeInstructions[type]}
+        content: `${agentConfig.type_instructions[type]}
 
 Articles déjà publiés (évite les doublons) :
 ${recentArticles}
@@ -118,7 +96,7 @@ Réponds UNIQUEMENT avec un objet JSON valide (sans markdown ni \`\`\`json) avec
   "slug": "blog-[mot-cle-hyphenate]",
   "title_tag": "Titre SEO complet — AdsVizor",
   "meta_description": "Description meta 120-155 caractères",
-  "article_tag": "${type === 'temoignage' ? 'Témoignage' : type === 'actualites' ? 'Actualités' : 'Formation'}",
+  "article_tag": "${agentConfig.type_labels[type]}",
   "h1": "Titre principal de l'article",
   "intro": "Paragraphe d'introduction accrocheur, 80-120 mots",
   "sections": [
@@ -211,22 +189,8 @@ function buildSources(sources) {
 }
 
 function buildCTA(type) {
-  const ctas = {
-    temoignage: {
-      h2: 'Votre histoire commence maintenant',
-      p: "Vous avez peut-être des droits CPF que vous n'avez jamais utilisés. Nos conseillers vérifient votre solde et vous orientent vers la formation la plus adaptée — gratuitement, sans engagement."
-    },
-    actualites: {
-      h2: 'Vérifiez vos droits CPF gratuitement',
-      p: "Malgré les réformes, le CPF reste un levier puissant. Nos conseillers font le point sur votre situation en moins de 20 minutes — sans engagement."
-    },
-    formation: {
-      h2: 'Prêt à vous lancer ?',
-      p: "Nos conseillers identifient la formation la mieux adaptée à votre profil et vérifient si votre CPF peut couvrir l'intégralité du coût — gratuitement, sans engagement."
-    }
-  };
-  const cta = ctas[type] || ctas.temoignage;
-  return `\n        <div class="article-cta-block">\n          <h2>${cta.h2}</h2>\n          <p>${cta.p}</p>\n          <a href="contact.html">Parler à un conseiller →</a>\n        </div>`;
+  const cta = agentConfig.cta_blocks[type] || agentConfig.cta_blocks[agentConfig.article_types[0]];
+  return `\n        <div class="article-cta-block">\n          <h2>${cta.h2}</h2>\n          <p>${cta.p}</p>\n          <a href="${agentConfig.cta_link}">Parler à un conseiller →</a>\n        </div>`;
 }
 
 function assembleHTML(article, type, date) {
@@ -243,8 +207,8 @@ function assembleHTML(article, type, date) {
     <meta property="og:title" content="${article.h1}" />
     <meta property="og:description" content="${article.meta_description}" />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://formations.adsvizor.com/${article.slug}.html" />
-    <meta property="og:image" content="https://formations.adsvizor.com/og-image.jpg" />
+    <meta property="og:url" content="${agentConfig.base_url}/${article.slug}.html" />
+    <meta property="og:image" content="${agentConfig.base_url}/og-image.jpg" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -294,10 +258,7 @@ function assembleHTML(article, type, date) {
       </div>
       <nav aria-label="Navigation principale">
         <ul>
-          <li><a href="formations-cpf.html">Nos Formations</a></li>
-          <li><a href="contact.html">Contactez Nous</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="privacy.html">Confidentialité</a></li>
+          ${agentConfig.nav_links.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join('\n          ')}
         </ul>
       </nav>
     </header>
@@ -318,7 +279,7 @@ function assembleHTML(article, type, date) {
     </main>
 
     <footer>
-      <p>© 2026 AdsVizor — Formations professionnelles en ligne.</p>
+      <p>${agentConfig.footer_text}</p>
     </footer>
   </body>
 </html>
@@ -363,7 +324,7 @@ function validate(html, keyword) {
 // ── Config update ──────────────────────────────────────────────────────────
 
 function updateConfig(article, date) {
-  const config = readJSON('clients/formations/config.json');
+  const config = readJSON(`clients/${CLIENT_SLUG}/config.json`);
 
   // Collect current posts (newest first, skip empty slots)
   const posts = [];
@@ -401,7 +362,7 @@ function updateConfig(article, date) {
     config[`post_${i}_excerpt`] = p ? p.excerpt : '';
   }
 
-  writeJSON('clients/formations/config.json', config);
+  writeJSON(`clients/${CLIENT_SLUG}/config.json`, config);
   console.log('✅ config.json updated');
   return evicted;
 }
@@ -409,7 +370,7 @@ function updateConfig(article, date) {
 // ── History update ─────────────────────────────────────────────────────────
 
 function updateHistory(article, type, evicted = []) {
-  const history = readJSON('data/blog-history.json');
+  const history = readJSON(`data/${CLIENT_SLUG}/blog-history.json`);
   history.articles.push({
     slug: article.slug,
     title: article.h1,
@@ -432,7 +393,7 @@ function updateHistory(article, type, evicted = []) {
     }
   }
 
-  writeJSON('data/blog-history.json', history);
+  writeJSON(`data/${CLIENT_SLUG}/blog-history.json`, history);
   console.log('✅ blog-history.json updated');
 }
 
@@ -441,7 +402,7 @@ function updateHistory(article, type, evicted = []) {
 async function main() {
   console.log('🚀 Blog agent starting…');
 
-  const history = readJSON('data/blog-history.json');
+  const history = readJSON(`data/${CLIENT_SLUG}/blog-history.json`);
   const type = selectNextType(history);
   console.log(`📝 Type: ${type}`);
 

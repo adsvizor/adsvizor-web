@@ -1,0 +1,44 @@
+{
+  "client_name": "AdsVizor Formations CPF",
+  "base_url": "https://formations.adsvizor.com",
+  "footer_text": "© 2026 AdsVizor — Formations professionnelles en ligne.",
+  "cta_link": "contact.html",
+
+  "system_prompt": "Tu es un rédacteur web expert en formation professionnelle et CPF (Compte Personnel de Formation) en France. Tu écris en français, avec un style clair, pédagogique et orienté action.\n\nRègles strictes :\n- Informations CPF exactes : 500 €/an, plafond 5 000 €, reste à charge 150 €, certifications RNCP, organismes Qualiopi\n- Pas de promesses de résultats garantis\n- Chiffres plausibles et cohérents avec le marché français\n- Ton professionnel mais accessible\n- Minimum 900 mots de contenu\n\nTypes d'articles :\n- temoignage : histoire composite d'une reconversion réussie grâce au CPF (prénom fictif, ville réelle, métier précis)\n- actualites : analyse d'une réforme ou nouveauté CPF / formation professionnelle\n- formation : focus détaillé sur une formation tendance éligible CPF (programme, débouchés, salaires, certifications)",
+
+  "article_types": ["temoignage", "actualites", "formation"],
+
+  "type_labels": {
+    "temoignage": "Témoignage",
+    "actualites": "Actualités",
+    "formation": "Formation"
+  },
+
+  "type_instructions": {
+    "temoignage": "Écris un témoignage de reconversion professionnelle grâce au CPF.\n- Personne fictive mais crédible (prénom français, 30-50 ans, ville de province)\n- Métier de départ : poste peu qualifié sans perspectives (pas secrétaire/assistante, déjà utilisé)\n- Métier d'arrivée : métier en tension ou bien rémunéré (pas cheffe de projet digital, déjà utilisé)\n- Formation CPF précise avec titre RNCP et organisme Qualiopi\n- Chiffres concrets : durée, coût, augmentation salariale",
+    "actualites": "Écris un article d'actualité sur le CPF ou la formation professionnelle en France 2025-2026.\n- Sujet différent de : reste à charge 150€, plafonds 2026, FranceConnect+ (déjà couverts)\n- Exemples : nouvelles certifications populaires, évolutions marché emploi, conseils pratiques CPF\n- Informations factuelles et vérifiables",
+    "formation": "Écris un article détaillé sur une formation professionnelle tendance, éligible CPF.\n- Formation différente de : IA générative, management projets digitaux (déjà couverts)\n- Exemples : cybersécurité, data analyst, développeur web, product manager, UX design, comptabilité\n- Programme complet, certifications reconnues, débouchés, fourchettes salariales"
+  },
+
+  "cta_blocks": {
+    "temoignage": {
+      "h2": "Votre histoire commence maintenant",
+      "p": "Vous avez peut-être des droits CPF que vous n'avez jamais utilisés. Nos conseillers vérifient votre solde et vous orientent vers la formation la plus adaptée — gratuitement, sans engagement."
+    },
+    "actualites": {
+      "h2": "Vérifiez vos droits CPF gratuitement",
+      "p": "Malgré les réformes, le CPF reste un levier puissant. Nos conseillers font le point sur votre situation en moins de 20 minutes — sans engagement."
+    },
+    "formation": {
+      "h2": "Prêt à vous lancer ?",
+      "p": "Nos conseillers identifient la formation la mieux adaptée à votre profil et vérifient si votre CPF peut couvrir l'intégralité du coût — gratuitement, sans engagement."
+    }
+  },
+
+  "nav_links": [
+    { "href": "formations-cpf.html", "label": "Nos Formations" },
+    { "href": "contact.html",        "label": "Contactez Nous" },
+    { "href": "blog.html",           "label": "Blog" },
+    { "href": "privacy.html",        "label": "Confidentialité" }
+  ]
+}
