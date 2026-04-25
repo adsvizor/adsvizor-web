@@ -1,6 +1,6 @@
 # AdsVizor Conventions
 
-This file defines conventions used across AdsVizor landing pages, lead capture, and AI agent interactions.
+Conventions used across AdsVizor landing pages, lead capture, blog agent, and AI agent interactions.
 
 Principles:
 
@@ -10,185 +10,173 @@ Principles:
 
 ## 1. Repository layout conventions
 
-### 1.1 Client pages
+### 1.1 Root — shared only
 
-Client content typically lives under:
+The root contains only generic, client-agnostic assets:
 
-* `clients/{client_slug}/`
+- Templates: `index.html`, `blog.html`, `contact.html`, `privacy.html`, `thank-you.html`
+- Shared assets: `main.css`, `script.js`, `cloudflare-worker.js`
+- Config: `package.json`, `wrangler.jsonc`, `CLAUDE.md`
 
-Where `client_slug` is the subdomain identifier (example: `formations`, `immobilier`).
+**Do not put client-specific files in the root.**
 
-Within each client folder, keep all client-specific data/config in one place (for example a `client.json`), while the shared landing template logic stays in the root.
+### 1.2 Client directory
 
-### 1.2 Shared template files
+All client content lives under `clients/{client_slug}/`:
 
-At minimum, keep these responsibilities:
+```
+clients/{slug}/
+├── config.json          ← all {{placeholder}} values used in templates
+├── agent.config.json    ← blog agent prompts, article types, CTA blocks
+├── blog/                ← generated blog articles (*.html)
+└── pages/               ← client-specific static pages (*.html)
+```
 
-* `index.html`: base page structure
-* `style.css`: styling
-* `script.js`: client-side form/analytics logic
-* `thank-you.html`: post-submit confirmation
+`client_slug` is the subdomain identifier: lowercase `a-z0-9` and `-` only.
 
-If you introduce additional shared assets, keep them in root or a dedicated `assets/` folder.
+### 1.3 Data directory
+
+Per-client runtime data lives under `data/{client_slug}/`:
+
+```
+data/{slug}/
+└── blog-history.json    ← published articles index
+```
+
+### 1.4 Shared template files
+
+Root templates use `{{placeholder}}` syntax. Every placeholder key must exist in `clients/{slug}/config.json`. Unresolved placeholders render as literal `{{key}}` (visible for debugging).
+
+### 1.5 Local development
+
+Use `wrangler pages dev` (NOT Live Server):
+
+```bash
+npm run dev   # wrangler pages dev . --port 5500 --compatibility-date 2026-04-19
+```
+
+Live Server has no middleware support — `functions/_middleware.js` will not run, and client-specific pages won't be found.
 
 ## 2. Naming conventions
 
 ### 2.1 Slugs
 
-* `client_slug`: lowercase `a-z0-9` and hyphen `-` only.
-* `offer_id` (if used): lowercase `a-z0-9` and hyphen `-` only.
+- `client_slug`: lowercase `a-z0-9` and hyphen `-` only.
+- `offer_id`: lowercase `a-z0-9` and hyphen `-` only.
 
-Examples:
+Examples: `formations`, `real-estate-coaching`
 
-* `formations`
-* `real-estate-coaching`
+### 2.2 Blog article filenames
 
-### 2.2 HTML ids and data attributes
+Blog article HTML files live at `clients/{slug}/blog/{filename}.html` and are served at `/blog/{filename}.html`.
+
+- Filename: lowercase, hyphen-separated, **no** `blog-` prefix (e.g. `sophie-marchand.html`).
+- Slug stored in history: may include `blog-` prefix as a unique ID — this is just an identifier.
+- URL-facing path is always clean: `/blog/sophie-marchand.html`.
+
+### 2.3 HTML ids and data attributes
 
 Use explicit, stable selectors:
 
-* `id` for fields that are singletons (e.g., `name`, `email`, `phone`, `message`)
-* `data-*` attributes for metadata:
-  * `data-client-slug`
-  * `data-offer-id`
-  * `data-page-version`
+- `id` for singleton fields (e.g. `name`, `email`, `phone`, `message`)
+- `data-*` for metadata: `data-client-slug`, `data-offer-id`, `data-page-version`, `data-cta-id`
 
-## 3. HTML conventions (landing pages)
+## 3. HTML conventions
 
-### 3.1 Meta and performance basics
+### 3.1 Templates
 
-* Keep the `<head>` minimal.
-* Use a single `<main>` element for primary content.
-* Avoid large blocking scripts; prefer `defer` for `script.js`.
+- Use `{{placeholder}}` for all client-specific text, links, and values.
+- Keep the `<head>` minimal.
+- Use a single `<main>` for primary content.
+- Avoid large blocking scripts; prefer `defer` on `script.js`.
+- Client-specific pages must not hardcode root-relative paths — the middleware injects `<base href="/">` at runtime.
 
 ### 3.2 Form conventions
 
-The lead capture form should:
+- Use fetch-based POST (not native `method="post"` form submit).
+- Disable submit button while in flight.
+- Show `[data-form-error]` block above the form on error.
+- On success, redirect to `thank-you.html`.
+- Emit `form_start` on first focus/input, `form_submit` on submit attempt.
 
-* use `method="post"` or fetch-based POST (but keep one approach consistent),
-* include required fields with clear labels,
-* have a single “submit” action.
+## 4. CSS conventions
 
-Client-side behavior:
+- File: `main.css` (not `style.css`).
+- Mobile-first, single breakpoint at `768px`.
+- FOUC prevention: `body { visibility: hidden; }` → `body.ready { visibility: visible; }`.
+- Blog card hide rule: `.blog-card:has(a[href=""]) { display: none; }` (hides empty post slots).
 
-* disable submit button while the request is in flight,
-* show a clear error state if the request fails validation server-side,
-* emit analytics events for `form_start` and `form_submit`.
+## 5. JS conventions (vanilla)
 
-## 4. JS conventions (vanilla)
+- `const` by default, `let` only when reassignment is needed.
+- `async/await` for all fetch calls.
+- No implicit globals.
+- Named functions or small helpers; avoid deeply nested callbacks.
+- DOM selectors gathered at the top of the script.
 
-Goals:
+### 5.1 FOUC prevention
 
-* predictable behavior,
-* no implicit globals,
-* clear error handling.
+After config loads and placeholder rendering finishes (and in the error path):
 
-### 4.0 FOUC prevention (placeholders)
+```js
+document.body.classList.add("ready");
+```
 
-All landing pages must prevent visitors from seeing raw `{{placeholders}}` (flash of unrendered content).
+### 5.2 Analytics events
 
-Standard approach:
+Emitted via `console.log("[adsvizor_event]", {...})`:
 
-* In `style.css`, start with:
-  * `body { visibility: hidden; }`
-  * `body.ready { visibility: visible; }`
-* In `script.js`, add `document.body.classList.add("ready")`:
-  * after config loads and placeholder rendering finishes
-  * **and** in the error path (catch/failure) so the page still becomes visible
+| Event | When |
+|-------|------|
+| `page_view` | Every page load |
+| `cta_click` | On `[data-cta-id]` click |
+| `form_start` | First focus/input in form fields |
+| `form_submit` | Submit attempt — `status: "attempt" \| "success" \| "error"` |
 
-This convention ensures the page only appears once it is rendered (or a controlled error state is shown), instead of flashing template placeholders.
+## 6. Blog agent conventions
 
-### 4.1 Code style
+- Agent is parameterized by `CLIENT_SLUG` env var.
+- All client-specific content (system prompt, article types, CTAs, nav) comes from `clients/{slug}/agent.config.json` — nothing hardcoded in the script.
+- Article types rotate; the type is chosen based on history to avoid consecutive duplicates.
+- Max 10 articles per client. On eviction: delete HTML file, remove from history, clear config slot.
+- Config `post_1_*` = most recent article, `post_10_*` = oldest.
+- Article `href` format in config: `blog/{filename}.html` (no leading slash; resolved relative to `<base href="/">`).
+- GitHub Actions matrix per client: `fail-fast: false`.
 
-* Use `const` by default, `let` only when reassignment is needed.
-* Use named functions or small helpers; avoid deeply nested callbacks.
-* Prefer `fetch()` with `async/await`.
-* Keep DOM selectors in one place at the top of the script.
+## 7. Apps Script + Sheets conventions
 
-### 4.2 Analytics event conventions
+Stable column set for lead sheet:
 
-Emit events consistently; event names should be stable strings.
+- `timestamp_submitted`, `client_slug`, `offer_id`
+- `visitor_name`, `visitor_email`, `visitor_phone`, `visitor_message`
+- `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
+- `page_version`, `consent_marketing`
+- `lead_status` (admin updates), `notes`
 
-Recommended event list (browser -> analytics provider):
+Always validate required fields server-side. Return deterministic error codes the frontend can display.
 
-* `page_view`
-* `cta_click` (include `cta_id` or CTA label)
-* `form_start` (include `client_slug`, `offer_id`, `page_version`)
-* `form_submit` (include attribution fields and success/failure reason)
+## 8. AI agent conventions (campaign optimizer)
 
-Attribution fields (include when available):
+- Outputs must be valid, parseable JSON.
+- Free-form text only in companion fields (`summary`, `rationale`).
+- Store: `agent_run_id`, `data_window`, model metadata, QA results, ranked actions.
+- Prompt templates and compliance rules kept in `docs/PROMPTS.md` (campaign optimizer) or `clients/{slug}/agent.config.json` (blog agent).
 
-* `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
+## 9. Deployment conventions
 
-## 5. Apps Script + Sheets conventions (data contracts)
+- `git push` to `main` triggers Cloudflare Pages auto-deploy.
+- Worker changes: `npx wrangler versions upload`.
+- Never commit secrets (API keys, Apps Script URLs with privileged access, Google Sheet IDs).
+- Confirm Cloudflare Pages and Workers builds both go green before considering a change shipped.
 
-Treat these as a versioned schema.
+## 10. Quality checklist (manual)
 
-### 5.1 Lead sheet columns
+Before pushing:
 
-Keep a stable column set:
-
-* `timestamp_submitted` (server authoritative)
-* `client_slug`
-* `offer_id`
-* `visitor_name`
-* `visitor_email`
-* `visitor_phone`
-* `visitor_message`
-* `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
-* `page_version`
-* `consent_marketing` (if used)
-* `lead_status` (initially blank; admin/CRM updates later)
-* `notes`
-
-### 5.2 Validation conventions
-
-* Validate required fields on the server.
-* Return deterministic error codes/messages that the frontend can display.
-* Log validation failures (do not silently drop bad payloads).
-
-## 6. AI agent conventions (Claude -> actionable JSON)
-
-### 6.1 Prompt input principles
-
-* Provide the agent only the data it needs for that run.
-* Keep a clear date window for “what changed since last run”.
-* Provide sector rules and compliance constraints per client.
-
-### 6.2 Prompt output principles
-
-* The agent must output parseable JSON in a well-defined schema.
-* Free-form text is allowed only as a companion to structured fields (e.g., `summary`, `rationale`).
-* The system must store:
-  * agent run id,
-  * data window start/end,
-  * model/provider metadata (if available),
-  * QA/compliance results,
-  * final recommended actions.
-
-## 7. Workflow conventions (git and deployment)
-
-### 7.1 Branching and PRs
-
-If you use PRs:
-
-* keep changes small,
-* ensure landing page templates and client-specific configs remain in sync.
-
-### 7.2 Deployment expectations
-
-Because Cloudflare Pages auto-deploys on `git push`:
-
-* ensure form endpoint URLs and configuration are correct before pushing,
-* avoid committing secrets (API tokens, sheet ids with privileged access, etc.).
-
-## 8. Quality checklist (manual)
-
-Before considering a change “ready” for production:
-
-1. Landing page loads without console errors.
-2. Form submission works end-to-end to Sheets.
-3. Analytics events fire with correct payload keys.
-4. Thank-you page shows the intended message and does not break attribution.
-5. Agent output conforms to the expected JSON schema (if prompt/contract changed).
-
+1. Landing page loads without console errors at `http://localhost:5500/?client=formations`.
+2. All `{{placeholders}}` resolved (none visible as literal text).
+3. Form submission works end-to-end to Sheets.
+4. Analytics events fire with correct payload keys.
+5. Thank-you page shows correctly and preserves UTM params.
+6. Blog listing shows newest article first; empty slots are hidden.
+7. Client-specific pages (`/formations-cpf.html`, `/blog/sophie-marchand.html`) load correctly via middleware.

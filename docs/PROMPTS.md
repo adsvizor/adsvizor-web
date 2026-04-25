@@ -1,6 +1,10 @@
 # AdsVizor Prompts (Claude API)
 
-This document is a “prompt library” for the AdsVizor AI agent running against the **Claude API**.
+This document is a “prompt library” for the AdsVizor AI agents running against the **Claude API**.
+
+> **Note on the blog agent**: Blog article generation prompts are **not** stored here. They live in `clients/{slug}/agent.config.json` — specifically the `system_prompt`, `type_instructions`, `cta_blocks`, and `article_types` fields. This allows per-client customization without touching shared code. See `docs/ARCHITECTURE.md §6` for the full blog agent design.
+
+The prompts below cover the **campaign optimization agent** only.
 
 Guiding rules:
 

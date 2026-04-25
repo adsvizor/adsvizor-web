@@ -9,16 +9,18 @@ Runtime stack: **Vanilla HTML/CSS/JS** (no frameworks)
 
 ## 1. What this project is
 
-**AdsVizor** builds and hosts lightweight landing pages for clients in any sector. Each client gets their own subdomain (example: `formations.adsvizor.com`).  
+**AdsVizor** builds and hosts lightweight landing pages for clients in any sector. Each client gets their own subdomain (example: `formations.adsvizor.com`).
 
-The system runs **Google Ads** campaigns to drive traffic and uses an **AI agent (Claude API)** to optimize campaign strategy **daily** based on performance and lead outcomes.
+The system runs **Google Ads** campaigns to drive traffic and uses **AI agents (Claude API)** to:
+- Generate daily SEO blog articles per client (blog agent, runs via GitHub Actions).
+- Optimize campaign strategy daily based on performance and lead outcomes (campaign optimizer agent).
 
 In practice, the repo provides a template and an operational workflow for:
 
-1. Generating or maintaining a landing page for a given client/offer.
-2. Capturing leads via a web form.
-3. Storing leads in **Google Sheets** using a **Google Apps Script** endpoint.
-4. Feeding lead outcomes + performance signals to a daily AI optimization agent.
+1. Serving a multi-tenant landing page from a shared template (client config drives all content).
+2. Capturing leads via a web form (Cloudflare Worker → Google Apps Script → Google Sheets).
+3. Publishing AI-generated blog content automatically (blog agent commits HTML files back to the repo).
+4. Feeding lead outcomes + performance signals to a daily campaign optimization agent.
 5. Tracking changes and ensuring consistent quality across client pages.
 
 ## 2. Business model and key assumptions
@@ -27,9 +29,10 @@ In practice, the repo provides a template and an operational workflow for:
 
 Clients pay for:
 
-1. Landing page(s) built from a fast, consistent template.
+1. Landing page(s) built from a fast, consistent template — each client gets a subdomain, a `config.json`, and a set of pages.
 2. Ongoing Google Ads management.
-3. AI-assisted daily optimization (creative and targeting recommendations, plus structured adjustments to the campaign plan).
+3. AI-generated SEO blog content (daily, fully automated).
+4. AI-assisted daily campaign optimization (creative and targeting recommendations, plus structured adjustments to the campaign plan).
 
 ### Core assumption
 
@@ -73,9 +76,10 @@ When this correlation exists, daily optimization improves results.
 
 ### Outputs (to external systems)
 
-1. Structured recommendations and/or updates to Google Ads (via Google Ads API).
-2. Updated landing page content blocks (if you choose to support iterative landing page testing).
-3. Logs/reports for internal review.
+1. AI-generated blog articles committed to the repo and auto-deployed to Cloudflare Pages.
+2. Structured campaign recommendations and/or updates to Google Ads (via Google Ads API).
+3. Updated landing page content blocks (if you choose to support iterative landing page testing).
+4. Logs/reports for internal review.
 
 ## 6. Operational principles
 
