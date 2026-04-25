@@ -23,13 +23,14 @@ try {
 }
 const ARTICLE_TYPES = agentConfig.article_types;
 
-const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
-if (!apiKey) {
+if (!process.env.ANTHROPIC_API_KEY) {
   console.error('❌ ANTHROPIC_API_KEY is not set or empty');
   process.exit(1);
 }
-console.log(`🔑 API key loaded (length: ${apiKey.length}, prefix: ${apiKey.slice(0, 10)}...)`);
-const client = new Anthropic({ apiKey });
+console.log(`🔑 API key detected (length: ${process.env.ANTHROPIC_API_KEY.length})`);
+// Let the SDK read ANTHROPIC_API_KEY from the environment directly — avoids
+// any string-manipulation edge cases (BOM, invisible chars, etc.)
+const client = new Anthropic();
 
 // ── File helpers ───────────────────────────────────────────────────────────
 

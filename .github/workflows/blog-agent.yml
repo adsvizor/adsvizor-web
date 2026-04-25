@@ -24,7 +24,8 @@ jobs:
         client: [formations]  # add new clients here: [formations, comptabilite, ...]
 
     # Skip matrix entries that don't match the manually-chosen client (if provided)
-    if: ${{ github.event.inputs.client == '' || github.event.inputs.client == matrix.client }}
+    # On scheduled runs, github.event.inputs is null — always run all clients
+    if: ${{ github.event_name == 'schedule' || github.event.inputs.client == '' || github.event.inputs.client == matrix.client }}
 
     steps:
       - name: Checkout repository
