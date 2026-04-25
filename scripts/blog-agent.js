@@ -76,7 +76,7 @@ async function generateArticle(type, history) {
 
   const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 4000,
+    max_tokens: 8000,
     system: [
       {
         type: 'text',
@@ -114,6 +114,10 @@ Réponds UNIQUEMENT avec un objet JSON valide (sans markdown ni \`\`\`json) avec
       }
     ]
   });
+
+  if (response.stop_reason === 'max_tokens') {
+    throw new Error(`Claude response truncated at max_tokens (${response.usage?.output_tokens ?? '?'} output tokens). Increase max_tokens.`);
+  }
 
   const raw = response.content[0].text.trim();
   try {
