@@ -23,26 +23,31 @@ jobs:
       matrix:
         client: [formations]  # add new clients here: [formations, comptabilite, ...]
 
-    # Skip matrix entries that don't match the manually-chosen client (if provided)
-    # On scheduled runs, github.event.inputs is null — always run all clients
-    if: ${{ github.event_name == 'schedule' || github.event.inputs.client == '' || github.event.inputs.client == matrix.client }}
-
     steps:
+      - name: Skip if not target client
+        if: ${{ github.event.inputs.client != '' && github.event.inputs.client != matrix.client }}
+        run: |
+          echo "Skipping ${{ matrix.client }} — manual run targets '${{ github.event.inputs.client }}'"
+          echo "SKIP=true" >> $GITHUB_ENV
       - name: Checkout repository
+        if: env.SKIP != 'true'
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
+        if: env.SKIP != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
+        if: env.SKIP != 'true'
         run: npm install
         working-directory: scripts
 
       - name: Check API key
+        if: env.SKIP != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -54,12 +59,14 @@ jobs:
           fi
 
       - name: Generate article for ${{ matrix.client }}
+        if: env.SKIP != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLIENT_SLUG: ${{ matrix.client }}
         run: node scripts/blog-agent.js
 
       - name: Commit and push
+        if: env.SKIP != 'true'
         run: |
           git config user.name "Blog Agent"
           git config user.email "adsvizor@gmail.com"
