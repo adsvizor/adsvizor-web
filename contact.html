@@ -49,6 +49,7 @@
       </div>
       <nav aria-label="{{nav_aria_label}}">
         <ul>
+          <li><a href="{{nav_item_0_href}}">{{nav_item_0_label}}</a></li>
           <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
           <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
           <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
@@ -77,122 +78,77 @@
             <p>{{contact_hero_subtitle}}</p>
           </div>
 
-          <!-- ── 4 reasons ── -->
-          <div class="contact-section contact-section-light">
-            <h2 class="contact-section-title">{{contact_why_title}}</h2>
-
-            <div class="contact-benefit-grid">
-              <div class="contact-benefit-card">
-                <div class="contact-benefit-top">
-                  <span class="contact-benefit-letter">A</span>
-                  <span class="contact-benefit-emoji">{{contact_benefit_a_emoji}}</span>
-                </div>
-                <h3>{{contact_benefit_a_title}}</h3>
-                <p>{{contact_benefit_a_text}}</p>
-              </div>
-
-              <div class="contact-benefit-card">
-                <div class="contact-benefit-top">
-                  <span class="contact-benefit-letter">B</span>
-                  <span class="contact-benefit-emoji">{{contact_benefit_b_emoji}}</span>
-                </div>
-                <h3>{{contact_benefit_b_title}}</h3>
-                <p>{{contact_benefit_b_text}}</p>
-              </div>
-
-              <div class="contact-benefit-card">
-                <div class="contact-benefit-top">
-                  <span class="contact-benefit-letter">C</span>
-                  <span class="contact-benefit-emoji">{{contact_benefit_c_emoji}}</span>
-                </div>
-                <h3>{{contact_benefit_c_title}}</h3>
-                <p>{{contact_benefit_c_text}}</p>
-              </div>
-
-              <div class="contact-benefit-card">
-                <div class="contact-benefit-top">
-                  <span class="contact-benefit-letter">D</span>
-                  <span class="contact-benefit-emoji">{{contact_benefit_d_emoji}}</span>
-                </div>
-                <h3>{{contact_benefit_d_title}}</h3>
-                <p>{{contact_benefit_d_text}}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── Process diagram ── -->
+          <!-- ── Process flowchart ── -->
           <div class="contact-section contact-section-white">
             <h2 class="contact-section-title">{{contact_process_title}}</h2>
             <p class="contact-section-intro">{{contact_process_intro}}</p>
 
-            <ol class="process-steps" aria-label="Étapes du parcours">
+            <div class="flowchart" aria-label="Étapes du parcours">
 
-              <li class="process-step">
-                <div class="process-step-marker">
-                  <div class="process-step-circle">1</div>
-                </div>
-                <div class="process-step-body">
-                  <span class="process-step-icon" aria-hidden="true">{{contact_step_1_icon}}</span>
-                  <div>
+              <div class="flowchart-node">
+                <div class="flowchart-badge">1</div>
+                <div class="flowchart-box">
+                  <span class="flowchart-icon">{{contact_step_1_icon}}</span>
+                  <div class="flowchart-text">
                     <h3>{{contact_step_1_title}}</h3>
                     <p>{{contact_step_1_text}}</p>
                   </div>
                 </div>
-              </li>
+              </div>
 
-              <li class="process-step">
-                <div class="process-step-marker">
-                  <div class="process-step-circle">2</div>
-                </div>
-                <div class="process-step-body">
-                  <span class="process-step-icon" aria-hidden="true">{{contact_step_2_icon}}</span>
-                  <div>
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">2</div>
+                <div class="flowchart-box">
+                  <span class="flowchart-icon">{{contact_step_2_icon}}</span>
+                  <div class="flowchart-text">
                     <h3>{{contact_step_2_title}}</h3>
                     <p>{{contact_step_2_text}}</p>
                   </div>
                 </div>
-              </li>
+              </div>
 
-              <li class="process-step">
-                <div class="process-step-marker">
-                  <div class="process-step-circle">3</div>
-                </div>
-                <div class="process-step-body">
-                  <span class="process-step-icon" aria-hidden="true">{{contact_step_3_icon}}</span>
-                  <div>
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">3</div>
+                <div class="flowchart-box">
+                  <span class="flowchart-icon">{{contact_step_3_icon}}</span>
+                  <div class="flowchart-text">
                     <h3>{{contact_step_3_title}}</h3>
                     <p>{{contact_step_3_text}}</p>
                   </div>
                 </div>
-              </li>
+              </div>
 
-              <li class="process-step">
-                <div class="process-step-marker">
-                  <div class="process-step-circle">4</div>
-                </div>
-                <div class="process-step-body">
-                  <span class="process-step-icon" aria-hidden="true">{{contact_step_4_icon}}</span>
-                  <div>
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">4</div>
+                <div class="flowchart-box">
+                  <span class="flowchart-icon">{{contact_step_4_icon}}</span>
+                  <div class="flowchart-text">
                     <h3>{{contact_step_4_title}}</h3>
                     <p>{{contact_step_4_text}}</p>
                   </div>
                 </div>
-              </li>
+              </div>
 
-              <li class="process-step process-step-last">
-                <div class="process-step-marker">
-                  <div class="process-step-circle process-step-circle-done" aria-label="Terminé">✓</div>
-                </div>
-                <div class="process-step-body">
-                  <span class="process-step-icon" aria-hidden="true">{{contact_step_5_icon}}</span>
-                  <div>
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node flowchart-node-success">
+                <div class="flowchart-badge flowchart-badge-success">✓</div>
+                <div class="flowchart-box flowchart-box-success">
+                  <span class="flowchart-icon">{{contact_step_5_icon}}</span>
+                  <div class="flowchart-text">
                     <h3>{{contact_step_5_title}}</h3>
                     <p>{{contact_step_5_text}}</p>
                   </div>
                 </div>
-              </li>
+              </div>
 
-            </ol>
+            </div>
           </div>
 
           <!-- ── Urgency section ── -->
@@ -285,6 +241,12 @@
                   <label for="email">{{field_email_label}}</label>
                   <input id="email" name="email" type="email" autocomplete="email" placeholder="{{field_email_placeholder}}" required />
                 </div>
+                <!-- Consent visible from step 1 — active opt-in required (RGPD) -->
+                <div class="form-consent">
+                  <input type="checkbox" id="consent_marketing" name="consent_marketing" />
+                  <label for="consent_marketing">{{form_disclaimer_text}}</label>
+                </div>
+
                 <button type="button" class="btn-next">Continuer <span aria-hidden="true">→</span></button>
               </div>
 
@@ -318,11 +280,6 @@
 
                 <input type="hidden" name="formation_interest" value="Conseil CPF — prise de contact" />
 
-                <div>
-                  <label for="message">{{field_message_label}}</label>
-                  <textarea id="message" name="message" rows="{{field_message_rows}}" placeholder="{{field_message_placeholder}}"></textarea>
-                </div>
-
                 <div class="form-honeypot" aria-hidden="true">
                   <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
                 </div>
@@ -333,11 +290,6 @@
                 <input type="hidden" id="utm_term"     name="utm_term"     value="" />
                 <input type="hidden" id="utm_content"  name="utm_content"  value="" />
                 <input type="hidden" id="page_version" name="page_version" value="{{page_version}}" />
-
-                <div class="form-consent">
-                  <input type="checkbox" id="consent_marketing" name="consent_marketing" required />
-                  <label for="consent_marketing">{{form_disclaimer_text}}</label>
-                </div>
 
                 <div class="form-step-nav">
                   <button type="button" class="btn-back"><span aria-hidden="true">←</span> Retour</button>

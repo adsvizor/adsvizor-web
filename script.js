@@ -383,6 +383,9 @@ function initCtaTracking() {
       "click",
       () => {
         emitEvent("cta_click", { cta_id: el.getAttribute("data-cta-id") });
+        // Store pre-selected formation so form can auto-fill it
+        const formation = el.getAttribute("data-formation");
+        if (formation) sessionStorage.setItem("adsvizor_formation", formation);
       },
       { passive: true }
     );
@@ -624,6 +627,7 @@ function initMultiStepForm(form, config) {
         visitor_phone: safeString(fd.get("phone") ?? "").trim() || null,
         formation_interest: fd.get("formation_interest")
           ? safeString(fd.get("formation_interest")).trim() : null,
+        consent_marketing: form.querySelector('#consent_marketing')?.checked ?? false,
         utm: {
           source:   utm.utm_source   || null,
           medium:   utm.utm_medium   || null,
@@ -649,6 +653,73 @@ function initMultiStepForm(form, config) {
     }
   }
 
+  // ── Formation pre-select (from data-formation CTA click) ──
+  const formationVal     = form.querySelector("#formation_interest_val");
+  const dropdownWrap     = form.querySelector("#formation-dropdown-wrap");
+  const prefilledWrap    = form.querySelector("#formation-prefilled-wrap");
+  const prefilledName    = form.querySelector("#formation-prefilled-name");
+  const formationSelect  = form.querySelector("#formation_select");
+  const permisDisqualif  = form.querySelector("#permis-disqualif");
+  const submitBtn        = form.querySelector('button[type="submit"]');
+
+  // Apply any formation stored in session (set by CTA click)
+  const sessionFormation = sessionStorage.getItem("adsvizor_formation");
+  if (sessionFormation && dropdownWrap && prefilledWrap) {
+    dropdownWrap.hidden = true;
+    dropdownWrap.style.display = "none";
+    prefilledWrap.hidden = false;
+    prefilledWrap.style.display = "";
+    if (prefilledName) prefilledName.textContent = sessionFormation;
+    if (formationVal) formationVal.value = sessionFormation;
+  }
+
+  // Sync dropdown → hidden input + handle permis disqualification
+  if (formationSelect) {
+    formationSelect.addEventListener("change", () => {
+      const val = formationSelect.value;
+      const formationLabel = val === "permis-cases" ? "Permis de conduire (CASES)" : val;
+      if (formationVal) formationVal.value = formationLabel;
+
+      const isPermis = val === "permis-cases";
+      if (permisDisqualif) {
+        permisDisqualif.hidden = !isPermis;
+        permisDisqualif.style.display = isPermis ? "" : "none";
+      }
+      if (submitBtn) submitBtn.disabled = isPermis;
+
+      // Auto-send when permis selected — captures the disqualification in the sheet
+      if (isPermis && config.form_action && config.form_action !== "APPS_SCRIPT_URL") {
+        const fd = new FormData(form);
+        const firstName = safeString(fd.get("first_name") ?? "").trim();
+        const lastName  = safeString(fd.get("last_name")  ?? "").trim();
+        const utm = readUtmFromSession();
+        const payload = {
+          client_slug:       safeString(config.client_slug || form.dataset.clientSlug || ""),
+          offer_id:          safeString(form.dataset.offerId || config.offer_id || ""),
+          visitor_name:      [firstName, lastName].filter(Boolean).join(" ") || null,
+          visitor_email:     safeString(fd.get("email") ?? "").trim() || null,
+          visitor_phone:     safeString(fd.get("phone") ?? "").trim() || null,
+          formation_interest: "Permis de conduire (CASES)",
+          consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
+          utm: {
+            source:   utm.utm_source   || null,
+            medium:   utm.utm_medium   || null,
+            campaign: utm.utm_campaign || null,
+            term:     utm.utm_term     || null,
+            content:  utm.utm_content  || null
+          },
+          page_version: safeString(config.page_version || ""),
+          partial: true,
+          step: "permis-disqualif",
+          hp_trap: ""
+        };
+        postLead(config.form_action, payload)
+          .then(() => emitEvent("form_partial", { status: "success", step: "permis-disqualif" }))
+          .catch((err) => console.warn("[adsvizor] Permis partial send failed:", err));
+      }
+    });
+  }
+
   // ── "Continuer" button (step 1 → step 2) ──
   const btnNext = form.querySelector(".btn-next");
   if (btnNext) {
@@ -658,7 +729,13 @@ function initMultiStepForm(form, config) {
         showFormError(form, "Veuillez remplir tous les champs obligatoires.");
         return;
       }
-      sendPartial();   // capture step-1 data even if user abandons
+      // Consent is required to advance to step 2
+      const consentBox = form.querySelector('#consent_marketing');
+      if (consentBox && !consentBox.checked) {
+        showFormError(form, "Veuillez accepter d'être recontacté(e) pour continuer.");
+        return;
+      }
+      sendPartial();   // capture step-1 data (incl. consent) even if user abandons
       showStep(1);
     });
   }
@@ -684,6 +761,14 @@ function initMultiStepForm(form, config) {
     // Honeypot — bots fill it, humans don't
     const honeypot = form.querySelector('input[name="hp_trap"]');
     if (honeypot && honeypot.value.trim()) return;
+
+    // Consent check (checkbox is in step 1, required for submit)
+    const consentEl = form.querySelector('#consent_marketing');
+    if (consentEl && !consentEl.checked) {
+      showStep(0);
+      showFormError(form, "Veuillez accepter d'être recontacté(e) avant d'envoyer votre demande.");
+      return;
+    }
 
     // Validate step 2 fields (status radio is checked via JS)
     if (!validateStep(steps[1])) {

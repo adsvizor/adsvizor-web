@@ -36,9 +36,10 @@
   },
 
   "nav_links": [
+    { "href": "/",                   "label": "🏠 Accueil" },
     { "href": "formations-cpf.html", "label": "Nos Formations" },
-    { "href": "contact.html",        "label": "Contactez Nous" },
     { "href": "blog.html",           "label": "Blog" },
+    { "href": "contact.html",        "label": "Contactez Nous" },
     { "href": "privacy.html",        "label": "Confidentialité" }
   ]
 }

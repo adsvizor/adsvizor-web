@@ -2291,3 +2291,183 @@ footer p {
     gap: 14px;
   }
 }
+
+/* ── Why Us section (index.html) ── */
+.why-us-section {
+  margin: 48px 0 0;
+  padding: 40px 0 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.why-us-section h2 {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 24px;
+}
+
+.why-us-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.why-us-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.why-us-emoji {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.why-us-card h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+}
+
+.why-us-card p {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Formation dropdown & prefilled ── */
+#formation_select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  color: var(--color-primary);
+  background: #fff;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+#formation_select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.formation-prefilled-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 4px 0 0;
+}
+
+/* ── Permis disqualification ── */
+.permis-disqualif {
+  margin-top: 10px;
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.permis-disqualif p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+/* ── Flowchart (contact page) ── */
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  margin-top: 24px;
+}
+
+.flowchart-node {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.flowchart-badge {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+}
+
+.flowchart-badge-success {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+}
+
+.flowchart-box {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.flowchart-box-success {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.flowchart-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.flowchart-text h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 4px;
+}
+
+.flowchart-node-success .flowchart-text h3 {
+  color: #15803d;
+}
+
+.flowchart-text p {
+  font-size: 0.83rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.flowchart-arrow {
+  text-align: left;
+  padding-left: 46px; /* badge width (32) + gap (14) = 46, centers under badge */
+  font-size: 1.2rem;
+  color: var(--color-accent);
+  line-height: 1;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  opacity: 0.6;
+}

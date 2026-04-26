@@ -197,6 +197,12 @@
                   />
                 </div>
 
+                <!-- Consent visible from step 1 — active opt-in required (RGPD) -->
+                <div class="form-consent">
+                  <input type="checkbox" id="consent_marketing" name="consent_marketing" />
+                  <label for="consent_marketing">{{form_disclaimer_text}}</label>
+                </div>
+
                 <button type="button" class="btn-next">Continuer <span aria-hidden="true">→</span></button>
               </div>
 
@@ -231,16 +237,6 @@
                 <!-- Formation interest (pre-filled for detail pages) -->
                 <input type="hidden" name="formation_interest" value="{{active_title}}" />
 
-                <div>
-                  <label for="message">{{field_message_label}}</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows="{{field_message_rows}}"
-                    placeholder="{{field_message_placeholder}}"
-                  ></textarea>
-                </div>
-
                 <!-- Honeypot: invisible to humans, bots will fill it — rejected server-side -->
                 <div class="form-honeypot" aria-hidden="true">
                   <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
@@ -252,11 +248,6 @@
                 <input type="hidden" id="utm_term" name="utm_term" value="" />
                 <input type="hidden" id="utm_content" name="utm_content" value="" />
                 <input type="hidden" id="page_version" name="page_version" value="{{page_version}}" />
-
-                <div class="form-consent">
-                  <input type="checkbox" id="consent_marketing" name="consent_marketing" required />
-                  <label for="consent_marketing">{{form_disclaimer_text}}</label>
-                </div>
 
                 <div class="form-step-nav">
                   <button type="button" class="btn-back"><span aria-hidden="true">←</span> Retour</button>
