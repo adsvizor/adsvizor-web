@@ -30,13 +30,31 @@ const ROOT_TEMPLATES = new Set([
 export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
+  const hostParts = url.hostname.split('.');
+
+  // ── Root domain (adsvizor.com or www.adsvizor.com) → serve landing only ──
+  // Any request to the root domain serves the landing page (just the logo).
+  // Real clients live on subdomains (formations.adsvizor.com, etc.).
+  // Localhost is excluded so local dev still works normally.
+  const isLocal = url.hostname.includes('localhost') || /^\d+\./.test(url.hostname);
+  const isRootDomain = !isLocal && (
+    hostParts.length === 2 ||
+    (hostParts.length === 3 && hostParts[0] === 'www')
+  );
+  if (isRootDomain) {
+    // Serve static assets (logo, favicon, css, etc.) as-is
+    if (!url.pathname.endsWith('.html') && url.pathname !== '/') return next();
+    const landingUrl = new URL(url.toString());
+    landingUrl.pathname = '/landing.html';
+    landingUrl.search = '';
+    return env.ASSETS.fetch(landingUrl.toString());
+  }
 
   // ── Pass through non-HTML and root templates ─────────────────────────────
   const isHtml = url.pathname.endsWith('.html') || url.pathname === '/';
   if (!isHtml || ROOT_TEMPLATES.has(url.pathname)) return next();
 
   // ── Resolve client slug ──────────────────────────────────────────────────
-  const hostParts = url.hostname.split('.');
   const slug = hostParts.length >= 3
     ? hostParts[0]
     : (url.searchParams.get('client') || 'formations');

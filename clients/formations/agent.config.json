@@ -36,7 +36,7 @@
   },
 
   "nav_links": [
-    { "href": "/",                   "label": "🏠 Accueil" },
+    { "href": "https://formations.adsvizor.com/", "label": "🏠 Accueil" },
     { "href": "formations-cpf.html", "label": "Nos Formations" },
     { "href": "blog.html",           "label": "Blog" },
     { "href": "contact.html",        "label": "Contactez Nous" },
