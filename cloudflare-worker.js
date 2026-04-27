@@ -80,17 +80,26 @@ export default {
     const contentType = request.headers.get("Content-Type") || "application/json";
     const bodyText = await request.text();
 
+    // Try to parse body as JSON so we can (a) honeypot-check and
+    // (b) inject server-side consent context for RGPD proof.
+    let payload = null;
+    try { payload = JSON.parse(bodyText); } catch {}
+
     // Honeypot check — return a fake 200 so bots don't retry.
-    try {
-      const payload = JSON.parse(bodyText);
-      if (payload.hp_trap && String(payload.hp_trap).trim()) {
-        return jsonResponse(200, { status: "ok" }, origin);
-      }
-    } catch {
-      // Non-JSON body: fall through and let upstream handle it.
+    if (payload && payload.hp_trap && String(payload.hp_trap).trim()) {
+      return jsonResponse(200, { status: "ok" }, origin);
     }
 
-    const body = new TextEncoder().encode(bodyText);
+    // Inject server-captured consent proof (IP + User-Agent).
+    // These cannot be forged by the browser — they are authoritative.
+    let bodyToForward = bodyText;
+    if (payload) {
+      payload.consent_ip = request.headers.get("CF-Connecting-IP") || "";
+      payload.consent_user_agent = request.headers.get("User-Agent") || "";
+      bodyToForward = JSON.stringify(payload);
+    }
+
+    const body = new TextEncoder().encode(bodyToForward);
 
     const upstreamRes = await fetch(APPS_SCRIPT_URL, {
       method: "POST",

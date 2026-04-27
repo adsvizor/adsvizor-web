@@ -264,6 +264,10 @@ function buildLeadPayload(form, config) {
 
   const professionalStatus = fd.get("professional_status");
 
+  // Capture consent proof context (RGPD)
+  const consentLabelEl = document.querySelector('label[for="consent_marketing"]');
+  const consentText = consentLabelEl ? consentLabelEl.textContent.trim() : "";
+
   const payload = {
     client_slug: clientSlug,
     offer_id: offerId,
@@ -281,6 +285,9 @@ function buildLeadPayload(form, config) {
     },
     page_version: fd.get("page_version") ? safeString(fd.get("page_version")).trim() : safeString(config.page_version || ""),
     consent_marketing: consentMarketing,
+    consent_url: window.location.href,
+    consent_text: consentText,
+    consent_timestamp: new Date().toISOString(),
     hp_trap: safeString(fd.get("hp_trap") ?? "").trim(), // honeypot
     formation_interest: fd.get("formation_interest") ? safeString(fd.get("formation_interest")).trim() : null
   };
@@ -628,6 +635,9 @@ function initMultiStepForm(form, config) {
         formation_interest: fd.get("formation_interest")
           ? safeString(fd.get("formation_interest")).trim() : null,
         consent_marketing: form.querySelector('#consent_marketing')?.checked ?? false,
+        consent_url: window.location.href,
+        consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
+        consent_timestamp: new Date().toISOString(),
         utm: {
           source:   utm.utm_source   || null,
           medium:   utm.utm_medium   || null,
@@ -701,6 +711,9 @@ function initMultiStepForm(form, config) {
           visitor_phone:     safeString(fd.get("phone") ?? "").trim() || null,
           formation_interest: "Permis de conduire (CACES)",
           consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
+          consent_url: window.location.href,
+          consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
+          consent_timestamp: new Date().toISOString(),
           utm: {
             source:   utm.utm_source   || null,
             medium:   utm.utm_medium   || null,
