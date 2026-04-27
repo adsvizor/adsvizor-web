@@ -184,7 +184,7 @@ async function loadClientConfig(form) {
   // 4) Default fallback
   clientSlug = (clientSlug || 'formations').trim();
   
-  // Absolute path so the fetch works regardless of the page URL (e.g. /formations-cpf/ with trailing slash).
+  // Absolute path so the fetch works regardless of the page URL (e.g. /formations/ with trailing slash).
   const url = `/clients/${encodeURIComponent(clientSlug)}/config.json`;
   return fetchJson(url);
 }
@@ -401,7 +401,7 @@ function initCtaTracking() {
  * config.cpf_formations, and injects all its fields as active_* keys into config
  * so the {{active_*}} placeholders in formation-detail.html get replaced normally.
  * Also auto-generates active_meta_title and active_meta_description for the <head>.
- * Redirects to formations-cpf.html if slug is missing or unknown.
+ * Redirects to formations.html if slug is missing or unknown.
  */
 function resolveActiveFormation(config) {
   const detailContainer = document.getElementById("formation-detail-content");
@@ -411,13 +411,13 @@ function resolveActiveFormation(config) {
   const formations = config.cpf_formations;
 
   if (!slug || !Array.isArray(formations)) {
-    window.location.replace("/formations-cpf.html");
+    window.location.replace("/formations.html");
     return;
   }
 
   const formation = formations.find((f) => f.slug === slug);
   if (!formation) {
-    window.location.replace("/formations-cpf.html");
+    window.location.replace("/formations.html");
     return;
   }
 
@@ -677,7 +677,7 @@ function initMultiStepForm(form, config) {
   if (formationSelect) {
     formationSelect.addEventListener("change", () => {
       const val = formationSelect.value;
-      const formationLabel = val === "permis-cases" ? "Permis de conduire (CASES)" : val;
+      const formationLabel = val === "permis-cases" ? "Permis de conduire (CACES)" : val;
       if (formationVal) formationVal.value = formationLabel;
 
       const isPermis = val === "permis-cases";
@@ -699,7 +699,7 @@ function initMultiStepForm(form, config) {
           visitor_name:      [firstName, lastName].filter(Boolean).join(" ") || null,
           visitor_email:     safeString(fd.get("email") ?? "").trim() || null,
           visitor_phone:     safeString(fd.get("phone") ?? "").trim() || null,
-          formation_interest: "Permis de conduire (CASES)",
+          formation_interest: "Permis de conduire (CACES)",
           consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
           utm: {
             source:   utm.utm_source   || null,

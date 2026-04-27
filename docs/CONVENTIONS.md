@@ -179,4 +179,4 @@ Before pushing:
 4. Analytics events fire with correct payload keys.
 5. Thank-you page shows correctly and preserves UTM params.
 6. Blog listing shows newest article first; empty slots are hidden.
-7. Client-specific pages (`/formations-cpf.html`, `/blog/sophie-marchand.html`) load correctly via middleware.
+7. Client-specific pages (`/formations.html`, `/blog/sophie-marchand.html`) load correctly via middleware.

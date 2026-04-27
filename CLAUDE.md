@@ -25,9 +25,9 @@ npx wrangler pages dev . --port 5500 --compatibility-date 2026-04-19
 ```
 
 Then open `http://localhost:5500/?client=formations` for the landing page.
-Client-specific pages work automatically: `http://localhost:5500/formations-cpf.html?client=formations`
+Client-specific pages work automatically: `http://localhost:5500/formations.html?client=formations`
 
-> **Why not Live Server?** Client-specific pages (`formations-cpf.html`, blog articles) are stored under
+> **Why not Live Server?** Client-specific pages (`formations.html`, blog articles) are stored under
 > `clients/{slug}/pages/` and `clients/{slug}/blog/`. The middleware routes them at runtime based on
 > the subdomain (production) or `?client=` param (local). Live Server has no middleware support.
 

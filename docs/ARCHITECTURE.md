@@ -27,7 +27,7 @@ clients/{slug}/
 ├── config.json          ← all {{placeholder}} values for the web templates
 ├── agent.config.json    ← blog agent: system_prompt, article_types, cta_blocks, nav_links
 ├── blog/                ← generated blog articles (e.g. sophie-marchand.html)
-└── pages/               ← client-specific pages (e.g. formations-cpf.html)
+└── pages/               ← client-specific pages (e.g. formations.html)
 
 data/{slug}/
 └── blog-history.json    ← published posts index (max 10, FIFO eviction)
@@ -47,9 +47,9 @@ functions/
 ### Production (subdomain)
 
 ```
-formations.adsvizor.com/formations-cpf.html
+formations.adsvizor.com/formations.html
   → _middleware.js detects slug "formations" from hostname
-  → fetches /clients/formations/pages/formations-cpf.html from Pages ASSETS
+  → fetches /clients/formations/pages/formations.html from Pages ASSETS
   → injects <base href="/"> so relative links resolve from domain root
   → returns 200
 
@@ -145,7 +145,7 @@ Per-client configuration for the blog agent:
   "type_labels": { "temoignage": "Témoignage", ... },
   "type_instructions": { "temoignage": "...", ... },
   "cta_blocks": { "temoignage": { "h2": "...", "p": "..." }, ... },
-  "nav_links": [{ "href": "formations-cpf.html", "label": "Nos Formations" }, ...]
+  "nav_links": [{ "href": "formations.html", "label": "Nos Formations" }, ...]
 }
 ```
 

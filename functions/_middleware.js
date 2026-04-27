@@ -61,7 +61,7 @@ export async function onRequest(context) {
 
   // ── Build asset path ─────────────────────────────────────────────────────
   // /blog/sophie-marchand.html → /clients/formations/blog/sophie-marchand.html
-  // /formations-cpf.html      → /clients/formations/pages/formations-cpf.html
+  // /formations.html      → /clients/formations/pages/formations.html
   const assetPath = url.pathname.startsWith('/blog/')
     ? `/clients/${slug}${url.pathname}`
     : `/clients/${slug}/pages${url.pathname}`;

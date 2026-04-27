@@ -2295,48 +2295,76 @@ footer p {
 /* ── Why Us section (index.html) ── */
 .why-us-section {
   margin: 48px 0 0;
-  padding: 40px 0 0;
-  border-top: 1px solid var(--color-border);
+  padding: 40px 24px 32px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
 }
 
 .why-us-section h2 {
-  font-size: clamp(1.2rem, 3vw, 1.6rem);
-  font-weight: 700;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: 800;
   color: var(--color-primary);
-  margin: 0 0 24px;
+  margin: 0 0 28px;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .why-us-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .why-us-card {
-  background: var(--color-surface);
+  background: #fff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 22px 20px;
+  text-align: center;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.why-us-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent);
 }
 
 .why-us-emoji {
-  font-size: 1.6rem;
-  display: block;
-  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 14px;
+  font-size: 1.8rem;
+  background: var(--gradient-accent);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
 }
 
 .why-us-card h3 {
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--color-primary);
-  margin: 0 0 6px;
+  margin: 0 0 8px;
 }
 
 .why-us-card p {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--color-muted);
   line-height: 1.6;
   margin: 0;
+}
+
+@media (min-width: 600px) {
+  .why-us-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ── Formation dropdown & prefilled ── */
@@ -2424,17 +2452,41 @@ footer p {
 .flowchart-box {
   flex: 1;
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: var(--color-surface);
+  flex-direction: column;
+  background: #fff;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.flowchart-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.flowchart-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.flowchart-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   padding: 14px 16px;
 }
 
 .flowchart-box-success {
-  background: #f0fdf4;
   border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.flowchart-box-success .flowchart-image {
+  filter: saturate(1.1);
 }
 
 .flowchart-icon {

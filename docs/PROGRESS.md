@@ -58,7 +58,7 @@ Company: AdsVizor
 **Option C routing — Cloudflare Pages Function:**
 - All client-specific pages moved out of root into `clients/{slug}/`:
   - Blog articles → `clients/{slug}/blog/*.html`
-  - Other pages → `clients/{slug}/pages/*.html` (e.g. `formations-cpf.html`, `formation-detail.html`)
+  - Other pages → `clients/{slug}/pages/*.html` (e.g. `formations.html`, `formation-detail.html`)
 - `functions/_middleware.js` — global routing middleware:
   - Intercepts all `*.html` requests except root templates.
   - Resolves client slug from subdomain (production) or `?client=` param (local dev).
