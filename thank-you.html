@@ -51,7 +51,9 @@
   </script>
   <!-- Conversion event: fires only when arriving from a successful form submit -->
   <script>
-    if (new URLSearchParams(window.location.search).get('code')) {
+    var _host = window.location.hostname;
+    var _isProd = _host !== 'localhost' && _host !== '127.0.0.1' && !_host.startsWith('192.168.');
+    if (_isProd && new URLSearchParams(window.location.search).get('code')) {
       gtag('event', 'conversion', {'send_to': 'AW-18122720723/DYbkCO3H5aMcENOLy8FD'});
     }
   </script>
