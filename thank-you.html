@@ -49,6 +49,12 @@
     gtag('config', 'GT-KD7C7TR3');
     gtag('config', 'AW-18122720723');
   </script>
+  <!-- Conversion event: fires only when arriving from a successful form submit -->
+  <script>
+    if (new URLSearchParams(window.location.search).get('code')) {
+      gtag('event', 'conversion', {'send_to': 'AW-18122720723/DYbkCO3H5aMcENOLy8FD'});
+    }
+  </script>
   </head>
 
   <body>
