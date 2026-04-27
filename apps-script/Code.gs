@@ -136,10 +136,15 @@ function doPost(e) {
           sheet.getRange(existingSheetRow, STATUS_COL + 1).setValue(newStatus);
         }
 
+        // Formation: APPEND history with " → " if user changes choice
+        // (e.g. picks CACES first, then changes to Informatique).
+        // Each segment kept once (no dedup string contains check would miss case-only diffs).
+        const formationFinal = appendFormationHistory_(asString_(existingData[5]), formation);
+
         const updates = [
           [2,  payload.visitor_name],
           [4,  payload.visitor_phone],
-          [5,  formation],
+          [5,  formationFinal],
           [7,  payload.security_code],
           [8,  payload.professional_status],
           [11, payload.client_slug],
@@ -251,6 +256,28 @@ function mergeFormation_(interest, message) {
   const b = asString_(message).trim();
   if (a && b) return a + " — " + b;
   return a || b || "";
+}
+
+/**
+ * Append a new formation choice to existing history with " → " separator.
+ * - If existing is empty → return new
+ * - If new is empty → return existing
+ * - If new == existing OR new is already in the chain → return existing (no dup)
+ * - Otherwise → return "existing → new"
+ *
+ * Lets us track journeys like "Permis de conduire (CACES) → Informatique & Digital"
+ * when a user changes their mind in the dropdown.
+ */
+function appendFormationHistory_(existing, incoming) {
+  const e = asString_(existing).trim();
+  const n = asString_(incoming).trim();
+  if (!e) return n;
+  if (!n) return e;
+  if (e === n) return e;
+  // Avoid re-appending if incoming is already present in the chain
+  const segments = e.split(" → ").map(function(s) { return s.trim(); });
+  if (segments.indexOf(n) !== -1) return e;
+  return e + " → " + n;
 }
 
 function jsonResponse_(obj) {
