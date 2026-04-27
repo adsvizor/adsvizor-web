@@ -19,7 +19,7 @@ A separate **Cloudflare Worker** (`cloudflare-worker.js`) acts as a CORS proxy, 
 Use `wrangler pages dev` (NOT Live Server) — required to run `functions/_middleware.js` locally:
 
 ```bash
-npm run dev          # starts wrangler pages dev on port 5500
+npm run dev          # starts wrangler pages dev on port 5500x
 # or directly:
 npx wrangler pages dev . --port 5500 --compatibility-date 2026-04-19
 ```

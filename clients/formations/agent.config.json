@@ -36,7 +36,7 @@
   },
 
   "nav_links": [
-    { "href": "https://formations.adsvizor.com/", "label": "🏠 Accueil" },
+    { "href": "/", "label": "🏠 Accueil" },
     { "href": "formations.html", "label": "Nos Formations" },
     { "href": "blog.html",           "label": "Blog" },
     { "href": "contact.html",        "label": "Contactez Nous" },
