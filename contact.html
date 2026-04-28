@@ -302,7 +302,32 @@
                   </div>
                 </div>
 
-                <input type="hidden" name="formation_interest" value="Conseil CPF — prise de contact" />
+                <!-- Formation field: dropdown (default) or pre-filled (when CTA has data-formation) -->
+                <div>
+                  <input type="hidden" name="formation_interest" id="formation_interest_val" value="" />
+
+                  <div id="formation-dropdown-wrap">
+                    <label for="formation_select">{{field_formation_label}}</label>
+                    <select id="formation_select">
+                      <option value="">-- {{field_formation_placeholder}} --</option>
+                      <option value="Informatique &amp; Digital">{{field_formation_opt_digital}}</option>
+                      <option value="Langues étrangères">{{field_formation_opt_langues}}</option>
+                      <option value="Management &amp; Commerce">{{field_formation_opt_management}}</option>
+                      <option value="Comptabilité &amp; Gestion">{{field_formation_opt_comptabilite}}</option>
+                      <option value="Santé &amp; Social">{{field_formation_opt_sante}}</option>
+                      <option value="Autre formation professionnelle">{{field_formation_opt_autre}}</option>
+                      <option value="permis-cases">{{field_formation_opt_permis}}</option>
+                    </select>
+                    <div id="permis-disqualif" hidden style="display:none" class="permis-disqualif">
+                      <p>{{field_formation_permis_msg}}</p>
+                    </div>
+                  </div>
+
+                  <div id="formation-prefilled-wrap" hidden style="display:none">
+                    <label>{{field_formation_label}}</label>
+                    <p id="formation-prefilled-name" class="formation-prefilled-value"></p>
+                  </div>
+                </div>
 
                 <div class="form-honeypot" aria-hidden="true">
                   <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
