@@ -673,7 +673,9 @@ function initMultiStepForm(form, config) {
   const submitBtn        = form.querySelector('button[type="submit"]');
 
   // Apply any formation stored in session (set by CTA click)
+  // Read and immediately clear — one-time-use only (avoids stale value on next visit)
   const sessionFormation = sessionStorage.getItem("adsvizor_formation");
+  sessionStorage.removeItem("adsvizor_formation");
   if (sessionFormation && dropdownWrap && prefilledWrap) {
     dropdownWrap.hidden = true;
     dropdownWrap.style.display = "none";
