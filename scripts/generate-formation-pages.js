@@ -300,6 +300,51 @@ function assembleHTML(f, config) {
 `;
 }
 
+// ── Sitemap generator ─────────────────────────────────────────────────────────
+
+function buildSitemap(formations, config, baseUrl) {
+  const now = new Date().toISOString().split('T')[0];
+
+  const staticPages = [
+    { url: `${baseUrl}/`,             priority: '1.0', freq: 'weekly' },
+    { url: `${baseUrl}/formations.html`, priority: '0.9', freq: 'weekly' },
+    { url: `${baseUrl}/contact.html`, priority: '0.8', freq: 'monthly' },
+    { url: `${baseUrl}/blog.html`,    priority: '0.7', freq: 'weekly' },
+  ];
+
+  const formationPages = formations.map(f => ({
+    url: `${baseUrl}/formation-${f.slug}.html`,
+    priority: '0.9',
+    freq: 'monthly'
+  }));
+
+  // Blog posts from config
+  const blogPages = [];
+  for (let i = 1; i <= 10; i++) {
+    const href = config[`post_${i}_href`];
+    if (href) blogPages.push({
+      url: `${baseUrl}/${href}`,
+      priority: '0.6',
+      freq: 'never'
+    });
+  }
+
+  const allPages = [...staticPages, ...formationPages, ...blogPages];
+
+  const urls = allPages.map(p => `
+  <url>
+    <loc>${p.url}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>${p.freq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 const outDir = path.join(ROOT, `clients/${CLIENT_SLUG}/pages`);
@@ -316,6 +361,13 @@ for (const f of formations) {
   console.log(`✅ clients/${CLIENT_SLUG}/pages/${filename}`);
   console.log(`   → ${baseUrl}/formation-${f.slug}.html`);
 }
+
+// Generate sitemap.xml at repo root
+const sitemapPath = path.join(ROOT, 'sitemap.xml');
+const sitemap = buildSitemap(formations, config, baseUrl);
+writeFileSync(sitemapPath, sitemap, 'utf-8');
+console.log(`\n🗺️  sitemap.xml generated (${formations.length + 4} URLs + blog posts)`);
+console.log(`   → ${baseUrl}/sitemap.xml`);
 
 console.log(`\n🎉 Done — ${formations.length} pages generated.`);
 console.log(`\nNext steps:`);
