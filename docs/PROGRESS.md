@@ -76,6 +76,44 @@ Company: AdsVizor
 - Deleted: `style.css` (replaced by `main.css`), `clients/formations/blog.html` (replaced by per-client dir), `_logo-preview.html`, `functions/blog/[[path]].js` (replaced by `_middleware.js`).
 - Moved to `docs/`: architecture HTML/PDF files.
 
+### Phase 5 — Google Ads launch + production hardening ✅
+
+**Lead form improvements:**
+- Multi-step form: consent checkbox moved to Step 1 (required to advance), visible from start (RGPD)
+- Formation dropdown on all 3 forms (index, blog, contact) with CACES disqualification
+- CACES → formation history tracking in Apps Script (`appendFormationHistory_()`)
+- sessionStorage cleared after reading (one-time-use, prevents stale formation preselect)
+- Loading spinner on submit button during Apps Script processing
+
+**RGPD consent proof:**
+- Worker (`adsvizor-leads`) injects `consent_ip` (CF-Connecting-IP) and `consent_user_agent`
+- Frontend sends `consent_url`, `consent_text`, `consent_timestamp`
+- Worker also injects `visitor_city` and `visitor_region` (Cloudflare `request.cf` geolocation)
+- Apps Script v6: 26 columns A–Z, `ensureSchema_()` auto-creates missing columns
+
+**Apps Script versioned in repo:**
+- `apps-script/Code.gs` — source of truth, copy-paste to deploy
+- `apps-script/README.md` — deploy instructions
+
+**Google Ads setup:**
+- Google tag (GT-KD7C7TR3 + AW-18122720723) on all pages
+- Conversion event on `thank-you.html` (fires only with `?code=` param and on production)
+- Tracking template with UTM params configured in Google Ads
+- Worker correctly identified as `adsvizor-leads` (wrangler.jsonc updated)
+
+**Static formation pages for Quality Score:**
+- `scripts/generate-formation-pages.js` — generates 10 static HTML pages per client
+- Each page has keyword in `<title>`, `<meta description>`, `<h1>`, canonical URL
+- Formation cards now link to `/formation-{slug}.html` (not `formation-detail.html?f=`)
+- `sitemap.xml` auto-generated with all pages (formation + blog + static)
+
+**SEO fixes:**
+- `index.html`: static meta fallbacks (no more `{{placeholders}}` visible to Googlebot)
+- `index.html`: canonical tag pointing to `formations.adsvizor.com`
+- `_redirects`: 301 from `/formations-cpf.html` → `/formations.html`
+- `landing.html`: root domain `adsvizor.com` serves logo only (hides agency identity)
+- Middleware updated to serve `landing.html` for all requests on root domain
+
 ---
 
 ## Active roadmap

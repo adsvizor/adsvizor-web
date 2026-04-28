@@ -190,3 +190,46 @@ No middleware changes needed — the slug is resolved from the subdomain at runt
 - Worker enforces origin allowlist — browser-only submissions.
 - Secrets (Apps Script URL, Claude API key, GitHub token) stored as GitHub Actions secrets or Cloudflare env vars — never committed.
 - Agent output is recommendations only; changes to Google Ads are applied manually or after a review gate.
+
+## 11. Root domain isolation
+
+`adsvizor.com` (no subdomain) serves `landing.html` — just the centered logo. This hides the agency identity from anyone who types the root domain manually. All real client sites live on subdomains.
+
+The middleware detects `hostParts.length === 2` (or `www.`) and serves `landing.html` for any HTML request. Static assets (logo, favicon, CSS) are still served normally.
+
+## 12. Static formation pages (Google Ads Quality Score)
+
+JS-rendered pages (`formation-detail.html?f=bureautique`) hurt Google Ads Quality Score because the crawler may see placeholder content before JS executes. Static pages solve this.
+
+`scripts/generate-formation-pages.js` reads `clients/{slug}/config.json` and generates:
+- `clients/{slug}/pages/formation-{slug}.html` — one per formation in `cpf_formations`
+- `sitemap.xml` at repo root — all pages indexed
+
+Each static page has the keyword hardcoded in `<title>`, `<meta description>`, `<h1>`, and `<link rel="canonical">`. `script.js` still runs for form handling, UTM capture, analytics.
+
+Run after any formation content change: `node scripts/generate-formation-pages.js`
+
+## 13. RGPD consent proof
+
+Every lead submission captures a full consent audit trail:
+
+| Field | Source | How |
+|-------|--------|-----|
+| `consent_url` | Frontend | `window.location.href` |
+| `consent_text` | Frontend | Checkbox label text content |
+| `consent_timestamp` | Frontend | ISO timestamp at submit |
+| `consent_ip` | Worker | `CF-Connecting-IP` header |
+| `consent_user_agent` | Worker | `User-Agent` header |
+| `visitor_city` | Worker | `request.cf.city` |
+| `visitor_region` | Worker | `request.cf.region` |
+
+Worker fields are server-side — cannot be forged by the browser.
+
+Apps Script (`apps-script/Code.gs` v6) stores all 26 fields in columns A–Z. `ensureSchema_()` auto-creates missing columns on every request.
+
+## 14. Google Ads tracking
+
+- Google tag IDs: `GT-KD7C7TR3` (Google Tag) + `AW-18122720723` (Google Ads) on all pages
+- Conversion event fires on `thank-you.html` only when `?code=` param is present and hostname is not localhost
+- Tracking template: `{lpurl}?utm_source=google&utm_medium=cpc&utm_campaign={campaign}&utm_term={keyword}&utm_content={adgroupid}`
+- Formation landing pages: `formations.adsvizor.com/formation-{slug}.html`
