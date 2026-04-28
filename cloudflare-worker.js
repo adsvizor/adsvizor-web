@@ -96,6 +96,8 @@ export default {
     if (payload) {
       payload.consent_ip = request.headers.get("CF-Connecting-IP") || "";
       payload.consent_user_agent = request.headers.get("User-Agent") || "";
+      payload.visitor_city = (request.cf && request.cf.city) || "";
+      payload.visitor_region = (request.cf && request.cf.region) || "";
       bodyToForward = JSON.stringify(payload);
     }
 

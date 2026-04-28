@@ -37,6 +37,8 @@
  * V=21  Consent Timestamp     (RGPD proof — when user clicked submit)
  * W=22  Consent IP            (RGPD proof — IP from CF-Connecting-IP)
  * X=23  Consent User-Agent    (RGPD proof — browser UA)
+ * Y=24  Ville                 (Cloudflare cf.city)
+ * Z=25  Région                (Cloudflare cf.region)
  */
 
 const SHEET_COLUMNS = [
@@ -63,13 +65,15 @@ const SHEET_COLUMNS = [
   "Consent Texte",         // U 20
   "Consent Timestamp",     // V 21
   "Consent IP",            // W 22
-  "Consent User-Agent"     // X 23
+  "Consent User-Agent",    // X 23
+  "Ville",                 // Y 24
+  "Région"                 // Z 25
 ];
 
 const EMAIL_COL   = 3;
 const STATUS_COL  = 9;
 const UPDATED_COL = 1;
-const NUM_COLS    = SHEET_COLUMNS.length; // 24
+const NUM_COLS    = SHEET_COLUMNS.length; // 26
 
 // ---------------------------------------------------------------------------
 // Main handler
@@ -159,7 +163,9 @@ function doPost(e) {
           [20, payload.consent_text],
           [21, payload.consent_timestamp],
           [22, payload.consent_ip],
-          [23, payload.consent_user_agent]
+          [23, payload.consent_user_agent],
+          [24, payload.visitor_city],
+          [25, payload.visitor_region]
         ];
         updates.forEach(function(pair) {
           const col0 = pair[0];
@@ -200,6 +206,8 @@ function doPost(e) {
         row[21] = nullIfEmpty_(asString_(payload.consent_timestamp));
         row[22] = nullIfEmpty_(asString_(payload.consent_ip));
         row[23] = nullIfEmpty_(asString_(payload.consent_user_agent));
+        row[24] = nullIfEmpty_(asString_(payload.visitor_city));
+        row[25] = nullIfEmpty_(asString_(payload.visitor_region));
         sheet.appendRow(row);
       }
 
