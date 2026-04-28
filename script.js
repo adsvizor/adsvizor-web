@@ -451,7 +451,7 @@ function renderFormationList(config) {
 
   const cards = config.cpf_formations.map((f, i) => {
     const rank = i + 1;
-    const href = `/formation-detail.html?f=${encodeURIComponent(f.slug)}`;
+    const href = `/formation-${f.slug}.html`;
     return `<li class="formation-card">
   <a href="${href}" class="formation-card-link" aria-label="${f.title}">
     <div class="formation-card-img-wrap">
