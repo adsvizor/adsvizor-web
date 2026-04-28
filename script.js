@@ -145,8 +145,10 @@ function applyConfigToHead(config) {
     ? config[pageDescKey]
     : (Object.prototype.hasOwnProperty.call(config, "meta_description") ? config.meta_description : null);
 
-  if (titleValue !== null) document.title = safeString(titleValue);
-  if (descValue !== null) setMetaContent('meta[name="description"]', descValue);
+  // Skip title/meta override on static pages (data-static="true") — they have hardcoded SEO content
+  const isStatic = document.documentElement.getAttribute('data-static') === 'true';
+  if (!isStatic && titleValue !== null) document.title = safeString(titleValue);
+  if (!isStatic && descValue !== null) setMetaContent('meta[name="description"]', descValue);
 
   if (Object.prototype.hasOwnProperty.call(config, "og_type")) setMetaContent('meta[property="og:type"]', config.og_type);
   if (Object.prototype.hasOwnProperty.call(config, "og_url")) setMetaContent('meta[property="og:url"]', config.og_url);

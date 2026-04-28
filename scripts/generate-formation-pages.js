@@ -69,8 +69,9 @@ function assembleHTML(f, config) {
   const metaTitle    = `${f.title} — Formation CPF | ${logoText}`;
   const metaDesc     = `${f.title} : formation certifiante éligible CPF. ${f.excerpt}`.slice(0, 155);
 
+  // data-static="true" → script.js will not override <title> and <meta description>
   return `<!doctype html>
-<html lang="fr">
+<html lang="fr" data-static="true">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
