@@ -1,5 +1,5 @@
 /**
- * AdsVizor Lead Capture — Google Apps Script Web App  v5
+ * AdsVizor Lead Capture — Google Apps Script Web App  v6
  *
  * Source of truth: this file lives at apps-script/Code.gs in the repo.
  * To deploy: copy entire contents → paste into script.google.com editor →
@@ -223,7 +223,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return jsonResponse_({ status: "ok", message: "AdsVizor lead endpoint v5 is running." });
+  return jsonResponse_({ status: "ok", message: "AdsVizor lead endpoint v6 is running." });
 }
 
 // ---------------------------------------------------------------------------
