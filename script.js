@@ -808,15 +808,15 @@ function initMultiStepForm(form, config) {
         utm_content:  payload.utm.content
       });
 
+      // Show loading animation while Apps Script processes
+      if (submitButton) {
+        submitButton.classList.add("btn-loading");
+        submitButton.textContent = "";
+      }
+
       await postLead(config.form_action, payload);
 
-      emitEvent("form_submit", {
-        status: "success",
-        client_slug: payload.client_slug,
-        offer_id: payload.offer_id,
-        security_code: securityCode
-      });
-
+      emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
       window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
