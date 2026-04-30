@@ -1,2 +1,21 @@
 /formations-cpf.html    /formations.html    301
 /formations-cpf         /formations.html    301
+
+# Redirections 301 — réorganisation des pages par catégorie (2026-04-30)
+/formation-bureautique-office.html    /bureautique/formation-bureautique-office.html    301
+/formation-excel.html                 /bureautique/formation-excel.html                 301
+/formation-word.html                  /bureautique/formation-word.html                  301
+/formation-powerpoint.html            /bureautique/formation-powerpoint.html            301
+/formation-outils-collaboratifs.html  /bureautique/formation-outils-collaboratifs.html  301
+/formation-wordpress.html             /bureautique/formation-wordpress.html             301
+/formation-pao.html                   /bureautique/formation-pao.html                   301
+/formation-bases-informatique.html    /bureautique/formation-bases-informatique.html    301
+/formation-anglais-toeic.html         /langues/formation-anglais-toeic.html             301
+/formation-management-leadership.html /management/formation-management-leadership.html  301
+/formation-gestion-de-projet.html     /management/formation-gestion-de-projet.html      301
+/formation-marketing-digital.html     /marketing/formation-marketing-digital.html       301
+/formation-comptabilite-paie.html     /finance/formation-comptabilite-paie.html         301
+/formation-developpement-personnel.html /dev-personnel/formation-developpement-personnel.html 301
+/formation-bilan-competences.html     /dev-personnel/formation-bilan-competences.html   301
+/formation-creation-entreprise.html   /entrepreneuriat/formation-creation-entreprise.html 301
+/formation-intelligence-artificielle.html /ia/formation-intelligence-artificielle.html  301
