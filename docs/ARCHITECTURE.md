@@ -20,14 +20,23 @@ AdsVizor provides a repeatable pipeline:
 / (root — generic assets, shared by all clients)
 ├── index.html, blog.html, contact.html, privacy.html, thank-you.html  ← templates
 ├── main.css, script.js, cloudflare-worker.js                          ← shared
-├── favicon.png, logo.png, logo.svg, _headers
-├── package.json, wrangler.jsonc, CLAUDE.md
+├── favicon.png, logo.png, logo.svg, _headers, _redirects
+├── package.json, wrangler.jsonc, CLAUDE.md, sitemap.xml
 
 clients/{slug}/
 ├── config.json          ← all {{placeholder}} values for the web templates
 ├── agent.config.json    ← blog agent: system_prompt, article_types, cta_blocks, nav_links
 ├── blog/                ← generated blog articles (e.g. sophie-marchand.html)
-└── pages/               ← client-specific pages (e.g. formations.html)
+└── pages/
+    ├── formations.html               ← formations listing page
+    ├── bureautique/                  ← Excel, Word, PowerPoint, Outils Collaboratifs, WordPress, PAO, Bases Informatiques
+    ├── langues/                      ← Anglais TOEIC
+    ├── management/                   ← Management Leadership, Gestion de Projet
+    ├── marketing/                    ← Marketing Digital
+    ├── finance/                      ← Comptabilité & Paie
+    ├── dev-personnel/                ← Développement Personnel, Bilan de Compétences
+    ├── entrepreneuriat/              ← Création d'Entreprise
+    └── ia/                           ← Intelligence Artificielle
 
 data/{slug}/
 └── blog-history.json    ← published posts index (max 10, FIFO eviction)
@@ -36,7 +45,7 @@ scripts/
 └── blog-agent.js        ← parameterized by CLIENT_SLUG env var
 
 functions/
-└── _middleware.js        ← Cloudflare Pages Function: routes *.html requests
+└── _middleware.js        ← Cloudflare Pages Function: routes *.html + handles 301 redirects
 
 .github/workflows/
 └── blog-agent.yml        ← matrix strategy: one job per client slug
@@ -232,4 +241,4 @@ Apps Script (`apps-script/Code.gs` v6) stores all 26 fields in columns A–Z. `e
 - Google tag IDs: `GT-KD7C7TR3` (Google Tag) + `AW-18122720723` (Google Ads) on all pages
 - Conversion event fires on `thank-you.html` only when `?code=` param is present and hostname is not localhost
 - Tracking template: `{lpurl}?utm_source=google&utm_medium=cpc&utm_campaign={campaign}&utm_term={keyword}&utm_content={adgroupid}`
-- Formation landing pages: `formations.adsvizor.com/formation-{slug}.html`
+- Formation landing pages: `formations.adsvizor.com/{category}/formation-{slug}.html`

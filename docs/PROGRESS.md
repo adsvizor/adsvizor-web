@@ -116,6 +116,32 @@ Company: AdsVizor
 
 ---
 
+
+### Phase 6 — Catalogue Bureautique + Réorganisation des pages (2026-04-30) ✅
+
+**Nouvelles pages bureautique :**
+- `formation-outils-collaboratifs.html` — Microsoft 365, Google Workspace, Teams, SharePoint
+- `formation-wordpress.html` — WordPress, WooCommerce, SEO, HTML/CSS bases
+- `formation-pao.html` — Photoshop, Illustrator, InDesign, TOSA PAO
+- `formation-bases-informatique.html` — Windows 10/11, internet, email, sécurité, initiation MAC
+
+**Mise à jour pages existantes :**
+- Excel : subpages-nav étendu à 7 formations, mention Google Sheets / Calc, VBA avancé
+- Word : mention Google Docs, Writer (LibreOffice), Apple Pages
+- PowerPoint : mention Google Slides, Canva, Keynote, Impress
+- Bureautique-office : subpages-nav + "Ce que vous apprendrez" listant les 7 formations, mention MOS + Office 365
+
+**Réorganisation structure des pages :**
+- Pages organisées dans des sous-dossiers par catégorie (`bureautique/`, `langues/`, `management/`, etc.)
+- `REDIRECTS_301` map dans `_middleware.js` — retourne 301 vers nouvelles URLs avant tout asset lookup
+- `_redirects` mis à jour comme filet de sécurité
+- `sitemap.xml` mis à jour avec nouvelles URLs et 4 nouvelles formations
+
+**Google Ads :**
+- Excel `google-ads-campagne-formations-cpf.xlsx` créé avec 8 onglets (un par groupe d'annonces)
+- Chaque onglet : mots-clés (exact/phrase/large), 15 headlines, 6 descriptions, 4 sitelinks
+- Compteurs de caractères automatiques avec alertes couleur
+
 ## Active roadmap
 
 ### Near term
