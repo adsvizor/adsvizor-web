@@ -34,7 +34,12 @@
       .nav-toggle { display: none !important; }
       header nav { display: block !important; }
     }
-  </style>
+    .subpages-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    .subpages-nav a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: #eff6ff; color: #2563eb; border-radius: 10px; font-size: 0.9rem; font-weight: 600; text-decoration: none; border: 1.5px solid #bfdbfe; transition: background 140ms; }
+    .subpages-nav a:hover { background: #dbeafe; }
+    .subpages-nav a.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .formation-section { margin: 32px 0; }
+      </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
   <script>
@@ -75,7 +80,7 @@
             <img class="hero-img" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=500&q=80&auto=format&fit=crop" alt="Professionnel travaillant sur un ordinateur portable avec des tableaux Excel" fetchpriority="high" />
             <div class="hero-body">
               <p class="hero-badge">Informatique & Bureautique — Éligible CPF</p>
-              <h1 id="formation-title">Bureautique — Maîtrisez Excel, Word et PowerPoint pour gagner en efficacité</h1>
+              <h1 id="formation-title">Formation Bureautique — Maîtrisez Excel, Word et PowerPoint pour gagner en efficacité</h1>
               <p class="hero-sub">Des compétences immédiatement applicables dans tous les secteurs, certifiées TOSA ou ICDL, reconnues par tous les recruteurs.</p>
               <a href="#contact" class="hero-cta" data-cta-id="cta-formation-bureautique-office">Demander le programme</a>
             </div>
@@ -84,6 +89,20 @@
           <section class="formation-detail-section" aria-labelledby="detail-title">
 
             <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
+
+            <!-- Sous-formations navigation -->
+            <div class="formation-section">
+              <p style="font-size:0.88rem;color:#64748b;margin-bottom:8px;">Formations spécialisées dans cette série :</p>
+              <div class="subpages-nav">
+      <a href="/formation-excel.html">📊 Excel</a>
+      <a href="/formation-word.html">📝 Word</a>
+      <a href="/formation-powerpoint.html">📊 PowerPoint</a>
+      <a href="/formation-outils-collaboratifs.html">🤝 Outils Collaboratifs</a>
+      <a href="/formation-wordpress.html">🌐 WordPress</a>
+      <a href="/formation-pao.html">🎨 PAO</a>
+      <a href="/formation-bases-informatique.html">💻 Bases Informatiques</a>
+    </div>
+            </div>
 
             <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
             <p class="formation-desc">Les formations bureautique vous permettent de maîtriser les outils Microsoft Office ou Google Workspace utilisés quotidiennement dans toutes les entreprises. De la mise en forme de documents à l'automatisation des calculs avec Excel, en passant par la création de présentations percutantes.</p>
@@ -94,9 +113,13 @@
 
             <h3 class="formation-section-heading">Ce que vous apprendrez</h3>
             <ul class="formation-points">
-              <li><a href="formation-excel.html">Excel</a> : formules avancées, tableaux croisés dynamiques, graphiques et automatisation</li>
-              <li><a href="formation-word.html">Word</a> : mise en page professionnelle, publipostage et gestion de longs documents</li>
-              <li><a href="formation-powerpoint.html">PowerPoint</a> : créer des présentations claires, percutantes et visuellement soignées</li>
+              <li><a href="formation-excel.html">Excel</a> : formules avancées, tableaux croisés dynamiques, Power Query et automatisation VBA</li>
+              <li><a href="formation-word.html">Word</a> : mise en page professionnelle, publipostage et gestion de longs documents — avec options Google Docs, Writer et Pages</li>
+              <li><a href="formation-powerpoint.html">PowerPoint</a> : présentations percutantes, animations avancées — avec options Google Slides, Canva et Keynote</li>
+              <li><a href="formation-outils-collaboratifs.html">Outils Collaboratifs</a> : Microsoft 365 (Teams, SharePoint, OneDrive) et Google Workspace (Drive, Docs, Meet)</li>
+              <li><a href="formation-wordpress.html">WordPress</a> : créer et gérer un site web professionnel, initiation WooCommerce et SEO</li>
+              <li><a href="formation-pao.html">PAO</a> : Photoshop, Illustrator et InDesign pour la création graphique et la mise en page</li>
+              <li><a href="formation-bases-informatique.html">Bases Informatiques</a> : Windows, internet, email et sécurité numérique — accessible aux grands débutants</li>
             </ul>
 
             <div class="formation-info-grid">
