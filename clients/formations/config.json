@@ -123,7 +123,8 @@
       "duration": "24 heures réparties sur 3 mois en moyenne",
       "certification": "Prestataire certifié Qualiopi — éligible CPF à 100 %",
       "form_cta": "Demandez le programme du bilan de compétences",
-      "offer_id": "cpf-bilan-competences"
+      "offer_id": "cpf-bilan-competences",
+      "href": "/dev-personnel/formation-bilan-competences.html"
     },
     {
       "slug": "anglais-toeic",
@@ -143,7 +144,8 @@
       "duration": "40 à 120 heures selon votre niveau de départ",
       "certification": "Certification TOEIC délivrée par ETS — reconnue mondialement",
       "form_cta": "Demandez le programme de formation anglais TOEIC",
-      "offer_id": "cpf-anglais-toeic"
+      "offer_id": "cpf-anglais-toeic",
+      "href": "/langues/formation-anglais-toeic.html"
     },
     {
       "slug": "bureautique-office",
@@ -163,7 +165,8 @@
       "duration": "14 à 35 heures selon les modules choisis",
       "certification": "Certification TOSA ou ICDL — reconnues par les employeurs français",
       "form_cta": "Demandez le programme de formation bureautique",
-      "offer_id": "cpf-bureautique"
+      "offer_id": "cpf-bureautique",
+      "href": "/bureautique/formation-bureautique-office.html"
     },
     {
       "slug": "marketing-digital",
@@ -183,7 +186,8 @@
       "duration": "35 à 70 heures selon la spécialisation choisie",
       "certification": "Certifications Google Ads, Analytics ou titre RNCP Marketing Digital",
       "form_cta": "Demandez le programme de formation marketing digital",
-      "offer_id": "cpf-marketing-digital"
+      "offer_id": "cpf-marketing-digital",
+      "href": "/marketing/formation-marketing-digital.html"
     },
     {
       "slug": "management-leadership",
@@ -203,7 +207,8 @@
       "duration": "21 à 56 heures selon le niveau et le parcours",
       "certification": "Titre RNCP Manager ou Certificat CléA Management",
       "form_cta": "Demandez le programme de formation management",
-      "offer_id": "cpf-management"
+      "offer_id": "cpf-management",
+      "href": "/management/formation-management-leadership.html"
     },
     {
       "slug": "creation-entreprise",
@@ -223,7 +228,8 @@
       "duration": "21 à 70 heures selon le niveau d'accompagnement",
       "certification": "Attestation de formation Qualiopi + accompagnement CCI ou BGE",
       "form_cta": "Demandez le programme de formation entrepreneuriat",
-      "offer_id": "cpf-creation-entreprise"
+      "offer_id": "cpf-creation-entreprise",
+      "href": "/entrepreneuriat/formation-creation-entreprise.html"
     },
     {
       "slug": "comptabilite-paie",
@@ -243,7 +249,8 @@
       "duration": "28 à 70 heures selon le niveau et les modules choisis",
       "certification": "Titre RNCP Gestionnaire Comptable ou certification CléA",
       "form_cta": "Demandez le programme de formation comptabilité",
-      "offer_id": "cpf-comptabilite"
+      "offer_id": "cpf-comptabilite",
+      "href": "/finance/formation-comptabilite-paie.html"
     },
     {
       "slug": "developpement-personnel",
@@ -263,7 +270,8 @@
       "duration": "14 à 35 heures selon le thème et le format choisi",
       "certification": "Attestation de formation — certains parcours éligibles CPF via titre RNCP",
       "form_cta": "Demandez le programme de formation développement personnel",
-      "offer_id": "cpf-dev-personnel"
+      "offer_id": "cpf-dev-personnel",
+      "href": "/dev-personnel/formation-developpement-personnel.html"
     },
     {
       "slug": "gestion-de-projet",
@@ -283,7 +291,8 @@
       "duration": "35 à 70 heures selon la certification visée",
       "certification": "PMP (PMI), PSM (Scrum.org) ou CAPM — reconnues internationalement",
       "form_cta": "Demandez le programme de formation gestion de projet",
-      "offer_id": "cpf-gestion-projet"
+      "offer_id": "cpf-gestion-projet",
+      "href": "/management/formation-gestion-de-projet.html"
     },
     {
       "slug": "intelligence-artificielle",
@@ -303,7 +312,92 @@
       "duration": "14 à 35 heures selon le niveau et la spécialisation",
       "certification": "Attestation de formation + certifications Microsoft AI ou Google AI Essentials",
       "form_cta": "Demandez le programme de formation intelligence artificielle",
-      "offer_id": "cpf-ia"
+      "offer_id": "cpf-ia",
+      "href": "/ia/formation-intelligence-artificielle.html"
+    },
+    {
+      "slug": "allemand",
+      "href": "/langues/formation-allemand.html",
+      "title": "Allemand professionnel",
+      "tag": "Langues étrangères",
+      "image_url": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&h=500&q=80&auto=format&fit=crop",
+      "image_alt": "Vue de Berlin, symbole de l'économie allemande",
+      "excerpt": "L'allemand est la première langue économique d'Europe. Certifiez-vous LILATE avec votre CPF et accédez au marché germanophone.",
+      "headline": "Allemand — Certification LILATE CPF pour accéder au marché européen",
+      "subheadline": "L'Allemagne est le 1er partenaire commercial de la France. Maîtriser l'allemand professionnel est un atout décisif pour votre carrière.",
+      "description_1": "La formation allemand professionnel vous permet d'acquérir les bases solides ou de perfectionner votre niveau pour évoluer dans un contexte professionnel européen.",
+      "description_2": "La certification LILATE est reconnue par France compétences et évalue vos compétences selon les niveaux du CECRL (A1 à C2).",
+      "for_who": "Professionnels travaillant avec des partenaires germanophones, candidats souhaitant travailler en Allemagne ou en Suisse.",
+      "point_1": "Communication professionnelle : emails, réunions, négociations en allemand",
+      "point_2": "Vocabulaire sectoriel adapté à votre métier (commerce, industrie, finance)",
+      "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
+      "duration": "10 à 20 heures selon votre niveau de départ",
+      "certification": "Certification LILATE — reconnue France compétences",
+      "form_cta": "Demandez le programme de formation allemand",
+      "offer_id": "cpf-allemand"
+    },
+    {
+      "slug": "espagnol",
+      "href": "/langues/formation-espagnol.html",
+      "title": "Espagnol professionnel",
+      "tag": "Langues étrangères",
+      "image_url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&h=500&q=80&auto=format&fit=crop",
+      "image_alt": "Vue de Barcelone représentant les marchés hispanophones",
+      "excerpt": "L'espagnol est parlé par 580 millions de personnes dans 20 pays. Certifiez-vous LILATE et ouvrez les marchés hispanophones avec votre CPF.",
+      "headline": "Espagnol — Certification LILATE CPF pour une carrière internationale",
+      "subheadline": "2ème langue la plus parlée au monde, l'espagnol est la clé d'accès à des marchés en forte croissance en Europe et en Amérique latine.",
+      "description_1": "La formation espagnol professionnel vous permet d'acquérir les compétences linguistiques nécessaires pour communiquer dans un environnement professionnel hispanophone.",
+      "description_2": "La certification LILATE est reconnue par France compétences et évalue vos compétences selon les niveaux du CECRL.",
+      "for_who": "Commerciaux, responsables export, professionnels du tourisme souhaitant développer des relations avec des partenaires hispanophones.",
+      "point_1": "Communication orale et écrite en contexte professionnel hispanophone",
+      "point_2": "Vocabulaire commercial et sectoriel adapté à votre activité",
+      "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
+      "duration": "10 à 20 heures selon votre niveau de départ",
+      "certification": "Certification LILATE — reconnue France compétences",
+      "form_cta": "Demandez le programme de formation espagnol",
+      "offer_id": "cpf-espagnol"
+    },
+    {
+      "slug": "italien",
+      "href": "/langues/formation-italien.html",
+      "title": "Italien professionnel",
+      "tag": "Langues étrangères",
+      "image_url": "https://images.unsplash.com/photo-1555992336-03a23c7b20ee?w=800&h=500&q=80&auto=format&fit=crop",
+      "image_alt": "Vue de Rome représentant le marché italien",
+      "excerpt": "L'Italie est le 2ème pays industriel d'Europe. Maîtrisez l'italien professionnel certifié LILATE avec votre CPF.",
+      "headline": "Italien — Certification LILATE CPF pour le commerce et la culture italienne",
+      "subheadline": "Mode, luxe, agroalimentaire, industrie : l'Italie est un partenaire commercial majeur de la France dans de nombreux secteurs.",
+      "description_1": "La formation italien professionnel vous permet de maîtriser la langue de la 2ème économie industrielle de la zone euro.",
+      "description_2": "La certification LILATE évalue vos compétences en contexte professionnel selon les niveaux du CECRL, reconnue par France compétences.",
+      "for_who": "Professionnels travaillant avec des partenaires italiens, acteurs des secteurs mode, luxe, agroalimentaire et industrie.",
+      "point_1": "Communication professionnelle en italien : emails, appels, réunions d'affaires",
+      "point_2": "Vocabulaire spécialisé selon votre secteur (commerce, mode, industrie)",
+      "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
+      "duration": "10 à 20 heures selon votre niveau de départ",
+      "certification": "Certification LILATE — reconnue France compétences",
+      "form_cta": "Demandez le programme de formation italien",
+      "offer_id": "cpf-italien"
+    },
+    {
+      "slug": "lsf",
+      "href": "/langues/formation-lsf.html",
+      "title": "Langue des Signes (LSF)",
+      "tag": "Langues — Inclusion",
+      "image_url": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=500&q=80&auto=format&fit=crop",
+      "image_alt": "Personne pratiquant la langue des signes française",
+      "excerpt": "La LSF est la langue de 500 000 personnes sourdes en France. Une compétence inclusive et différenciante, certifiable LILATE avec votre CPF.",
+      "headline": "LSF — Certification LILATE CPF pour communiquer avec les personnes sourdes",
+      "subheadline": "Développez une compétence rare et valorisée dans les secteurs de la santé, l'éducation, les services publics et l'accueil.",
+      "description_1": "La formation Langue des Signes Française vous permet d'acquérir les bases de communication avec les personnes sourdes et malentendantes en contexte professionnel.",
+      "description_2": "La certification LILATE LSF est reconnue par France compétences et constitue un atout différenciant sur votre CV.",
+      "for_who": "Professionnels de santé, enseignants, agents d'accueil, travailleurs sociaux, managers souhaitant renforcer l'inclusion dans leur équipe.",
+      "point_1": "Alphabet dactylologique et signes essentiels de la vie professionnelle",
+      "point_2": "Communication de base pour l'accueil, la santé, le commerce et l'éducation",
+      "point_3": "Certification LILATE LSF reconnue France compétences",
+      "duration": "10 heures (module d'initiation certifiant)",
+      "certification": "Certification LILATE LSF — reconnue France compétences",
+      "form_cta": "Demandez le programme de formation LSF",
+      "offer_id": "cpf-lsf"
     }
   ],
   "contact_meta_title": "Contactez Nous — Conseil CPF Gratuit | AdsVizor",
