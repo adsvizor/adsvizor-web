@@ -94,7 +94,7 @@ Pages are organised under `clients/formations/pages/` by category:
 pages/
 ├── formations.html              ← listing page
 ├── bureautique/                 ← Excel, Word, PowerPoint, Outils Collaboratifs, WordPress, PAO, Bases Informatiques
-├── langues/                     ← Anglais TOEIC
+├── langues/                     ← Anglais TOEIC, Allemand, Espagnol, Italien, LSF, page générale Langues
 ├── management/                  ← Management Leadership, Gestion de Projet
 ├── marketing/                   ← Marketing Digital
 ├── finance/                     ← Comptabilité & Paie
@@ -113,6 +113,16 @@ Old flat URLs (`/formation-excel.html`) are handled by the `REDIRECTS_301` map i
 - Tracking template: `{lpurl}?utm_source=google&utm_medium=cpc&utm_campaign={campaign}&utm_term={keyword}&utm_content={adgroupid}`
 - Conversion tracking: `gtag('event', 'conversion')` fires on `thank-you.html` when `?code=` param present (production only)
 - Google tag IDs: `GT-KD7C7TR3` (Google Tag), `AW-18122720723` (Google Ads)
+
+**Campagne active : "Formations CPF — AdsVizor"**
+- 14 groupes d'annonces : Bureautique (8) + Langues (6)
+- Ciblage : France + DOM-TOM, 25-64 ans, Search uniquement
+- CSV d'upload dans le repo (format UTF-16 TSV, Google Ads Editor v2) :
+  - `google-ads-keywords.csv` — 150 keywords
+  - `google-ads-rsa.csv` — 14 annonces RSA (15 headlines, 4 descriptions)
+  - `google-ads-sitelinks.csv` — 70 sitelinks (5 par groupe)
+  - `google-ads-callouts.csv` — 70 callouts (5 par groupe)
+- Planning de référence : `planning-google-ads-formations-cpf.xlsx` (14 onglets)
 
 ## Analytics events
 

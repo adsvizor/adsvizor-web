@@ -1,6 +1,6 @@
 # Project Progress & Roadmap
 
-Last updated: 2026-04-25
+Last updated: 2026-04-30
 
 Owner: Fabrice  
 Company: AdsVizor
@@ -141,6 +141,42 @@ Company: AdsVizor
 - Excel `google-ads-campagne-formations-cpf.xlsx` créé avec 8 onglets (un par groupe d'annonces)
 - Chaque onglet : mots-clés (exact/phrase/large), 15 headlines, 6 descriptions, 4 sitelinks
 - Compteurs de caractères automatiques avec alertes couleur
+
+### Phase 7 — Pages Langues + Campagne Google Ads live (2026-04-30) ✅
+
+**Nouvelles pages langues :**
+- `langues/formation-langues.html` — page générale langues (Anglais, Allemand, Espagnol, Italien, LSF)
+- `langues/formation-allemand.html` — certification LILATE, marché DACH
+- `langues/formation-espagnol.html` — certification LILATE, 580M locuteurs
+- `langues/formation-italien.html` — certification LILATE, mode/luxe/industrie
+- `langues/formation-lsf.html` — certification LILATE LSF, 500k personnes sourdes
+- Toutes les pages langues incluent une subpages-nav entre elles
+- `sitemap.xml` mis à jour avec les 5 nouvelles URLs
+
+**Corrections listing formations :**
+- `script.js` ligne 456 : support `f.href` override pour URLs par catégorie
+- `config.json` : champ `href` ajouté aux 14 formations avec URLs correctes
+- 4 nouvelles formations ajoutées au catalogue (Allemand, Espagnol, Italien, LSF)
+
+**Planning Google Ads :**
+- `planning-google-ads-formations-cpf.xlsx` — 14 onglets (Bureautique × 8 + Langues × 6)
+- Chaque onglet : URLs, keywords avec labels, 15 headlines (LEN formulas), 6 descriptions, 5 sitelinks dont Contact
+
+**Campagne Google Ads "Formations CPF — AdsVizor" créée et publiée :**
+- 14 groupes d'annonces : Bureautique (8) + Langues (6)
+- 150 keywords (exact/phrase/broad) avec labels par groupe
+- 14 annonces RSA avec 15 headlines + 4 descriptions chacune
+- 70 sitelinks spécifiques par groupe d'annonces (5 par groupe)
+- 70 callouts spécifiques par groupe d'annonces (5 par groupe)
+- Ciblage : France + 11 territoires DOM-TOM
+- Tranches d'âge 18-24 et 65+ exclues manuellement
+
+**Fichiers CSV Google Ads Editor (dans repo) :**
+- `google-ads-keywords.csv` — 150 keywords, format UTF-16 TSV
+- `google-ads-rsa.csv` — 14 annonces RSA
+- `google-ads-sitelinks.csv` — 70 sitelinks
+- `google-ads-callouts.csv` — 70 callouts
+- Format : UTF-16 LE, tab-séparé, compatible Google Ads Editor v2
 
 ## Active roadmap
 
