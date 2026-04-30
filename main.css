@@ -1569,6 +1569,17 @@ footer p {
   padding: 12px 14px;
 }
 
+.formation-points li a {
+  font-weight: 700;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.formation-points li a:hover {
+  color: var(--color-accent-dark);
+  text-decoration-thickness: 2px;
+}
+
 .formation-info-grid {
   display: grid;
   grid-template-columns: 1fr;
