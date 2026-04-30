@@ -27,6 +27,27 @@ const ROOT_TEMPLATES = new Set([
   '/privacy.html',
 ]);
 
+// ── Redirections 301 — anciennes URLs vers nouvelles URLs par catégorie ──────
+const REDIRECTS_301 = {
+  '/formation-bureautique-office.html':    '/bureautique/formation-bureautique-office.html',
+  '/formation-excel.html':                 '/bureautique/formation-excel.html',
+  '/formation-word.html':                  '/bureautique/formation-word.html',
+  '/formation-powerpoint.html':            '/bureautique/formation-powerpoint.html',
+  '/formation-outils-collaboratifs.html':  '/bureautique/formation-outils-collaboratifs.html',
+  '/formation-wordpress.html':             '/bureautique/formation-wordpress.html',
+  '/formation-pao.html':                   '/bureautique/formation-pao.html',
+  '/formation-bases-informatique.html':    '/bureautique/formation-bases-informatique.html',
+  '/formation-anglais-toeic.html':         '/langues/formation-anglais-toeic.html',
+  '/formation-management-leadership.html': '/management/formation-management-leadership.html',
+  '/formation-gestion-de-projet.html':     '/management/formation-gestion-de-projet.html',
+  '/formation-marketing-digital.html':     '/marketing/formation-marketing-digital.html',
+  '/formation-comptabilite-paie.html':     '/finance/formation-comptabilite-paie.html',
+  '/formation-developpement-personnel.html': '/dev-personnel/formation-developpement-personnel.html',
+  '/formation-bilan-competences.html':     '/dev-personnel/formation-bilan-competences.html',
+  '/formation-creation-entreprise.html':   '/entrepreneuriat/formation-creation-entreprise.html',
+  '/formation-intelligence-artificielle.html': '/ia/formation-intelligence-artificielle.html',
+};
+
 export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
@@ -48,6 +69,14 @@ export async function onRequest(context) {
     landingUrl.pathname = '/landing.html';
     landingUrl.search = '';
     return env.ASSETS.fetch(landingUrl.toString());
+  }
+
+  // ── Redirections 301 pour les anciennes URLs ─────────────────────────────
+  if (REDIRECTS_301[url.pathname]) {
+    return Response.redirect(
+      `${url.protocol}//${url.host}${REDIRECTS_301[url.pathname]}`,
+      301
+    );
   }
 
   // ── Pass through non-HTML and root templates ─────────────────────────────
