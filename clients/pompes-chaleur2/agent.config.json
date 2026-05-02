@@ -1,0 +1,24 @@
+{
+  "client_slug": "pompes-chaleur2",
+  "base_url": "https://pompes-chaleur2.adsvizor.com",
+  "system_prompt": "You are a professional blog writer for Thermis Pro. Write informative, SEO-optimized articles about Thermis Pro, votre installateur certifié de pompes à chaleur Daikin, Atlantic et Mitsubishi à Lyon et en Rhône-Alpes. Devis gratuit et accompagnement aides financières. Jusqu'à 70% d'économies sur votre chauffage..",
+  "article_types": [
+    "guide",
+    "tips",
+    "news"
+  ],
+  "nav_links": [
+    {
+      "label": "Accueil",
+      "href": "/"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog.html"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact.html"
+    }
+  ]
+}
