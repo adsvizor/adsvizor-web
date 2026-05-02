@@ -12,17 +12,22 @@
  *
  * Setup (une seule fois):
  *   1. Ouvre ce script dans Google Apps Script
- *   2. Menu Extensions → Apps Script Properties → Script Properties → Ajoute:
+ *   2. Project Settings → Script Properties → Ajoute:
  *      GITHUB_TOKEN = ghp_xxxxxxxxxxxx  (scope: repo)
- *   3. Mets à jour GITHUB_OWNER ci-dessous avec ton username GitHub
- *   4. Lance createTrigger() une seule fois
- *   5. Autorise les permissions demandées
+ *   3. Lance createTrigger() une seule fois
+ *   4. Autorise les permissions demandées
+ *
+ * Format de l'email:
+ *   À      : webuilder@adsvizor.com
+ *   Sujet  : WEBUILDER: {client-slug} - Description
+ *   Corps  : Infos sur le client (nom, adresse, tel, zone, marques, etc.)
+ *   Pièces : catalogue PDF, Excel, Word, etc.
  */
 
 const CONFIG = {
-  WEBUILDER_EMAIL:      'webuilder@adsvizor.com',
+  WEBUILDER_EMAIL:   'webuilder@adsvizor.com',
   DRIVE_FOLDER_NAME: 'AdsVizor-Webuilder',
-  GITHUB_OWNER:      'adsvizor',   // ← à modifier
+  GITHUB_OWNER:      'adsvizor',
   GITHUB_REPO:       'adsvizor-web',
   GITHUB_TOKEN_KEY:  'GITHUB_TOKEN',
   PROCESSED_LABEL:   'webuilder-processed',
@@ -37,7 +42,9 @@ function processWebuilderEmails() {
     return;
   }
 
-  const threads = GmailApp.search(`to:${CONFIG.WEBUILDER_EMAIL} is:unread`);
+  const threads = GmailApp.search(
+    `subject:"WEBUILDER:" -label:${CONFIG.PROCESSED_LABEL} -from:notifications@github.com`
+  );
   if (threads.length === 0) {
     console.log('Pas de nouveaux emails webuilder.');
     return;
@@ -46,17 +53,17 @@ function processWebuilderEmails() {
   const webuilderFolder = getOrCreateFolder(CONFIG.DRIVE_FOLDER_NAME);
 
   for (const thread of threads) {
-    for (const message of thread.getMessages()) {
-      if (!message.isUnread()) continue;
-      try {
-        const prUrl = processMessage(message, webuilderFolder, token);
-        message.markRead();
-        addLabel(thread, CONFIG.PROCESSED_LABEL);
+    // Prend le premier message non-traité du thread
+    const message = thread.getMessages()[0];
+    try {
+      const prUrl = processMessage(message, webuilderFolder, token);
+      addLabel(thread, CONFIG.PROCESSED_LABEL);
+      if (prUrl) {
         console.log(`✅ PR créé: ${prUrl}`);
-      } catch (e) {
-        console.error(`❌ Erreur sur message "${message.getSubject()}": ${e.message}`);
-        // On ne marque pas comme lu → sera retenté au prochain cycle
       }
+    } catch (e) {
+      console.error(`❌ Erreur sur "${message.getSubject()}": ${e.message}`);
+      // On ne label pas → sera retenté au prochain cycle
     }
   }
 }
@@ -64,17 +71,18 @@ function processWebuilderEmails() {
 // ─── Traitement d'un email ───────────────────────────────────────────────────
 
 function processMessage(message, webuilderFolder, token) {
-  const subject  = message.getSubject();
-  const body     = message.getPlainBody();
-  const sender   = message.getFrom();
-  const date     = message.getDate();
+  const subject = message.getSubject();
+  const body    = message.getPlainBody();
+  const sender  = message.getFrom();
+  const date    = message.getDate();
 
   // Extrait le slug depuis le sujet: "WEBUILDER: mon-client - description"
-  const slugMatch  = subject.match(/WEBUILDER:\s*([a-z0-9][a-z0-9-]*)/i);
-  const clientSlug = slugMatch
-    ? slugMatch[1].toLowerCase()
-    : `client-${Utilities.formatDate(date, 'Europe/Paris', 'yyyyMMdd-HHmm')}`;
-
+  const slugMatch = subject.match(/WEBUILDER:\s*([a-z0-9][a-z0-9-]*)/i);
+  if (!slugMatch) {
+    console.log(`⏭️ Skipping: pas de slug valide dans "${subject}"`);
+    return null;
+  }
+  const clientSlug = slugMatch[1].toLowerCase();
   console.log(`📦 Traitement webuilder: ${clientSlug}`);
 
   // Sauvegarde les pièces jointes dans Drive
@@ -95,9 +103,10 @@ function saveAttachments(attachments, folder) {
   for (const att of attachments) {
     const file = folder.createFile(att.copyBlob());
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    // URL publique téléchargeable directement (sans auth) depuis GitHub Actions
     links.push({
       name: att.getName(),
-      url:  file.getDownloadUrl(),
+      url:  `https://drive.google.com/uc?id=${file.getId()}&export=download&confirm=t`,
       type: att.getContentType(),
       size: Math.round(att.getSize() / 1024) + ' KB',
     });
@@ -146,33 +155,39 @@ function createGitHubPR(clientSlug, notesContent, token) {
     'Content-Type':  'application/json',
     'User-Agent':    'AdsVizor-WebuilderAgent/1.0',
   };
-  const base = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}`;
-  const branch = `webuilder/${clientSlug}`;
+  const base     = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}`;
+  const branch   = `webuilder/${clientSlug}`;
   const filePath = `webuilder/${clientSlug}/NOTES.md`;
 
   // 1. SHA de main
   const refRes  = JSON.parse(UrlFetchApp.fetch(`${base}/git/ref/heads/main`, { headers }).getContentText());
   const mainSha = refRes.object.sha;
 
-  // 2. Créer la branche (ignore si elle existe déjà)
+  // 2. Créer la branche (ignore 422 si elle existe déjà)
   UrlFetchApp.fetch(`${base}/git/refs`, {
     method: 'post', headers,
     payload: JSON.stringify({ ref: `refs/heads/${branch}`, sha: mainSha }),
     muteHttpExceptions: true,
   });
 
-  // 3. Créer le fichier NOTES.md
+  // 3. Créer ou mettre à jour NOTES.md (SHA requis si le fichier existe déjà)
+  const existingRes  = UrlFetchApp.fetch(`${base}/contents/${filePath}?ref=${branch}`, {
+    headers, muteHttpExceptions: true,
+  });
+  const existingData = JSON.parse(existingRes.getContentText());
+  const filePayload  = {
+    message: `webuilder: nouveau catalogue ${clientSlug}`,
+    content: Utilities.base64Encode(notesContent, Utilities.Charset.UTF_8),
+    branch:  branch,
+  };
+  if (existingData.sha) filePayload.sha = existingData.sha;
   UrlFetchApp.fetch(`${base}/contents/${filePath}`, {
     method: 'put', headers,
-    payload: JSON.stringify({
-      message:  `webuilder: nouveau catalogue ${clientSlug}`,
-      content:  Utilities.base64Encode(notesContent, Utilities.Charset.UTF_8),
-      branch:   branch,
-    }),
+    payload: JSON.stringify(filePayload),
   });
 
-  // 4. Ouvrir le PR
-  const prRes = JSON.parse(UrlFetchApp.fetch(`${base}/pulls`, {
+  // 4. Ouvrir le PR (si un PR existe déjà pour cette branche, récupérer son URL)
+  const prCreateRes = UrlFetchApp.fetch(`${base}/pulls`, {
     method: 'post', headers,
     payload: JSON.stringify({
       title: `[Webuilder] Nouveau client: ${clientSlug}`,
@@ -190,9 +205,22 @@ function createGitHubPR(clientSlug, notesContent, token) {
       base: 'main',
     }),
     muteHttpExceptions: true,
-  }).getContentText());
+  });
+  const prData = JSON.parse(prCreateRes.getContentText());
 
-  return prRes.html_url;
+  // Si PR déjà existant (422), récupérer l'URL du PR ouvert
+  if (!prData.html_url) {
+    const existingPrsRes = UrlFetchApp.fetch(
+      `${base}/pulls?head=${CONFIG.GITHUB_OWNER}:${branch}&state=open`,
+      { headers }
+    );
+    const existingPrs = JSON.parse(existingPrsRes.getContentText());
+    return existingPrs.length > 0
+      ? existingPrs[0].html_url
+      : `https://github.com/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/tree/${branch}`;
+  }
+
+  return prData.html_url;
 }
 
 // ─── Utilitaires ─────────────────────────────────────────────────────────────
@@ -212,7 +240,6 @@ function addLabel(thread, labelName) {
 // ─── Setup: lance cette fonction une seule fois ───────────────────────────────
 
 function createTrigger() {
-  // Supprime les triggers existants pour éviter les doublons
   ScriptApp.getProjectTriggers().forEach(t => {
     if (t.getHandlerFunction() === 'processWebuilderEmails') ScriptApp.deleteTrigger(t);
   });
@@ -222,4 +249,3 @@ function createTrigger() {
     .create();
   console.log('✅ Trigger créé: processWebuilderEmails toutes les 5 minutes');
 }
-           
