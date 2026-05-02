@@ -3,8 +3,6 @@ name: Webuilder Agent — Generate Client Site
 on:
   pull_request:
     types: [opened, synchronize]
-    branches:
-      - 'webuilder/**'
   workflow_dispatch:
     inputs:
       pr_number:
@@ -17,6 +15,7 @@ permissions:
 
 jobs:
   build-client-site:
+    if: startsWith(github.head_ref, 'webuilder/')
     runs-on: ubuntu-latest
 
     steps:
