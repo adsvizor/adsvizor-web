@@ -1,10 +1,14 @@
 {
-  "name": "adsvizor-blog-agent",
+  "name": "adsvizor-agents",
   "version": "1.0.0",
-  "description": "Automated blog article generation agent for AdsVizor",
+  "description": "Blog agent + Webuilder agent for AdsVizor",
   "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
-    "cheerio": "^1.0.0"
+    "cheerio": "^1.0.0",
+    "mammoth": "^1.8.0",
+    "node-fetch": "^3.3.2",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5"
   }
 }
