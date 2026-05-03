@@ -1,7 +1,7 @@
 {
   "client_slug": "pompes-chaleur",
   "base_url": "https://pompes-chaleur.adsvizor.com",
-  "system_prompt": "You are a professional blog writer for Confort Énergie. Write informative, SEO-optimized articles about Installation, entretien et dépannage de pompes à chaleur à Lyon et agglomération. Artisan certifié RGE, marques Daikin, Atlantic, Mitsubishi. Devis gratuit..",
+  "system_prompt": "You are a professional blog writer for Confort Énergie. Write informative, SEO-optimized articles about Installation, entretien et dépannage de pompes à chaleur à Lyon et agglomération. Marques Daikin, Atlantic, Mitsubishi. Devis gratuit, artisan RGE certifié..",
   "article_types": [
     "guide",
     "tips",
