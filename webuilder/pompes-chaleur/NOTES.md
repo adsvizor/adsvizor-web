@@ -2,21 +2,15 @@
 
 | Champ | Valeur |
 |-------|--------|
-| Date | 2026-05-03 10:20 |
+| Date | 2026-05-03 15:05 |
 | De | fabrice saadoun <fabrice.saadon@gmail.com> |
-| Sujet | WEBUILDER: pompes-chaleur - Installateur pompes à chaleur |
+| Sujet | WEBUILDER: pompes-chaleur 26 - Installateur pompes à chaleur v2 |
 
 ## Notes de l'expéditeur
 
-Nom: Confort Énergie
-Adresse: 12 rue des Artisans, Lyon 69003
-Téléphone: 04 78 00 00 00
-Email: contact@confort-energie.fr
-Zone: Lyon et agglomération
-Marques: Daikin, Atlantic, Mitsub
- Catalogue residentiel air-air.pdf
-<https://drive.google.com/file/d/1tLwzXsxaQnzMvCRWV_qgqzEgE481a3Uq/view?usp=drive_web>
-ishi
+Nom: Confort Énergie Adresse: 12 rue des Artisans, Lyon 69003 Téléphone: 04
+78 00 00 00 Email: contact@confort-energie.fr Zone: Lyon et agglomération
+Marques: Daikin, Atlantic, Mitsubishi
 
 ## Fichiers catalogue
 
