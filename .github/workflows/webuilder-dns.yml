@@ -1,0 +1,117 @@
+name: Webuilder DNS — Auto-configure subdomain
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'clients/*/config.json'
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: 'Slug(s) à configurer (séparés par virgule, ex: pompes-chaleur,immobilier)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  setup-dns:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect new client slugs
+        id: detect
+        run: |
+          # Si workflow_dispatch avec slugs manuels, on les utilise directement
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SLUGS_CSV="${{ github.event.inputs.slugs }}"
+            echo "Manual trigger — slugs: $SLUGS_CSV"
+            echo "slugs=$SLUGS_CSV" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Compare current commit with previous to find new clients/ directories
+          NEW_SLUGS=$(git diff --name-only HEAD~1 HEAD \
+            | grep '^clients/[^/]*/config\.json$' \
+            | sed 's|clients/\([^/]*\)/config\.json|\1|' \
+            | sort -u)
+
+          if [ -z "$NEW_SLUGS" ]; then
+            echo "No new client slugs detected."
+            echo "slugs=" >> $GITHUB_OUTPUT
+          else
+            echo "New slugs: $NEW_SLUGS"
+            # Join with comma for output
+            SLUGS_CSV=$(echo "$NEW_SLUGS" | tr '\n' ',' | sed 's/,$//')
+            echo "slugs=$SLUGS_CSV" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure DNS + Cloudflare Pages for each slug
+        if: steps.detect.outputs.slugs != ''
+        env:
+          CF_API_TOKEN:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ZONE_ID:    ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PAGES_PROJECT: adsvizor-web
+        run: |
+          IFS=',' read -ra SLUGS <<< "${{ steps.detect.outputs.slugs }}"
+
+          for SLUG in "${SLUGS[@]}"; do
+            echo "━━━ Configuring: $SLUG ━━━"
+            DOMAIN="${SLUG}.adsvizor.com"
+
+            # ── 1. Add CNAME DNS record ──────────────────────────────────────
+            echo "→ Adding DNS CNAME: $DOMAIN → adsvizor-web.pages.dev"
+            DNS_RESPONSE=$(curl -s -X POST \
+              "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "{
+                \"type\": \"CNAME\",
+                \"name\": \"${SLUG}\",
+                \"content\": \"adsvizor-web.pages.dev\",
+                \"proxied\": true,
+                \"ttl\": 1
+              }")
+
+            DNS_SUCCESS=$(echo "$DNS_RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('success', False))")
+            DNS_ERROR=$(echo "$DNS_RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); errs=d.get('errors',[]); print(errs[0].get('message','') if errs else '')" 2>/dev/null || echo "")
+
+            if [ "$DNS_SUCCESS" = "True" ]; then
+              echo "✅ DNS CNAME created for $DOMAIN"
+            elif echo "$DNS_ERROR" | grep -qi "already exists\|duplicate"; then
+              echo "ℹ️  DNS CNAME already exists for $DOMAIN"
+            else
+              echo "❌ DNS error: $DNS_ERROR"
+              echo "Full response: $DNS_RESPONSE"
+            fi
+
+            # ── 2. Add custom domain to Cloudflare Pages ─────────────────────
+            echo "→ Adding custom domain to Pages: $DOMAIN"
+            PAGES_RESPONSE=$(curl -s -X POST \
+              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT}/domains" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "{\"name\": \"${DOMAIN}\"}")
+
+            PAGES_SUCCESS=$(echo "$PAGES_RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('success', False))")
+            PAGES_ERROR=$(echo "$PAGES_RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); errs=d.get('errors',[]); print(errs[0].get('message','') if errs else '')" 2>/dev/null || echo "")
+
+            if [ "$PAGES_SUCCESS" = "True" ]; then
+              echo "✅ Custom domain added to Pages: $DOMAIN"
+            elif echo "$PAGES_ERROR" | grep -qi "already exists\|duplicate"; then
+              echo "ℹ️  Custom domain already configured: $DOMAIN"
+            else
+              echo "❌ Pages error: $PAGES_ERROR"
+              echo "Full response: $PAGES_RESPONSE"
+            fi
+
+            echo "🌐 $DOMAIN will be live in ~2 minutes"
+            echo ""
+          done
