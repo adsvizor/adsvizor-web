@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false   # keep other clients running if one fails
       matrix:
-        client: [formations]  # add new clients here: [formations, comptabilite, ...]
+        client: [formations, pompes-chaleur]  # add new clients here: [formations, pompes-chaleur, ...]
 
     steps:
       - name: Skip if not target client

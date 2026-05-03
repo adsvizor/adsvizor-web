@@ -13,7 +13,8 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
 
 jobs:
   setup-dns:
@@ -24,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Detect new client slugs
         id: detect
@@ -114,4 +116,71 @@ jobs:
 
             echo "🌐 $DOMAIN will be live in ~2 minutes"
             echo ""
+          done
+
+      - name: Bootstrap blog for each new client
+        if: steps.detect.outputs.slugs != ''
+        run: |
+          git config user.name "Webuilder Agent"
+          git config user.email "adsvizor@gmail.com"
+
+          IFS=',' read -ra SLUGS <<< "${{ steps.detect.outputs.slugs }}"
+          CHANGED=false
+
+          for SLUG in "${SLUGS[@]}"; do
+            echo "━━━ Blog bootstrap: $SLUG ━━━"
+
+            # ── 1. Create blog-history.json if missing ───────────────────────
+            HISTORY_FILE="data/${SLUG}/blog-history.json"
+            if [ ! -f "$HISTORY_FILE" ]; then
+              mkdir -p "data/${SLUG}"
+              echo '{"posts":[]}' > "$HISTORY_FILE"
+              echo "✅ Created $HISTORY_FILE"
+              CHANGED=true
+            else
+              echo "ℹ️  $HISTORY_FILE already exists"
+            fi
+
+            # ── 2. Add slug to blog-agent.yml matrix if missing ──────────────
+            BLOG_WORKFLOW=".github/workflows/blog-agent.yml"
+            if grep -q "client: \[" "$BLOG_WORKFLOW"; then
+              CURRENT=$(grep "client: \[" "$BLOG_WORKFLOW" | sed "s/.*client: \[//;s/\].*//")
+              if echo "$CURRENT" | grep -qw "$SLUG"; then
+                echo "ℹ️  $SLUG already in blog-agent matrix"
+              else
+                NEW_MATRIX="${CURRENT}, ${SLUG}"
+                sed -i "s/client: \[${CURRENT}\]/client: [${NEW_MATRIX}]/" "$BLOG_WORKFLOW"
+                echo "✅ Added $SLUG to blog-agent matrix"
+                CHANGED=true
+              fi
+            fi
+          done
+
+          if [ "$CHANGED" = "true" ]; then
+            git add -A
+            git pull --rebase origin main
+            git commit -m "webuilder: bootstrap blog for new client(s) ${{ steps.detect.outputs.slugs }}"
+            git push
+            echo "✅ Blog bootstrap committed"
+          else
+            echo "ℹ️  Nothing to commit"
+          fi
+
+      - name: Trigger immediate first blog article
+        if: steps.detect.outputs.slugs != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          IFS=',' read -ra SLUGS <<< "${{ steps.detect.outputs.slugs }}"
+
+          for SLUG in "${SLUGS[@]}"; do
+            echo "→ Triggering blog agent for: $SLUG"
+            curl -s -X POST \
+              "https://api.github.com/repos/${{ github.repository }}/actions/workflows/blog-agent.yml/dispatches" \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --data "{\"ref\":\"main\",\"inputs\":{\"client\":\"${SLUG}\"}}"
+            echo "✅ Blog agent triggered for $SLUG"
+            sleep 2
           done
