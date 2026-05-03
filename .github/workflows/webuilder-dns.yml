@@ -158,8 +158,8 @@ jobs:
 
           if [ "$CHANGED" = "true" ]; then
             git add -A
-            git pull --rebase origin main
             git commit -m "webuilder: bootstrap blog for new client(s) ${{ steps.detect.outputs.slugs }}"
+            git pull --rebase origin main
             git push
             echo "✅ Blog bootstrap committed"
           else
