@@ -1,0 +1,24 @@
+{
+  "client_slug": "pompes-chaleur",
+  "base_url": "https://pompes-chaleur.adsvizor.com",
+  "system_prompt": "You are a professional blog writer for Confort Énergie. Write informative, SEO-optimized articles about Confort Énergie, votre installateur de pompes à chaleur air-air à Lyon et agglomération. Marques Daikin, Atlantic, Mitsubishi. Devis gratuit et conseils personnalisés..",
+  "article_types": [
+    "guide",
+    "tips",
+    "news"
+  ],
+  "nav_links": [
+    {
+      "label": "Accueil",
+      "href": "/"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog.html"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact.html"
+    }
+  ]
+}
