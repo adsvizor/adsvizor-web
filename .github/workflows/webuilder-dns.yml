@@ -107,7 +107,7 @@ jobs:
 
             if [ "$PAGES_SUCCESS" = "True" ]; then
               echo "✅ Custom domain added to Pages: $DOMAIN"
-            elif echo "$PAGES_ERROR" | grep -qi "already exists\|duplicate"; then
+            elif echo "$PAGES_ERROR" | grep -qi "already exists\|duplicate\|already added"; then
               echo "ℹ️  Custom domain already configured: $DOMAIN"
             else
               echo "❌ Pages error: $PAGES_ERROR"
