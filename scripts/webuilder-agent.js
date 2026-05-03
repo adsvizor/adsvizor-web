@@ -297,117 +297,49 @@ async function analyzeCatalog({ clientSlug, notes, catalogText }) {
 
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
+  // Load reference config (formations) as schema example
+  let referenceConfig = '';
+  try {
+    const refPath = `clients/formations/config.json`;
+    if (fs.existsSync(refPath)) {
+      const refRaw = JSON.parse(fs.readFileSync(refPath, 'utf-8'));
+      // Keep only scalar fields (no cpf_formations array) to save tokens
+      const refFiltered = Object.fromEntries(
+        Object.entries(refRaw).filter(([k, v]) => typeof v !== 'object')
+      );
+      referenceConfig = JSON.stringify(refFiltered, null, 2);
+      console.log(`✅ Loaded reference config (${referenceConfig.length} chars)`);
+    }
+  } catch (e) {
+    console.warn(`⚠️ Could not load reference config: ${e.message}`);
+  }
+
   const systemPrompt = `You are the AdsVizor Webuilder Agent. Generate a complete config.json for a lead-capture landing page.
 
 AdsVizor is a multi-tenant system: each client gets a subdomain (${clientSlug}.adsvizor.com).
 Templates use {{placeholder}} syntax filled at runtime from config.json.
 
 Output a JSON object with:
-- "config": complete config.json (all fields below, NO omissions)
-- "questions": [] if you have enough info, or a list of questions if critical info is missing
+- "config": complete config.json adapted for the new client
+- "questions": [] if you have enough info, or specific questions if critical info is missing
 
-━━━ REQUIRED FIELDS — generate ALL of them ━━━
-
-## SEO & meta
-lang, meta_title, meta_description, og_type, og_url ("https://${clientSlug}.adsvizor.com"),
-og_image_url (Unsplash), home_href ("/"), logo_text, nav_aria_label
-
-## Navigation (5 items — use anchors #hero #benefits #why-us #form #blog)
-nav_item_0_href, nav_item_0_label, ..., nav_item_4_href, nav_item_4_label
-
-## Hero section
-headline, subheadline, hero_badge, hero_image_url, hero_image_alt, cta_href ("#form"), cta_id ("cta-hero"), cta_label
-
-## Stats (show_stats: true)
-stat_1_value, stat_1_label, stat_2_value, stat_2_label, stat_3_value, stat_3_label, stats_aria_label
-
-## Benefits
-benefits_title, benefit_1_title, benefit_1_text, benefit_1_image_url, benefit_1_image_alt,
-benefit_2_title, benefit_2_text, benefit_2_image_url, benefit_2_image_alt
-
-## Why us (use catalog + reviews to make this specific and credible)
-why_us_title, why_us_a_emoji, why_us_a_title, why_us_a_text,
-why_us_b_emoji, why_us_b_title, why_us_b_text,
-why_us_c_emoji, why_us_c_title, why_us_c_text,
-why_us_d_emoji, why_us_d_title, why_us_d_text
-
-## Testimonials (show_testimonials: false but include fields)
-testimonials_title, testimonial_1_text, testimonial_1_author, testimonial_2_text, testimonial_2_author
-
-## Lead form — service dropdown (adapt options to this business, 4-6 options)
-field_formation_label, field_formation_placeholder, field_formation_opt_1, field_formation_opt_2,
-field_formation_opt_3, field_formation_opt_4 (add opt_5/opt_6 if relevant)
-
-## Lead form — personal fields (REQUIRED — do not skip)
-form_title, form_id ("lead-form"), form_action ("https://${clientSlug}.adsvizor.com/api/leads"),
-field_first_name_label ("Prénom"), field_first_name_placeholder,
-field_last_name_label ("Nom"), field_last_name_placeholder,
-field_email_label ("Adresse email"), field_email_placeholder,
-field_phone_label ("Téléphone"), field_phone_placeholder,
-field_status_label ("Votre situation"),
-field_message_label, field_message_placeholder, field_message_rows ("4"),
-submit_label ("Recevoir mon devis gratuit" or similar),
-form_disclaimer_text (RGPD consent text mentioning the company name and data retention),
-client_slug ("${clientSlug}"), offer_id ("lead-gen-v1"), page_version ("1.0.0")
-
-## Thank you page
-thankyou_title, thankyou_message, security_code_label ("Votre code de sécurité"),
-security_code_notice, thankyou_cta_label ("Retour à l'accueil"), thankyou_cta_href ("/")
-
-## Footer
-footer_text
-
-## Contact page
-contact_meta_title, contact_meta_description, contact_og_url ("https://${clientSlug}.adsvizor.com/contact.html"),
-contact_hero_badge, contact_hero_title, contact_hero_subtitle,
-contact_why_title,
-contact_benefit_a_emoji, contact_benefit_a_title, contact_benefit_a_text,
-contact_benefit_b_emoji, contact_benefit_b_title, contact_benefit_b_text,
-contact_benefit_c_emoji, contact_benefit_c_title, contact_benefit_c_text,
-contact_benefit_d_emoji, contact_benefit_d_title, contact_benefit_d_text,
-contact_process_title, contact_process_intro,
-contact_step_1_icon, contact_step_1_image (Unsplash), contact_step_1_title, contact_step_1_text,
-contact_step_2_icon, contact_step_2_image, contact_step_2_title, contact_step_2_text,
-contact_step_3_icon, contact_step_3_image, contact_step_3_title, contact_step_3_text,
-contact_step_4_icon, contact_step_4_image, contact_step_4_title, contact_step_4_text,
-contact_step_5_icon, contact_step_5_image, contact_step_5_title, contact_step_5_text,
-contact_form_title, contact_mobile_cta_label
-
-## Privacy page
-privacy_meta_title, privacy_meta_description, privacy_og_url,
-privacy_company_name, privacy_contact_email, privacy_effective_date ("${today}")
-
-## Blog page
-blog_meta_title, blog_meta_description, blog_og_url,
-blog_title, blog_subtitle, blog_posts_aria_label, read_more_label ("Lire l'article")
-
-## Blog posts (4 posts — adapt topics to this business sector)
-post_1_href, post_1_date ("${today}"), post_1_tag, post_1_title, post_1_excerpt, post_1_image_url,
-post_2_href, post_2_date, post_2_tag, post_2_title, post_2_excerpt, post_2_image_url,
-post_3_href, post_3_date, post_3_tag, post_3_title, post_3_excerpt, post_3_image_url,
-post_4_href, post_4_date, post_4_tag, post_4_title, post_4_excerpt, post_4_image_url
-
-## Contact info
-contact_company, contact_address, contact_phone, contact_email
-
-━━━ IMAGES ━━━
-Use Unsplash URLs: https://images.unsplash.com/photo-XXXXXXXXXX?w=1400&h=700&q=85&auto=format&fit=crop
-Pick photos relevant to the exact business sector (not generic office photos).
-
-━━━ COMPETITOR INSPIRATION ━━━
-You have access to competitor website content. Use it to:
-- Identify the best selling arguments used in this sector
-- Adopt effective headline patterns and CTAs
-- Extract service/offer naming conventions
-- Spot gaps you can position as differentiators for this client
-Do NOT copy text verbatim. Synthesize and adapt to this specific client.
-
-━━━ LANGUAGE & TONE ━━━
-Write in French. Adapt ALL text to this specific business. Do NOT use CPF/training language.
-For why_us: use catalog data + web reviews + competitor analysis to write specific, credible arguments.`;
+INSTRUCTIONS:
+1. Use the REFERENCE CONFIG below as your schema — generate ALL the same keys, adapted for the new client.
+2. Replace every value with content specific to the new client's business (sector, services, location, brand).
+3. Update: client_slug to "${clientSlug}", og_url/form_action/og_url to "https://${clientSlug}.adsvizor.com", privacy_effective_date to "${today}".
+4. For field_formation_opt_*: create 4-6 options relevant to this client's actual services (NOT training/CPF options).
+5. For why_us_*: use the catalog + web reviews + competitor research to write specific, credible arguments.
+6. For post_*: write 4 blog post ideas relevant to this business sector with realistic dates near ${today}.
+7. Use Unsplash URLs for all images, choosing photos relevant to the exact business sector.
+8. Write everything in French.
+9. Do NOT include the cpf_formations array — that is formations-specific.
+10. Do NOT copy formations content — adapt everything to the new client.`;
 
   const userMessage = `Client slug: ${clientSlug}
 Today's date: ${today}
+
+=== REFERENCE CONFIG (use as schema — generate ALL the same keys) ===
+${referenceConfig}
 
 === NOTES FROM SENDER ===
 ${notes}
@@ -419,7 +351,7 @@ ${reviewsText ? `=== AVIS CLIENTS & REVIEWS WEB ===\n${reviewsText}` : ''}
 
 ${competitorText ? `=== SITES CONCURRENTS — inspiration structure et arguments ===\n${competitorText}` : ''}
 
-Generate the COMPLETE config.json. Do not omit any field listed in the system prompt.`;
+Generate the complete config.json following the reference schema above. Adapt ALL values to this new client.`;
 
   const response = await ANTHROPIC.messages.create({
     model: 'claude-opus-4-6',
