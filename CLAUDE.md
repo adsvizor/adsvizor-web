@@ -137,6 +137,25 @@ Emitted via `console.log("[adsvizor_event]", ...)`:
 
 `cloudflare-worker.js` allows: `adsvizor.com`, `www.adsvizor.com`, `*.adsvizor.com`, `localhost:*`, `127.0.0.1:*`.
 
+## Webuilder pipeline
+
+Automated system to generate a new client site from an email.
+
+**Trigger:** Send email to webuilder@adsvizor.com with subject `WEBUILDER: {slug} - Description`, body with client info, and optional PDF/DOCX/XLSX catalog attachment.
+
+**Flow:** Email → Apps Script (`apps-script/IntakeAgent.gs`) → GitHub branch `webuilder/{slug}` + PR → GitHub Actions (`webuilder-agent.yml`) → Claude API generates `clients/{slug}/config.json` → merge PR → Cloudflare Pages deploys → `webuilder-dns.yml` configures DNS + custom domain automatically.
+
+**Key files:**
+- `scripts/webuilder-agent.js` — Node.js agent: extracts catalog text, searches Brave API for reviews + competitor sites, calls Claude claude-opus-4-6 (max_tokens: 12000) to generate complete config.json
+- `.github/workflows/webuilder-agent.yml` — triggers on PR open for `webuilder/*` branches
+- `.github/workflows/webuilder-dns.yml` — triggers on push to main when `clients/*/config.json` changes; also has `workflow_dispatch` for manual trigger with slug input
+
+**GitHub secrets required:**
+- `ANTHROPIC_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_ACCOUNT_ID`, `BRAVE_API_KEY`
+
+**config.json schema** — all fields must be present (see `clients/formations/config.json` as reference):
+- SEO/meta, nav (5 items), hero, stats (3), benefits (2), why_us (a–d), testimonials, service dropdown (field_formation_opt_*), form personal fields (first/last name, email, phone, status, message, submit, disclaimer), thank-you page, contact page (steps 1–5 with icon/image/title/text), blog page + 4 posts (with date/tag), privacy page, footer
+
 ## Conventions
 
 - Client slugs: lowercase `a-z0-9` and `-` only
@@ -144,4 +163,4 @@ Emitted via `console.log("[adsvizor_event]", ...)`:
 - JS: `const` by default, `async/await` for fetch, no implicit globals
 - After changing formation content: re-run `generate-formation-pages.js` and commit
 - Worker deploy: `npx wrangler deploy` (not `versions upload/deploy`)
-- Apps Script deploy: paste `apps-script/Code.gs` → new version in Google Apps Script console
+- Apps Script deploy: paste `apps-script/IntakeAgent.gs` content → Google Apps Script editor (project: AdsVizor Intake) → Deploy new version

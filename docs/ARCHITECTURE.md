@@ -185,6 +185,8 @@ No build step. No bundler. Everything is vanilla HTML/CSS/JS.
 
 ## 9. Multi-tenant: adding a new client
 
+### Manual (legacy)
+
 1. `clients/{slug}/config.json` — all template placeholder values
 2. `clients/{slug}/agent.config.json` — blog agent context
 3. `data/{slug}/blog-history.json` — `{"posts": []}`
@@ -192,6 +194,69 @@ No build step. No bundler. Everything is vanilla HTML/CSS/JS.
 5. `.github/workflows/blog-agent.yml` matrix: add `{slug}` to the client list
 
 No middleware changes needed — the slug is resolved from the subdomain at runtime.
+
+### Automated via Webuilder (current)
+
+Send an email to `webuilder@adsvizor.com`:
+- Subject: `WEBUILDER: {slug} - Business description`
+- Body: client info (name, address, phone, email, area, brands)
+- Attachment: PDF/DOCX/XLSX catalog (optional but recommended)
+
+The pipeline handles everything automatically. See §15 for full details.
+
+## 15. Webuilder pipeline
+
+End-to-end automated client onboarding: email → live site in ~10 minutes.
+
+```
+Gmail (webuilder@adsvizor.com)
+  → Apps Script (IntakeAgent.gs) — polls every 5 min
+      ↓ extracts PDF text via Drive API
+      ↓ creates branch webuilder/{slug} + NOTES.md
+      ↓ opens GitHub PR
+  → GitHub Actions (webuilder-agent.yml) — triggers on PR open
+      ↓ reads NOTES.md + catalog text
+      ↓ Brave Search: reviews + 4 competitor pages (parallel)
+      ↓ Claude claude-opus-4-6 → generates complete config.json
+      ↓ writes clients/{slug}/config.json + agent.config.json
+      ↓ posts ✅ comment on PR
+  → Human merges PR
+  → Cloudflare Pages auto-deploys
+  → GitHub Actions (webuilder-dns.yml) — triggers on push to main
+      ↓ detects new clients/*/config.json via git diff
+      ↓ creates CNAME DNS record via Cloudflare API
+      ↓ adds custom domain to Pages project
+  → {slug}.adsvizor.com live in ~2 min
+```
+
+### Key files
+
+| File | Role |
+|------|------|
+| `apps-script/IntakeAgent.gs` | Email intake, PDF extraction, GitHub branch+PR creation |
+| `.github/workflows/webuilder-agent.yml` | Triggers on `webuilder/*` PR; runs Node.js agent |
+| `scripts/webuilder-agent.js` | Catalog extraction + web research + Claude API call |
+| `.github/workflows/webuilder-dns.yml` | Post-merge DNS + Pages domain config; supports `workflow_dispatch` |
+
+### config.json completeness
+
+The agent generates all required fields in one pass:
+- SEO/meta, nav (5 items), hero, stats, benefits, why_us (a–d)
+- Form: service dropdown (4–6 options), personal field labels, RGPD disclaimer, submit label
+- Thank-you page, footer
+- Contact page: hero, benefits (a–d), process steps (1–5 with icon/image/title/text)
+- Blog page: title, subtitle, 4 posts with date + tag
+- Privacy page
+
+Reference schema: `clients/formations/config.json`
+
+### Web research (requires `BRAVE_API_KEY` secret)
+
+For each new client, the agent runs 2 parallel searches:
+1. **Reviews** — `avis clients "{businessName}"` + `{sector} {city} avis Google`
+2. **Competitors** — finds 4 competitor sites, scrapes their text (max 2500 chars each)
+
+Claude uses both to generate differentiated why_us arguments and competitor-informed copy.
 
 ## 10. Security and data
 

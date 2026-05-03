@@ -1,6 +1,6 @@
 # Project Progress & Roadmap
 
-Last updated: 2026-04-30
+Last updated: 2026-05-03
 
 Owner: Fabrice  
 Company: AdsVizor
@@ -178,11 +178,46 @@ Company: AdsVizor
 - `google-ads-callouts.csv` — 70 callouts
 - Format : UTF-16 LE, tab-séparé, compatible Google Ads Editor v2
 
+### Phase 8 — Webuilder Pipeline (2026-05-03) ✅
+
+Pipeline complet d'onboarding client automatisé : email → site live en ~10 minutes.
+
+**Email intake (Apps Script) :**
+- `apps-script/IntakeAgent.gs` — détecte emails toutes les 5 min sur webuilder@adsvizor.com
+- Extrait le texte du catalogue PDF via conversion Google Docs (Drive API v2)
+- Crée branche `webuilder/{slug}` + `webuilder/{slug}/NOTES.md` sur GitHub
+- Ouvre un PR automatiquement
+
+**Agent de génération (GitHub Actions) :**
+- `.github/workflows/webuilder-agent.yml` — se déclenche sur PR `webuilder/*`
+- `scripts/webuilder-agent.js` — agent Node.js multi-étapes :
+  1. Extraction catalogue (PDF/DOCX/XLSX)
+  2. Recherche web en parallèle : avis clients + scraping de 4 sites concurrents (Brave Search API)
+  3. Appel Claude claude-opus-4-6 (max_tokens: 12000) avec catalog + reviews + concurrents
+  4. Génère `config.json` complet (tous les champs : form labels, contact steps 1-5, blog posts avec dates/tags, footer, privacy, thank-you)
+  5. Génère `agent.config.json`
+- Poste commentaire ✅ sur le PR avec URL cible
+
+**DNS automatique post-merge :**
+- `.github/workflows/webuilder-dns.yml` — se déclenche au push sur main (`clients/*/config.json`)
+- Crée le CNAME DNS pour `{slug}.adsvizor.com` via Cloudflare API
+- Ajoute le custom domain sur Cloudflare Pages
+- `workflow_dispatch` disponible pour trigger manuel avec slug(s) en paramètre
+- Site live en ~2 minutes après merge
+
+**Secrets GitHub configurés :**
+- `ANTHROPIC_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_ACCOUNT_ID`, `BRAVE_API_KEY`
+
+**Premier client Webuilder :**
+- `pompes-chaleur` — Confort Énergie, installateur PAC à Lyon → `pompes-chaleur.adsvizor.com` ✅
+
+---
+
 ## Active roadmap
 
 ### Near term
 
-1. **Second client onboarding** — duplicate `clients/formations/` structure for a new slug, add Cloudflare DNS, add to Actions matrix.
+1. **Amélioration Webuilder** — tester le pipeline end-to-end avec un vrai client ; affiner le prompt config.json si des champs manquent encore.
 2. **Google Ads integration** — connect performance metrics to campaign optimization agent.
 3. **Campaign optimizer** — implement daily agent run (see `docs/PROMPTS.md`); store output in `data/{slug}/agent-runs/`.
 
