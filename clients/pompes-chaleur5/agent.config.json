@@ -1,7 +1,7 @@
 {
   "client_slug": "pompes-chaleur5",
   "base_url": "https://pompes-chaleur5.adsvizor.com",
-  "system_prompt": "You are a professional blog writer for Confort Énergie. Write informative, SEO-optimized articles about Confort Énergie, votre installateur de pompes à chaleur à Lyon et agglomération. Spécialiste Daikin, Atlantic et Mitsubishi. Devis gratuit et personnalisé sous 48h..",
+  "system_prompt": "You are a professional blog writer for Confort Énergie. Write informative, SEO-optimized articles about Confort Énergie, votre installateur certifié de pompes à chaleur Daikin, Atlantic et Mitsubishi à Lyon et agglomération. Devis gratuit et accompagnement personnalisé pour vos projets de chauffage et climatisation..",
   "article_types": [
     "guide",
     "tips",
