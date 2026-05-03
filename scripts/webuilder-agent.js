@@ -162,43 +162,252 @@ async function downloadAndExtract(link) {
   return `[Binary file: ${link.name} — ${buffer.length} bytes]`;
 }
 
+// ─── Brave Search helper ──────────────────────────────────────────────────────
+
+async function braveSearch(query, count = 5) {
+  const BRAVE_KEY = process.env.BRAVE_API_KEY;
+  if (!BRAVE_KEY) return [];
+  const { default: fetch } = await import('node-fetch');
+  try {
+    const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${count}&search_lang=fr`;
+    const res = await fetch(url, {
+      headers: { 'Accept': 'application/json', 'X-Subscription-Token': BRAVE_KEY },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.web?.results || [];
+  } catch (e) {
+    console.warn(`⚠️ Brave search failed for "${query}": ${e.message}`);
+    return [];
+  }
+}
+
+// ─── Fetch and extract text from a webpage ───────────────────────────────────
+
+async function fetchPageText(url, maxChars = 3000) {
+  const { default: fetch } = await import('node-fetch');
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AdsVizorBot/1.0)' },
+      timeout: 8000,
+    });
+    if (!res.ok) return '';
+    const html = await res.text();
+    // Strip HTML tags, scripts, styles — keep readable text
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .trim();
+    return text.slice(0, maxChars);
+  } catch (e) {
+    return '';
+  }
+}
+
+// ─── Web search for business reviews ─────────────────────────────────────────
+
+async function searchBusinessReviews(businessName, sector, city) {
+  if (!process.env.BRAVE_API_KEY) {
+    console.log('ℹ️  BRAVE_API_KEY not set — skipping review search');
+    return '';
+  }
+
+  const queries = [
+    `avis clients "${businessName}"`,
+    `${sector} ${city} avis Google`,
+    `${businessName} témoignages`,
+  ];
+
+  let reviewsText = '';
+  for (const q of queries) {
+    const results = await braveSearch(q, 5);
+    const snippets = results.map(r => `• ${r.title}: ${r.description}`).join('\n');
+    if (snippets) reviewsText += `\n[Avis — "${q}"]\n${snippets}\n`;
+  }
+
+  console.log(`🔍 Reviews search: ${reviewsText.length} chars`);
+  return reviewsText;
+}
+
+// ─── Web research on competitor sites ────────────────────────────────────────
+
+async function researchCompetitorSites(sector, city) {
+  if (!process.env.BRAVE_API_KEY) {
+    console.log('ℹ️  BRAVE_API_KEY not set — skipping competitor research');
+    return '';
+  }
+
+  const queries = [
+    `site vitrine ${sector} ${city} devis gratuit`,
+    `installateur ${sector} France landing page`,
+    `${sector} prix tarif offre site`,
+  ];
+
+  // Collect unique URLs from search results (exclude directories, wikis, forums)
+  const EXCLUDED = ['wikipedia', 'leboncoin', 'pagesjaunes', 'yelp', 'tripadvisor',
+                    'facebook', 'linkedin', 'youtube', 'reddit', 'quora'];
+  const urls = [];
+  for (const q of queries) {
+    const results = await braveSearch(q, 6);
+    for (const r of results) {
+      if (urls.length >= 4) break;
+      if (EXCLUDED.some(ex => r.url.includes(ex))) continue;
+      if (!urls.includes(r.url)) urls.push(r.url);
+    }
+    if (urls.length >= 4) break;
+  }
+
+  console.log(`🌐 Fetching ${urls.length} competitor pages...`);
+
+  let competitorText = '';
+  for (const url of urls) {
+    const text = await fetchPageText(url, 2500);
+    if (text.length > 200) {
+      competitorText += `\n\n=== Concurrent: ${url} ===\n${text}`;
+      console.log(`  ✅ ${url} (${text.length} chars)`);
+    }
+  }
+
+  console.log(`🏆 Competitor research: ${competitorText.length} total chars`);
+  return competitorText;
+}
+
 // ─── Claude API: analyze catalog ─────────────────────────────────────────────
 
 async function analyzeCatalog({ clientSlug, notes, catalogText }) {
-  const systemPrompt = `You are the AdsVizor Webuilder Agent. Your job is to analyze a business catalog and generate a complete website configuration for a lead-capture landing page.
+  // Extract business info for web search
+  const nameMatch  = notes.match(/Nom\s*:\s*(.+)/i);
+  const sectorMatch = notes.match(/Description\s*:\s*(.+)/i) || notes.match(/WEBUILDER:[^-]+-\s*(.+)/i);
+  const cityMatch  = notes.match(/(?:Adresse|Ville)\s*:\s*.+?([A-ZÀ-Ü][a-zà-ü]+(?:\s[A-ZÀ-Ü][a-zà-ü]+)*)\s*\d/i);
 
-AdsVizor is a multi-tenant landing page system. Each client gets a subdomain (e.g. ${clientSlug}.adsvizor.com).
-The site uses a config.json with {{placeholder}} syntax to fill shared HTML templates.
+  const businessName = nameMatch?.[1]?.trim() || clientSlug;
+  const sector       = sectorMatch?.[1]?.trim() || '';
+  const city         = cityMatch?.[1]?.trim() || '';
 
-Your output must be a JSON object with:
-1. "config": a complete config.json object (following the AdsVizor schema)
-2. "questions": array of strings (questions to ask if critical info is missing)
+  const [reviewsText, competitorText] = await Promise.all([
+    searchBusinessReviews(businessName, sector, city),
+    researchCompetitorSites(sector, city),
+  ]);
 
-If you have enough information, set "questions" to [].
-If critical info is missing (what the business sells, contact info, etc.), set "questions" to a list of specific questions and set "config" to null.
+  const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-The config.json must include ALL these fields adapted to the business:
-- lang, meta_title, meta_description, og_type, og_url, og_image_url
-- logo_text, nav_item_0-4 (href + label)
-- headline, subheadline, hero_badge, hero_image_url, hero_image_alt
-- cta_href, cta_id, cta_label
-- stat_1-3 (value + label) — use realistic numbers for the sector
-- benefits_title, benefit_1-2 (title, text, image_url, image_alt)
-- why_us_title, why_us_a-d (emoji, title, text)
-- field_formation_label, field_formation_placeholder, field_formation_opt_* (3-6 options relevant to products/services)
-- form_title, form_id, form_action: "https://${clientSlug}.adsvizor.com/api/leads"
-- client_slug: "${clientSlug}", offer_id: "lead-gen-v1", page_version: "1.0.0"
-- contact_* fields (address, phone, email if available)
-- post_1-4 (blog post ideas with title, excerpt, href, image_url)
-- show_stats: true, show_testimonials: false
+  const systemPrompt = `You are the AdsVizor Webuilder Agent. Generate a complete config.json for a lead-capture landing page.
 
-Use Unsplash URLs for images: https://images.unsplash.com/photo-XXXXX?w=1400&h=700&q=85&auto=format&fit=crop
-Choose photos relevant to the business sector.
+AdsVizor is a multi-tenant system: each client gets a subdomain (${clientSlug}.adsvizor.com).
+Templates use {{placeholder}} syntax filled at runtime from config.json.
 
-Adapt ALL text to the specific business — do NOT use training/CPF language unless the catalog is about training.
-Write in French unless the catalog clearly targets an English-speaking audience.`;
+Output a JSON object with:
+- "config": complete config.json (all fields below, NO omissions)
+- "questions": [] if you have enough info, or a list of questions if critical info is missing
+
+━━━ REQUIRED FIELDS — generate ALL of them ━━━
+
+## SEO & meta
+lang, meta_title, meta_description, og_type, og_url ("https://${clientSlug}.adsvizor.com"),
+og_image_url (Unsplash), home_href ("/"), logo_text, nav_aria_label
+
+## Navigation (5 items — use anchors #hero #benefits #why-us #form #blog)
+nav_item_0_href, nav_item_0_label, ..., nav_item_4_href, nav_item_4_label
+
+## Hero section
+headline, subheadline, hero_badge, hero_image_url, hero_image_alt, cta_href ("#form"), cta_id ("cta-hero"), cta_label
+
+## Stats (show_stats: true)
+stat_1_value, stat_1_label, stat_2_value, stat_2_label, stat_3_value, stat_3_label, stats_aria_label
+
+## Benefits
+benefits_title, benefit_1_title, benefit_1_text, benefit_1_image_url, benefit_1_image_alt,
+benefit_2_title, benefit_2_text, benefit_2_image_url, benefit_2_image_alt
+
+## Why us (use catalog + reviews to make this specific and credible)
+why_us_title, why_us_a_emoji, why_us_a_title, why_us_a_text,
+why_us_b_emoji, why_us_b_title, why_us_b_text,
+why_us_c_emoji, why_us_c_title, why_us_c_text,
+why_us_d_emoji, why_us_d_title, why_us_d_text
+
+## Testimonials (show_testimonials: false but include fields)
+testimonials_title, testimonial_1_text, testimonial_1_author, testimonial_2_text, testimonial_2_author
+
+## Lead form — service dropdown (adapt options to this business, 4-6 options)
+field_formation_label, field_formation_placeholder, field_formation_opt_1, field_formation_opt_2,
+field_formation_opt_3, field_formation_opt_4 (add opt_5/opt_6 if relevant)
+
+## Lead form — personal fields (REQUIRED — do not skip)
+form_title, form_id ("lead-form"), form_action ("https://${clientSlug}.adsvizor.com/api/leads"),
+field_first_name_label ("Prénom"), field_first_name_placeholder,
+field_last_name_label ("Nom"), field_last_name_placeholder,
+field_email_label ("Adresse email"), field_email_placeholder,
+field_phone_label ("Téléphone"), field_phone_placeholder,
+field_status_label ("Votre situation"),
+field_message_label, field_message_placeholder, field_message_rows ("4"),
+submit_label ("Recevoir mon devis gratuit" or similar),
+form_disclaimer_text (RGPD consent text mentioning the company name and data retention),
+client_slug ("${clientSlug}"), offer_id ("lead-gen-v1"), page_version ("1.0.0")
+
+## Thank you page
+thankyou_title, thankyou_message, security_code_label ("Votre code de sécurité"),
+security_code_notice, thankyou_cta_label ("Retour à l'accueil"), thankyou_cta_href ("/")
+
+## Footer
+footer_text
+
+## Contact page
+contact_meta_title, contact_meta_description, contact_og_url ("https://${clientSlug}.adsvizor.com/contact.html"),
+contact_hero_badge, contact_hero_title, contact_hero_subtitle,
+contact_why_title,
+contact_benefit_a_emoji, contact_benefit_a_title, contact_benefit_a_text,
+contact_benefit_b_emoji, contact_benefit_b_title, contact_benefit_b_text,
+contact_benefit_c_emoji, contact_benefit_c_title, contact_benefit_c_text,
+contact_benefit_d_emoji, contact_benefit_d_title, contact_benefit_d_text,
+contact_process_title, contact_process_intro,
+contact_step_1_icon, contact_step_1_image (Unsplash), contact_step_1_title, contact_step_1_text,
+contact_step_2_icon, contact_step_2_image, contact_step_2_title, contact_step_2_text,
+contact_step_3_icon, contact_step_3_image, contact_step_3_title, contact_step_3_text,
+contact_step_4_icon, contact_step_4_image, contact_step_4_title, contact_step_4_text,
+contact_step_5_icon, contact_step_5_image, contact_step_5_title, contact_step_5_text,
+contact_form_title, contact_mobile_cta_label
+
+## Privacy page
+privacy_meta_title, privacy_meta_description, privacy_og_url,
+privacy_company_name, privacy_contact_email, privacy_effective_date ("${today}")
+
+## Blog page
+blog_meta_title, blog_meta_description, blog_og_url,
+blog_title, blog_subtitle, blog_posts_aria_label, read_more_label ("Lire l'article")
+
+## Blog posts (4 posts — adapt topics to this business sector)
+post_1_href, post_1_date ("${today}"), post_1_tag, post_1_title, post_1_excerpt, post_1_image_url,
+post_2_href, post_2_date, post_2_tag, post_2_title, post_2_excerpt, post_2_image_url,
+post_3_href, post_3_date, post_3_tag, post_3_title, post_3_excerpt, post_3_image_url,
+post_4_href, post_4_date, post_4_tag, post_4_title, post_4_excerpt, post_4_image_url
+
+## Contact info
+contact_company, contact_address, contact_phone, contact_email
+
+━━━ IMAGES ━━━
+Use Unsplash URLs: https://images.unsplash.com/photo-XXXXXXXXXX?w=1400&h=700&q=85&auto=format&fit=crop
+Pick photos relevant to the exact business sector (not generic office photos).
+
+━━━ COMPETITOR INSPIRATION ━━━
+You have access to competitor website content. Use it to:
+- Identify the best selling arguments used in this sector
+- Adopt effective headline patterns and CTAs
+- Extract service/offer naming conventions
+- Spot gaps you can position as differentiators for this client
+Do NOT copy text verbatim. Synthesize and adapt to this specific client.
+
+━━━ LANGUAGE & TONE ━━━
+Write in French. Adapt ALL text to this specific business. Do NOT use CPF/training language.
+For why_us: use catalog data + web reviews + competitor analysis to write specific, credible arguments.`;
 
   const userMessage = `Client slug: ${clientSlug}
+Today's date: ${today}
 
 === NOTES FROM SENDER ===
 ${notes}
@@ -206,11 +415,15 @@ ${notes}
 === CATALOG CONTENT ===
 ${catalogText || '(No catalog file attached — analyze from notes only)'}
 
-Generate the complete config.json for this client's landing page.`;
+${reviewsText ? `=== AVIS CLIENTS & REVIEWS WEB ===\n${reviewsText}` : ''}
+
+${competitorText ? `=== SITES CONCURRENTS — inspiration structure et arguments ===\n${competitorText}` : ''}
+
+Generate the COMPLETE config.json. Do not omit any field listed in the system prompt.`;
 
   const response = await ANTHROPIC.messages.create({
     model: 'claude-opus-4-6',
-    max_tokens: 8000,
+    max_tokens: 12000,
     system: systemPrompt,
     messages: [{ role: 'user', content: userMessage }],
   });

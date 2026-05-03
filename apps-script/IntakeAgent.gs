@@ -5,22 +5,21 @@
  *   1. Tu envoies un email à webuilder@adsvizor.com avec le catalogue en pièce jointe
  *      Sujet: "WEBUILDER: {client-slug} - Description"
  *   2. Ce script tourne toutes les 5 minutes, détecte l'email
- *   3. Sauvegarde les pièces jointes dans Google Drive → AdsVizor-Webuilder/{slug}/
+ *   3. Extrait le texte des pièces jointes (PDF, Excel, Word) directement dans Apps Script
  *   4. Crée une branche webuilder/{slug} sur GitHub
- *   5. Crée webuilder/{slug}/NOTES.md avec les liens Drive + le corps de ton email
+ *   5. Crée webuilder/{slug}/NOTES.md avec les infos + le texte extrait
  *   6. Ouvre un PR GitHub → déclenche l'agent de construction du site
  *
  * Setup (une seule fois):
- *   1. Ouvre ce script dans Google Apps Script
+ *   1. Apps Script → Services → ajouter "Drive API" (v2)
  *   2. Project Settings → Script Properties → Ajoute:
  *      GITHUB_TOKEN = ghp_xxxxxxxxxxxx  (scope: repo)
  *   3. Lance createTrigger() une seule fois
- *   4. Autorise les permissions demandées
  *
  * Format de l'email:
  *   À      : webuilder@adsvizor.com
  *   Sujet  : WEBUILDER: {client-slug} - Description
- *   Corps  : Infos sur le client (nom, adresse, tel, zone, marques, etc.)
+ *   Corps  : Toutes les infos client (nom, adresse, tel, email, zone, marques...)
  *   Pièces : catalogue PDF, Excel, Word, etc.
  */
 
@@ -53,7 +52,6 @@ function processWebuilderEmails() {
   const webuilderFolder = getOrCreateFolder(CONFIG.DRIVE_FOLDER_NAME);
 
   for (const thread of threads) {
-    // Prend le premier message non-traité du thread
     const message = thread.getMessages()[0];
     try {
       const prUrl = processMessage(message, webuilderFolder, token);
@@ -62,8 +60,7 @@ function processWebuilderEmails() {
         console.log(`✅ PR créé: ${prUrl}`);
       }
     } catch (e) {
-      console.error(`❌ Erreur sur "${message.getSubject()}": ${e.message}`);
-      // On ne label pas → sera retenté au prochain cycle
+      console.error(`❌ Erreur sur "${message.getSubject()}": ${e.stack}`);
     }
   }
 }
@@ -76,7 +73,6 @@ function processMessage(message, webuilderFolder, token) {
   const sender  = message.getFrom();
   const date    = message.getDate();
 
-  // Extrait le slug depuis le sujet: "WEBUILDER: mon-client - description"
   const slugMatch = subject.match(/WEBUILDER:\s*([a-z0-9][a-z0-9-]*)/i);
   if (!slugMatch) {
     console.log(`⏭️ Skipping: pas de slug valide dans "${subject}"`);
@@ -85,39 +81,135 @@ function processMessage(message, webuilderFolder, token) {
   const clientSlug = slugMatch[1].toLowerCase();
   console.log(`📦 Traitement webuilder: ${clientSlug}`);
 
-  // Sauvegarde les pièces jointes dans Drive
-  const clientFolder = getOrCreateFolder(clientSlug, webuilderFolder);
-  const driveLinks   = saveAttachments(message.getAttachments(), clientFolder);
+  // Sauvegarde + extraction texte des pièces jointes
+  const clientFolder  = getOrCreateFolder(clientSlug, webuilderFolder);
+  const attachments   = processAttachments(message.getAttachments(), clientFolder);
 
-  // Construit le NOTES.md
-  const notesContent = buildNotes({ clientSlug, sender, date, subject, body, driveLinks });
+  // Construit le NOTES.md avec texte extrait embarqué
+  const notesContent = buildNotes({ clientSlug, sender, date, subject, body, attachments });
 
-  // Crée la branche + fichier + PR sur GitHub
   return createGitHubPR(clientSlug, notesContent, token);
 }
 
-// ─── Sauvegarde des pièces jointes dans Drive ────────────────────────────────
+// ─── Traitement des pièces jointes (sauvegarde + extraction texte) ────────────
 
-function saveAttachments(attachments, folder) {
-  const links = [];
+function processAttachments(attachments, folder) {
+  const results = [];
   for (const att of attachments) {
-    const file = folder.createFile(att.copyBlob());
+    const name = att.getName();
+    const type = att.getContentType();
+    const size = Math.round(att.getSize() / 1024);
+    console.log(`📎 Traitement: ${name} (${type}, ${size} KB)`);
+
+    // Sauvegarde dans Drive
+    const blob = att.copyBlob();
+    const file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    // URL publique téléchargeable directement (sans auth) depuis GitHub Actions
-    links.push({
-      name: att.getName(),
-      url:  `https://drive.google.com/uc?id=${file.getId()}&export=download&confirm=t`,
-      type: att.getContentType(),
-      size: Math.round(att.getSize() / 1024) + ' KB',
-    });
-    console.log(`📎 Sauvegardé: ${att.getName()}`);
+    const driveUrl = `https://drive.google.com/file/d/${file.getId()}/view`;
+
+    // Extraction du texte
+    let extractedText = null;
+    try {
+      if (type === 'application/pdf') {
+        extractedText = extractTextFromPdf(att.copyBlob(), name);
+      } else if (type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                 type === 'application/vnd.ms-excel') {
+        extractedText = extractTextFromExcel(att.copyBlob(), name);
+      } else if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                 type === 'application/msword') {
+        extractedText = extractTextFromWord(att.copyBlob(), name);
+      } else if (type.startsWith('text/')) {
+        extractedText = att.getDataAsString('UTF-8');
+      }
+    } catch (e) {
+      console.warn(`⚠️ Extraction échouée pour ${name}: ${e.message}`);
+    }
+
+    results.push({ name, type, size: `${size} KB`, driveUrl, extractedText });
   }
-  return links;
+  return results;
+}
+
+// ─── Extraction texte PDF (via conversion Google Docs) ───────────────────────
+
+function extractTextFromPdf(blob, name) {
+  console.log(`📄 Extraction PDF: ${name}`);
+  blob.setName(name);
+
+  // Convertit le PDF en Google Doc pour extraire le texte
+  const driveFile = Drive.Files.insert(
+    { title: `_tmp_webuilder_${name}`, mimeType: MimeType.GOOGLE_DOCS },
+    blob,
+    { convert: true }
+  );
+
+  try {
+    const doc  = DocumentApp.openById(driveFile.id);
+    const text = doc.getBody().getText();
+    console.log(`✅ PDF extrait: ${text.length} caractères`);
+    return text;
+  } finally {
+    // Supprime le fichier temporaire
+    try { Drive.Files.remove(driveFile.id); } catch (e) {}
+  }
+}
+
+// ─── Extraction texte Excel (via conversion Google Sheets) ───────────────────
+
+function extractTextFromExcel(blob, name) {
+  console.log(`📊 Extraction Excel: ${name}`);
+  blob.setName(name);
+
+  const driveFile = Drive.Files.insert(
+    { title: `_tmp_webuilder_${name}`, mimeType: MimeType.GOOGLE_SHEETS },
+    blob,
+    { convert: true }
+  );
+
+  try {
+    const ss    = SpreadsheetApp.openById(driveFile.id);
+    const lines = [];
+    for (const sheet of ss.getSheets()) {
+      lines.push(`\n[Feuille: ${sheet.getName()}]`);
+      const data = sheet.getDataRange().getValues();
+      for (const row of data) {
+        const rowText = row.filter(c => c !== '').join(' | ');
+        if (rowText.trim()) lines.push(rowText);
+      }
+    }
+    const text = lines.join('\n');
+    console.log(`✅ Excel extrait: ${text.length} caractères`);
+    return text;
+  } finally {
+    try { Drive.Files.remove(driveFile.id); } catch (e) {}
+  }
+}
+
+// ─── Extraction texte Word (via conversion Google Docs) ──────────────────────
+
+function extractTextFromWord(blob, name) {
+  console.log(`📝 Extraction Word: ${name}`);
+  blob.setName(name);
+
+  const driveFile = Drive.Files.insert(
+    { title: `_tmp_webuilder_${name}`, mimeType: MimeType.GOOGLE_DOCS },
+    blob,
+    { convert: true }
+  );
+
+  try {
+    const doc  = DocumentApp.openById(driveFile.id);
+    const text = doc.getBody().getText();
+    console.log(`✅ Word extrait: ${text.length} caractères`);
+    return text;
+  } finally {
+    try { Drive.Files.remove(driveFile.id); } catch (e) {}
+  }
 }
 
 // ─── Construction du NOTES.md ─────────────────────────────────────────────────
 
-function buildNotes({ clientSlug, sender, date, subject, body, driveLinks }) {
+function buildNotes({ clientSlug, sender, date, subject, body, attachments }) {
   const dateStr = Utilities.formatDate(date, 'Europe/Paris', 'yyyy-MM-dd HH:mm');
   const lines = [
     `# Webuilder: ${clientSlug}`,
@@ -128,20 +220,30 @@ function buildNotes({ clientSlug, sender, date, subject, body, driveLinks }) {
     `| De | ${sender} |`,
     `| Sujet | ${subject} |`,
     ``,
+    `## Notes de l'expéditeur`,
+    ``,
+    body ? body.trim() : '_Aucune note._',
+    ``,
     `## Fichiers catalogue`,
     ``,
   ];
 
-  if (driveLinks.length === 0) {
+  if (attachments.length === 0) {
     lines.push('_Aucune pièce jointe._');
   } else {
-    for (const f of driveLinks) {
-      lines.push(`- [${f.name}](${f.url}) _(${f.type}, ${f.size})_`);
+    for (const f of attachments) {
+      lines.push(`- [${f.name}](${f.driveUrl}) _(${f.type}, ${f.size})_`);
     }
   }
 
-  lines.push(``, `## Notes de l'expéditeur`, ``);
-  lines.push(body ? body.trim() : '_Aucune note._');
+  // Texte extrait des fichiers (directement embarqué — pas besoin de télécharger)
+  const withText = attachments.filter(f => f.extractedText && f.extractedText.trim().length > 50);
+  if (withText.length > 0) {
+    lines.push(``, `## Contenu extrait des fichiers`, ``);
+    for (const f of withText) {
+      lines.push(`### ${f.name}`, ``, f.extractedText.trim().slice(0, 15000), ``);
+    }
+  }
 
   return lines.join('\n');
 }
@@ -186,7 +288,7 @@ function createGitHubPR(clientSlug, notesContent, token) {
     payload: JSON.stringify(filePayload),
   });
 
-  // 4. Ouvrir le PR (si un PR existe déjà pour cette branche, récupérer son URL)
+  // 4. Ouvrir le PR (récupère l'existant si déjà créé)
   const prCreateRes = UrlFetchApp.fetch(`${base}/pulls`, {
     method: 'post', headers,
     payload: JSON.stringify({
@@ -197,9 +299,6 @@ function createGitHubPR(clientSlug, notesContent, token) {
         `L'agent va analyser le catalogue et construire le site \`${clientSlug}\`.`,
         ``,
         `**Branche:** \`${branch}\``,
-        `**Fichier:** \`${filePath}\``,
-        ``,
-        `> Si des informations sont manquantes, l'agent postera ses questions ici en commentaire.`,
       ].join('\n'),
       head: branch,
       base: 'main',
@@ -208,7 +307,6 @@ function createGitHubPR(clientSlug, notesContent, token) {
   });
   const prData = JSON.parse(prCreateRes.getContentText());
 
-  // Si PR déjà existant (422), récupérer l'URL du PR ouvert
   if (!prData.html_url) {
     const existingPrsRes = UrlFetchApp.fetch(
       `${base}/pulls?head=${CONFIG.GITHUB_OWNER}:${branch}&state=open`,
