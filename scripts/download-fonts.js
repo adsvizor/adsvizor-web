@@ -8,7 +8,7 @@
  *   node scripts/download-fonts.js
  */
 
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, createWriteStream, readFileSync } from 'fs';
 import https from 'https';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,16 +19,15 @@ const FONTS_DIR = path.join(ROOT, 'fonts');
 
 function download(url, dest) {
   return new Promise((resolve, reject) => {
-    const file = import('fs').then(fs => fs.createWriteStream(dest));
-    https.get(url, res => {
+    const file = createWriteStream(dest);
+    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, res => {
       if (res.statusCode === 301 || res.statusCode === 302) {
+        file.close();
         download(res.headers.location, dest).then(resolve).catch(reject);
         return;
       }
-      file.then(f => {
-        res.pipe(f);
-        f.on('finish', () => f.close(resolve));
-      });
+      res.pipe(file);
+      file.on('finish', () => file.close(resolve));
     }).on('error', reject);
   });
 }
@@ -66,8 +65,8 @@ async function main() {
     const dest = path.join(FONTS_DIR, filename);
     process.stdout.write(`  Downloading ${filename}... `);
     await download(url, dest);
-    const kb = Math.round((await import('fs')).then(fs => fs.readFileSync(dest).length) / 1024);
-    console.log(`done`);
+    const kb = Math.round(readFileSync(dest).length / 1024);
+    console.log(`${kb}KB`);
     localCss = localCss.replace(url, `/fonts/${filename}`);
   }
 
