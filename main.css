@@ -1960,13 +1960,31 @@ footer p {
     position: sticky;
     top: 72px;
     padding: 32px 0 32px 36px;
-    max-height: calc(100vh - 72px);
-    overflow-y: auto;
   }
 
   .form-float section[aria-labelledby="lead-form-title"] {
     margin: 0;
     padding: 32px 28px 28px;
+  }
+
+  /* Compact status cards on desktop: 4 in a row instead of 2×2 */
+  .form-float .status-cards {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .form-float .status-card {
+    padding: 10px 4px 8px;
+    gap: 4px;
+    border-radius: 10px;
+  }
+
+  .form-float .status-card-icon {
+    font-size: 1.3rem;
+  }
+
+  .form-float .status-card-label {
+    font-size: 0.66rem;
   }
 }
 
