@@ -68,6 +68,41 @@ function setHiddenUtmFields(form, utm) {
   }
 }
 
+// =========================
+// Phone validation
+// =========================
+
+/**
+ * Strips all non-digit characters from a phone number and normalises
+ * international French prefixes (+33 / 0033) back to a leading zero.
+ * Examples:
+ *   "+33 6 12 34 56 78"  → "0612345678"
+ *   "00336 12 34 56 78"  → "0612345678"
+ *   "06.12.34.56.78"     → "0612345678"
+ *   "06 12 34 56 78"     → "0612345678"
+ */
+function normalizePhoneNumber(raw) {
+  let s = (raw || "").trim();
+  // Replace international French prefix with leading zero
+  if (s.startsWith("+33")) {
+    s = "0" + s.slice(3);
+  } else if (s.startsWith("0033")) {
+    s = "0" + s.slice(4);
+  }
+  // Remove all non-digit characters (spaces, dashes, dots, parens, etc.)
+  return s.replace(/\D/g, "");
+}
+
+/**
+ * Returns true if the phone number is a valid 10-digit French number
+ * (starts with 0 followed by any digit 1-9).
+ * Handles all common French formats and country-code prefixes automatically.
+ */
+function isValidFrenchPhone(raw) {
+  const digits = normalizePhoneNumber(raw);
+  return /^0[1-9]\d{8}$/.test(digits);
+}
+
 function ensureFormErrorEl(form) {
   const existing = form.querySelector("[data-form-error]");
   if (existing) return existing;
@@ -260,7 +295,9 @@ function buildLeadPayload(form, config) {
     : (safeString(fd.get("name") ?? "").trim() || null);
 
   const visitorEmail = fd.get("email");
-  const visitorPhone = fd.get("phone");
+  // Normalize phone: strip country prefix (+33/0033), spaces, dashes, etc.
+  const rawPhone = fd.get("phone");
+  const visitorPhone = rawPhone ? normalizePhoneNumber(safeString(rawPhone).trim()) : null;
   const visitorMessage = fd.get("message");
   const consentMarketing = fd.get("consent_marketing") === "on";
 
@@ -270,20 +307,28 @@ function buildLeadPayload(form, config) {
   const consentLabelEl = document.querySelector('label[for="consent_marketing"]');
   const consentText = consentLabelEl ? consentLabelEl.textContent.trim() : "";
 
+  // UTM: read from hidden form fields (set at page load), with sessionStorage fallback
+  // in case the DOM was rehydrated or the hidden input values were somehow cleared.
+  const storedUtm = readUtmFromSession();
+  function fdUtm(key) {
+    const v = fd.get(key);
+    return (v && safeString(v).trim()) || storedUtm[key] || null;
+  }
+
   const payload = {
     client_slug: clientSlug,
     offer_id: offerId,
     visitor_name: visitorName || null,
     visitor_email: visitorEmail ? safeString(visitorEmail).trim() : "",
-    visitor_phone: visitorPhone ? safeString(visitorPhone).trim() : null,
+    visitor_phone: visitorPhone || null,
     visitor_message: visitorMessage ? safeString(visitorMessage).trim() : null,
     professional_status: professionalStatus ? safeString(professionalStatus).trim() : null,
     utm: {
-      source: fd.get("utm_source") ? safeString(fd.get("utm_source")).trim() : null,
-      medium: fd.get("utm_medium") ? safeString(fd.get("utm_medium")).trim() : null,
-      campaign: fd.get("utm_campaign") ? safeString(fd.get("utm_campaign")).trim() : null,
-      term: fd.get("utm_term") ? safeString(fd.get("utm_term")).trim() : null,
-      content: fd.get("utm_content") ? safeString(fd.get("utm_content")).trim() : null
+      source:   fdUtm("utm_source"),
+      medium:   fdUtm("utm_medium"),
+      campaign: fdUtm("utm_campaign"),
+      term:     fdUtm("utm_term"),
+      content:  fdUtm("utm_content")
     },
     page_version: fd.get("page_version") ? safeString(fd.get("page_version")).trim() : safeString(config.page_version || ""),
     consent_marketing: consentMarketing,
@@ -593,15 +638,20 @@ function initMultiStepForm(form, config) {
   // ── Client-side validation for a single step ──
   // Note: no input.focus() calls — on iOS they scroll the page and make it look
   // like the button did nothing. Invalid fields are highlighted via CSS instead.
+  // Returns { valid: boolean, phoneInvalid: boolean }
   function validateStep(stepEl) {
     let valid = true;
+    let phoneInvalid = false;
 
     // Required text / email / tel inputs
     for (const input of stepEl.querySelectorAll("input[required], textarea[required]")) {
       const empty = !input.value.trim();
       const badEmail = input.type === "email" && !empty && !input.checkValidity();
-      input.classList.toggle("input-error", empty || badEmail);
-      if (empty || badEmail) valid = false;
+      // Phone: normalize first (+33 / 0033 prefix), then validate 10-digit French format
+      const badPhone = input.type === "tel" && !empty && !isValidFrenchPhone(input.value);
+      input.classList.toggle("input-error", empty || badEmail || badPhone);
+      if (badPhone) phoneInvalid = true;
+      if (empty || badEmail || badPhone) valid = false;
     }
 
     // Radio groups
@@ -612,7 +662,7 @@ function initMultiStepForm(form, config) {
       if (!stepEl.querySelector(`input[type='radio'][name='${name}']:checked`)) valid = false;
     }
 
-    return valid;
+    return { valid, phoneInvalid };
   }
 
   // Clear error highlights when user starts typing
@@ -687,6 +737,15 @@ function initMultiStepForm(form, config) {
     if (formationVal) formationVal.value = sessionFormation;
   }
 
+  // ── Default formation (always send a value) ──
+  // If no formation was pre-filled from a CTA click, pre-select "Permis de conduire (CACES)"
+  // so the hidden input always has a value when the form is submitted.
+  // We do NOT trigger the disqualification UI on initial load — only on explicit user change.
+  if (!sessionFormation && formationSelect && formationVal && !formationVal.value) {
+    formationSelect.value = "permis-cases";
+    formationVal.value = "Permis de conduire (CACES)";
+  }
+
   // Sync dropdown → hidden input + handle permis disqualification
   if (formationSelect) {
     formationSelect.addEventListener("change", () => {
@@ -742,8 +801,13 @@ function initMultiStepForm(form, config) {
   if (btnNext) {
     btnNext.addEventListener("click", () => {
       clearFormError(form);
-      if (!validateStep(steps[0])) {
-        showFormError(form, "Veuillez remplir tous les champs obligatoires.");
+      const { valid, phoneInvalid } = validateStep(steps[0]);
+      if (!valid) {
+        if (phoneInvalid) {
+          showFormError(form, "Numéro de téléphone invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).");
+        } else {
+          showFormError(form, "Veuillez remplir tous les champs obligatoires.");
+        }
         return;
       }
       // Consent is required to advance to step 2
@@ -765,6 +829,23 @@ function initMultiStepForm(form, config) {
 
   // ── Final submit (step 2) ──
   const submitButton = form.querySelector('button[type="submit"]');
+
+  // ── bfcache fix: reset button state when user navigates BACK from thank-you ──
+  // When the form is submitted successfully the button enters a loading state and
+  // we navigate to thank-you.html. If the user presses the browser Back button,
+  // browsers restore the page from the bfcache (JS does not re-run, DOM is frozen
+  // in the loading state). The "pageshow" event fires with e.persisted = true —
+  // we use it to put the button back to its normal state.
+  const originalSubmitLabel = submitButton ? submitButton.textContent : "";
+  window.addEventListener("pageshow", (evt) => {
+    if (!evt.persisted || !submitButton) return;
+    submitButton.disabled = false;
+    submitButton.classList.remove("btn-loading");
+    if (originalSubmitLabel) submitButton.textContent = originalSubmitLabel;
+    clearFormError(form);
+    // Also go back to step 1 so the form is clean
+    showStep(0);
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -788,7 +869,7 @@ function initMultiStepForm(form, config) {
     }
 
     // Validate step 2 fields (status radio is checked via JS)
-    if (!validateStep(steps[1])) {
+    if (!validateStep(steps[1]).valid) {
       showFormError(form, "Veuillez sélectionner votre statut professionnel.");
       return;
     }
