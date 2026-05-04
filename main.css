@@ -1960,6 +1960,8 @@ footer p {
     position: sticky;
     top: 72px;
     padding: 32px 0 32px 36px;
+    max-height: calc(100vh - 72px);
+    overflow-y: auto;
   }
 
   .form-float section[aria-labelledby="lead-form-title"] {
