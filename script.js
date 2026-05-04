@@ -115,6 +115,71 @@ function ensureFormErrorEl(form) {
   return el;
 }
 
+// =========================
+// Lead persistence (localStorage safety net)
+// =========================
+
+const PENDING_LEAD_KEY = "adsvizor_pending_lead";
+const PENDING_LEAD_TTL = 48 * 60 * 60 * 1000; // 48 hours
+
+/**
+ * Persist a failed lead payload to localStorage so it can be retried
+ * on the next page load, even if the user closes the tab or browser.
+ */
+function savePendingLead(payload, errorReason) {
+  try {
+    localStorage.setItem(PENDING_LEAD_KEY, JSON.stringify({
+      payload,
+      errorReason,
+      savedAt: new Date().toISOString(),
+      attempts: 1
+    }));
+  } catch {}
+}
+
+function clearPendingLead() {
+  try { localStorage.removeItem(PENDING_LEAD_KEY); } catch {}
+}
+
+/**
+ * On page load: silently retry any previously failed lead.
+ * - Abandoned after 48 h (stale data)
+ * - Max 5 retry attempts across page loads
+ * - Never blocks the UI
+ */
+async function retryPendingLead(formActionUrl) {
+  if (!formActionUrl || formActionUrl === "APPS_SCRIPT_URL") return;
+  let saved;
+  try {
+    const raw = localStorage.getItem(PENDING_LEAD_KEY);
+    if (!raw) return;
+    saved = JSON.parse(raw);
+  } catch { clearPendingLead(); return; }
+
+  if (!saved || !saved.payload) { clearPendingLead(); return; }
+
+  // Expire after 48 h
+  if (Date.now() - new Date(saved.savedAt).getTime() > PENDING_LEAD_TTL) {
+    clearPendingLead(); return;
+  }
+
+  // Give up after 5 attempts
+  if (saved.attempts > 5) { clearPendingLead(); return; }
+
+  try {
+    await postLead(formActionUrl, saved.payload);
+    clearPendingLead();
+    emitEvent("form_submit", { status: "retry_success", attempts: saved.attempts, original_error: saved.errorReason });
+    console.info("[adsvizor] Pending lead retried successfully after", saved.attempts, "attempt(s).");
+  } catch {
+    // Still failing — increment counter, try again next load
+    try {
+      saved.attempts += 1;
+      localStorage.setItem(PENDING_LEAD_KEY, JSON.stringify(saved));
+    } catch {}
+  }
+}
+
 function showFormError(form, message) {
   const el = ensureFormErrorEl(form);
   el.textContent = safeString(message);
@@ -915,12 +980,15 @@ function initMultiStepForm(form, config) {
 
       // Mark full submit done BEFORE navigating so the pagehide beacon doesn't fire
       fullSubmitDone = true;
+      clearPendingLead(); // clean up any previously saved pending lead on success
       emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
       window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
       emitEvent("form_submit", { status: "error", message });
       showFormError(form, message);
+      // Persist payload to localStorage — will be retried silently on next page load
+      savePendingLead(payload, message);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.classList.remove("btn-loading");
@@ -972,6 +1040,10 @@ async function init() {
       const el = document.querySelector("[aria-labelledby='testimonials-title']");
       if (el) el.hidden = true;
     }
+
+    // Silently retry any lead that failed on a previous page load (localStorage safety net).
+    // Fire-and-forget — never blocks the UI or delays page display.
+    retryPendingLead(config.form_action).catch(() => {});
 
     // Init multi-step form BEFORE body.ready so steps are in the right state
     // when the page becomes visible (prevents flash of both steps showing).

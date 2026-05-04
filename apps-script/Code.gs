@@ -218,7 +218,10 @@ function doPost(e) {
     return jsonResponse_({ status: "ok" });
 
   } catch (err) {
-    return jsonResponse_({ status: "error", message: err instanceof Error ? err.message : "Unexpected error." });
+    const errMsg = err instanceof Error ? err.message : "Unexpected error.";
+    // Log failure to the "Erreurs" sheet so no lead is silently lost server-side.
+    try { logError_(payload, errMsg); } catch {}
+    return jsonResponse_({ status: "error", message: errMsg });
   }
 }
 
@@ -291,6 +294,33 @@ function appendFormationHistory_(existing, incoming) {
 function jsonResponse_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Log a failed lead submission to the "Erreurs" sheet.
+ * Creates the sheet automatically if it doesn't exist.
+ * Columns: Timestamp | Email | Erreur | Client | Téléphone | Formation | Payload complet
+ */
+function logError_(payload, errorMsg) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let errSheet = ss.getSheetByName("Erreurs");
+  if (!errSheet) {
+    errSheet = ss.insertSheet("Erreurs");
+    errSheet.getRange(1, 1, 1, 7).setValues([[
+      "Timestamp", "Email", "Erreur", "Client", "Téléphone", "Formation", "Payload complet"
+    ]]);
+    errSheet.setFrozenRows(1);
+  }
+  const p = payload || {};
+  errSheet.appendRow([
+    new Date().toISOString(),
+    asString_(p.visitor_email),
+    errorMsg,
+    asString_(p.client_slug),
+    asString_(p.visitor_phone),
+    asString_(p.formation_interest),
+    JSON.stringify(p)
+  ]);
 }
 
 function parseJson_(text) {
