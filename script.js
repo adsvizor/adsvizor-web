@@ -824,6 +824,11 @@ function initMultiStepForm(form, config) {
         showFormError(form, "Veuillez accepter d'être recontacté(e) pour continuer.");
         return;
       }
+      // Send partial via sendBeacon — immediate, reliable on all platforms including mobile,
+      // non-blocking (browser manages it independently of the page JS thread).
+      // Using sendBeacon here instead of pagehide because iOS Safari doesn't fire pagehide
+      // reliably on window close. The user is guaranteed to be present at this moment.
+      sendAbandonmentBeacon();
       showStep(1);
     });
   }
