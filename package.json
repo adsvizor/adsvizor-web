@@ -1,5 +1,8 @@
 {
   "scripts": {
     "dev": "npx wrangler pages dev . --port 5500 --compatibility-date 2026-04-19"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
   }
 }
