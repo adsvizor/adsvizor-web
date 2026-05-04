@@ -49,6 +49,24 @@
     gtag('config', 'GT-KD7C7TR3');
     gtag('config', 'AW-18122720723');
   </script>
+  <!-- Enhanced Conversions: send hashed user data before conversion fires -->
+  <script>
+    try {
+      var _ec = JSON.parse(sessionStorage.getItem('adsvizor_ec') || 'null');
+      if (_ec) {
+        var _ud = {};
+        if (_ec.email)      _ud.email        = _ec.email;
+        if (_ec.phone)      _ud.phone_number = _ec.phone;
+        if (_ec.first_name || _ec.last_name) {
+          _ud.address = {};
+          if (_ec.first_name) _ud.address.first_name = _ec.first_name;
+          if (_ec.last_name)  _ud.address.last_name  = _ec.last_name;
+        }
+        if (Object.keys(_ud).length > 0) gtag('set', 'user_data', _ud);
+        sessionStorage.removeItem('adsvizor_ec');
+      }
+    } catch (e) {}
+  </script>
   <!-- Conversion event: fires only when arriving from a successful form submit -->
   <script>
     var _host = window.location.hostname;

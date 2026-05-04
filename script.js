@@ -103,6 +103,26 @@ function isValidFrenchPhone(raw) {
   return /^0[1-9]\d{8}$/.test(digits);
 }
 
+/**
+ * Saves lead contact data to sessionStorage so thank-you.html can pass it to
+ * gtag Enhanced Conversions (user_data) before the conversion event fires.
+ * Silent-fails if sessionStorage is unavailable (private browsing, etc.).
+ */
+function saveEnhancedConversionsData(payload) {
+  try {
+    const phone = payload.visitor_phone || "";
+    // Convert French 10-digit "0612345678" → E.164 "+33612345678" (required by Google)
+    const phoneE164 = phone.startsWith("0") ? "+33" + phone.slice(1) : "";
+    const nameParts = (payload.visitor_name || "").trim().split(/\s+/);
+    sessionStorage.setItem("adsvizor_ec", JSON.stringify({
+      email:      payload.visitor_email || "",
+      phone:      phoneE164,
+      first_name: nameParts[0] || "",
+      last_name:  nameParts.slice(1).join(" ") || ""
+    }));
+  } catch (e) { /* sessionStorage unavailable — silent fail */ }
+}
+
 function ensureFormErrorEl(form) {
   const existing = form.querySelector("[data-form-error]");
   if (existing) return existing;
@@ -505,6 +525,7 @@ function initFormHandling(form, config) {
       await postLead(config.form_action, payload);
 
       emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
+      saveEnhancedConversionsData(payload);
       window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
@@ -982,6 +1003,7 @@ function initMultiStepForm(form, config) {
       fullSubmitDone = true;
       clearPendingLead(); // clean up any previously saved pending lead on success
       emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
+      saveEnhancedConversionsData(payload);
       window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
