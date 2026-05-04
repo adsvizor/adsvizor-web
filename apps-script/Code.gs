@@ -105,7 +105,7 @@ function doPost(e) {
     if (!sheet) return jsonResponse_({ status: "error", message: "No active sheet." });
 
     const lock = LockService.getScriptLock();
-    if (!lock.tryLock(8000)) {
+    if (!lock.tryLock(25000)) {
       return jsonResponse_({ status: "error", message: "Server busy, please retry." });
     }
 

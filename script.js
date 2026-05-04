@@ -342,7 +342,8 @@ function buildLeadPayload(form, config) {
   return payload;
 }
 
-async function postLead(formActionUrl, payload) {
+async function postLead(formActionUrl, payload, _attempt) {
+  const attempt = _attempt || 1;
   const res = await fetch(formActionUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -354,10 +355,33 @@ async function postLead(formActionUrl, payload) {
     throw new Error(`Échec de l’envoi (HTTP ${res.status})${text ? ` — ${text}` : ""}`);
   }
 
-  // Response may be JSON or plain text depending on Apps Script implementation.
+  // Apps Script ALWAYS returns HTTP 200 — even on errors.
+  // We must read the JSON body and check status: "error" explicitly.
   const contentType = res.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) return res.json();
-  return res.text();
+  const bodyText = await res.text().catch(() => "");
+
+  if (contentType.includes("application/json") || bodyText.startsWith("{")) {
+    let data;
+    try { data = JSON.parse(bodyText); } catch {}
+    if (data && data.status === "error") {
+      // "Server busy" = Apps Script lock timeout (usually caused by concurrent partial + full submit).
+      // Retry once automatically after a short delay — the lock will have been released by then.
+      if (attempt <= 2 && data.message && data.message.toLowerCase().includes("busy")) {
+        await new Promise((r) => setTimeout(r, 3500));
+        return postLead(formActionUrl, payload, attempt + 1);
+      }
+      // Any other Apps Script error: surface it to the user so the lead is NOT silently lost.
+      throw new Error(data.message || "Erreur lors de l’enregistrement. Veuillez réessayer.");
+    }
+    return data;
+  }
+
+  // Non-JSON response (Apps Script HTML error page, network issue, etc.)
+  if (bodyText.includes("<!DOCTYPE") || bodyText.includes("<html")) {
+    throw new Error("Erreur serveur temporaire. Veuillez réessayer dans quelques instants.");
+  }
+
+  return bodyText;
 }
 
 function initFormHandling(form, config) {
@@ -421,7 +445,13 @@ function initFormHandling(form, config) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
       emitEvent("form_submit", { status: "error", message });
       showFormError(form, message);
-      if (submitButton) submitButton.disabled = false;
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove("btn-loading");
+        if (typeof originalSubmitLabel !== "undefined" && originalSubmitLabel) {
+          submitButton.textContent = originalSubmitLabel;
+        }
+      }
     }
   });
 }
@@ -907,7 +937,13 @@ function initMultiStepForm(form, config) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
       emitEvent("form_submit", { status: "error", message });
       showFormError(form, message);
-      if (submitButton) submitButton.disabled = false;
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove("btn-loading");
+        if (typeof originalSubmitLabel !== "undefined" && originalSubmitLabel) {
+          submitButton.textContent = originalSubmitLabel;
+        }
+      }
     }
   });
 }
