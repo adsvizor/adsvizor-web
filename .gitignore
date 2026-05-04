@@ -11,3 +11,7 @@
 # Node dependencies
 node_modules/
 scripts/node_modules/
+
+# Temp files from image download script
+*.tmp
+*.converting
