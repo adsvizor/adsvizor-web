@@ -123,7 +123,7 @@ function assembleHTML(f, config) {
   <body>
     <header>
       <div>
-        <a href="/" class="site-logo-link"><img src="/logo.png" alt="${logoText}" class="site-logo" /></a>
+        <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="${logoText}" class="site-logo" width="200" height="200" /></picture></a>
       </div>
       <nav aria-label="Navigation principale">
         <ul>
