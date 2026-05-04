@@ -700,50 +700,60 @@ function initMultiStepForm(form, config) {
     input.addEventListener("input", () => input.classList.remove("input-error"), { passive: true });
   }
 
-  // ── Fire-and-forget partial POST (step 1 data) ──
-  function sendPartial() {
+  // ── Abandonment beacon (replaces fire-and-forget sendPartial) ──
+  // Fires via navigator.sendBeacon on pagehide ONLY if:
+  //   - user completed step 1 (has email) AND
+  //   - user did NOT complete the full submit
+  // sendBeacon is guaranteed to be delivered and CANNOT overlap with a full submit
+  // (the user is leaving the page — they can't also be submitting the form).
+  // This eliminates the concurrency/lock-timeout issue entirely.
+  let fullSubmitDone = false;
+
+  function sendAbandonmentBeacon() {
+    if (fullSubmitDone) return;
     if (!config.form_action || config.form_action === "APPS_SCRIPT_URL") return;
+    const fd = new FormData(form);
+    const email = safeString(fd.get("email") ?? "").trim();
+    if (!email) return; // step 1 not completed — nothing useful to capture
+    const firstName = safeString(fd.get("first_name") ?? "").trim();
+    const lastName  = safeString(fd.get("last_name")  ?? "").trim();
+    const rawPhone  = safeString(fd.get("phone") ?? "").trim();
+    const utm = readUtmFromSession();
+    const payload = {
+      client_slug: safeString(config.client_slug || form.dataset.clientSlug || ""),
+      offer_id:    safeString(form.dataset.offerId || config.offer_id || ""),
+      visitor_name:  [firstName, lastName].filter(Boolean).join(" ") || null,
+      visitor_email: email,
+      visitor_phone: rawPhone ? normalizePhoneNumber(rawPhone) : null,
+      formation_interest: fd.get("formation_interest")
+        ? safeString(fd.get("formation_interest")).trim() : null,
+      consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
+      consent_url: window.location.href,
+      consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
+      consent_timestamp: new Date().toISOString(),
+      utm: {
+        source:   utm.utm_source   || null,
+        medium:   utm.utm_medium   || null,
+        campaign: utm.utm_campaign || null,
+        term:     utm.utm_term     || null,
+        content:  utm.utm_content  || null
+      },
+      page_version: safeString(config.page_version || ""),
+      partial: true,
+      step: "abandoned",
+      hp_trap: ""
+    };
     try {
-      const fd = new FormData(form);
-      const firstName = safeString(fd.get("first_name") ?? "").trim();
-      const lastName  = safeString(fd.get("last_name")  ?? "").trim();
-      const utm = readUtmFromSession();
-      const payload = {
-        client_slug: safeString(config.client_slug || form.dataset.clientSlug || ""),
-        offer_id:    safeString(form.dataset.offerId || config.offer_id || ""),
-        visitor_name:  [firstName, lastName].filter(Boolean).join(" ") || null,
-        visitor_email: safeString(fd.get("email") ?? "").trim() || null,
-        visitor_phone: safeString(fd.get("phone") ?? "").trim() || null,
-        formation_interest: fd.get("formation_interest")
-          ? safeString(fd.get("formation_interest")).trim() : null,
-        consent_marketing: form.querySelector('#consent_marketing')?.checked ?? false,
-        consent_url: window.location.href,
-        consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
-        consent_timestamp: new Date().toISOString(),
-        utm: {
-          source:   utm.utm_source   || null,
-          medium:   utm.utm_medium   || null,
-          campaign: utm.utm_campaign || null,
-          term:     utm.utm_term     || null,
-          content:  utm.utm_content  || null
-        },
-        page_version: safeString(config.page_version || ""),
-        partial: true,
-        step: 1,
-        hp_trap: ""
-      };
-      // Fire-and-forget — never block the UI, but log failures for debugging
-      postLead(config.form_action, payload)
-        .then(() => emitEvent("form_partial", { status: "success", step: 1 }))
-        .catch((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          emitEvent("form_partial", { status: "error", step: 1, message: msg });
-          console.warn("[adsvizor] Partial lead send failed (step 1):", msg);
-        });
-    } catch (err) {
-      console.warn("[adsvizor] sendPartial setup error:", err);
-    }
+      // Blob with application/json so the Cloudflare Worker parses it correctly
+      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+      navigator.sendBeacon(config.form_action, blob);
+      emitEvent("form_partial", { status: "beacon", step: "abandoned" });
+    } catch {}
   }
+
+  // pagehide fires on real navigation/close (unlike beforeunload, works on iOS too).
+  // e.persisted = true means the page is going into bfcache (back button) — skip beacon.
+  window.addEventListener("pagehide", (e) => { if (!e.persisted) sendAbandonmentBeacon(); });
 
   // ── Formation pre-select (from data-formation CTA click) ──
   const formationVal     = form.querySelector("#formation_interest_val");
@@ -789,40 +799,8 @@ function initMultiStepForm(form, config) {
         permisDisqualif.style.display = isPermis ? "" : "none";
       }
       if (submitBtn) submitBtn.disabled = isPermis;
-
-      // Auto-send when permis selected — captures the disqualification in the sheet
-      if (isPermis && config.form_action && config.form_action !== "APPS_SCRIPT_URL") {
-        const fd = new FormData(form);
-        const firstName = safeString(fd.get("first_name") ?? "").trim();
-        const lastName  = safeString(fd.get("last_name")  ?? "").trim();
-        const utm = readUtmFromSession();
-        const payload = {
-          client_slug:       safeString(config.client_slug || form.dataset.clientSlug || ""),
-          offer_id:          safeString(form.dataset.offerId || config.offer_id || ""),
-          visitor_name:      [firstName, lastName].filter(Boolean).join(" ") || null,
-          visitor_email:     safeString(fd.get("email") ?? "").trim() || null,
-          visitor_phone:     safeString(fd.get("phone") ?? "").trim() || null,
-          formation_interest: "Permis de conduire (CACES)",
-          consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
-          consent_url: window.location.href,
-          consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
-          consent_timestamp: new Date().toISOString(),
-          utm: {
-            source:   utm.utm_source   || null,
-            medium:   utm.utm_medium   || null,
-            campaign: utm.utm_campaign || null,
-            term:     utm.utm_term     || null,
-            content:  utm.utm_content  || null
-          },
-          page_version: safeString(config.page_version || ""),
-          partial: true,
-          step: "permis-disqualif",
-          hp_trap: ""
-        };
-        postLead(config.form_action, payload)
-          .then(() => emitEvent("form_partial", { status: "success", step: "permis-disqualif" }))
-          .catch((err) => console.warn("[adsvizor] Permis partial send failed:", err));
-      }
+      // Note: permis disqualification is captured by the abandonment beacon on pagehide
+      // — no need to send a separate request here (avoids concurrency with full submit).
     });
   }
 
@@ -846,7 +824,6 @@ function initMultiStepForm(form, config) {
         showFormError(form, "Veuillez accepter d'être recontacté(e) pour continuer.");
         return;
       }
-      sendPartial();   // capture step-1 data (incl. consent) even if user abandons
       showStep(1);
     });
   }
@@ -931,6 +908,8 @@ function initMultiStepForm(form, config) {
 
       await postLead(config.form_action, payload);
 
+      // Mark full submit done BEFORE navigating so the pagehide beacon doesn't fire
+      fullSubmitDone = true;
       emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
       window.location.href = `thank-you.html?code=${securityCode}`;
     } catch (err) {
