@@ -89,9 +89,7 @@ function assembleHTML(f, config) {
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:image" content="${f.image_url}" />
 
-    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
     <link rel="stylesheet" href="main.css" />
