@@ -79,9 +79,48 @@ export async function onRequest(context) {
     );
   }
 
-  // ── Pass through non-HTML and root templates ─────────────────────────────
+  // ── Pass through non-HTML assets ─────────────────────────────────────────
   const isHtml = url.pathname.endsWith('.html') || url.pathname === '/';
-  if (!isHtml || ROOT_TEMPLATES.has(url.pathname)) return next();
+  if (!isHtml) return next();
+
+  // ── Root templates: serve with server-side meta replacement ──────────────
+  // Root templates (index.html, blog.html, etc.) are shared across clients.
+  // Google indexes them before JS runs, so we replace {{meta_title}} and
+  // {{meta_description}} server-side using the client's config.json.
+  if (ROOT_TEMPLATES.has(url.pathname)) {
+    const slugForMeta = hostParts.length >= 3
+      ? hostParts[0]
+      : (url.searchParams.get('client') || 'formations');
+
+    // Fetch the root template as-is
+    const rootResponse = await next();
+    if (!rootResponse.ok) return rootResponse;
+
+    let rootHtml = await rootResponse.text();
+
+    // Fetch client config for meta replacement
+    try {
+      const configUrl = new URL(url.toString());
+      configUrl.pathname = `/clients/${slugForMeta}/config.json`;
+      configUrl.search = '';
+      const configRes = await env.ASSETS.fetch(configUrl.toString());
+      if (configRes.ok) {
+        const config = await configRes.json();
+        // Replace all config string values as placeholders (covers meta_title,
+        // blog_meta_title, contact_meta_title, lang, og_* etc.)
+        for (const [key, value] of Object.entries(config)) {
+          if (typeof value === 'string') {
+            rootHtml = rootHtml.replaceAll(`{{${key}}}`, value);
+          }
+        }
+      }
+    } catch (_) { /* serve template as-is if config fetch fails */ }
+
+    return new Response(rootHtml, {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
 
   // ── Resolve client slug ──────────────────────────────────────────────────
   const slug = hostParts.length >= 3
