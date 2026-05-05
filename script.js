@@ -1059,6 +1059,49 @@ function initMultiStepForm(form, config) {
 }
 
 // =========================
+// CPF CTA Bar
+// =========================
+
+/**
+ * Injects a "Vérifier mon éligibilité CPF" bar on pages that have a lead form.
+ * Desktop: sticky top bar. Mobile: fixed bottom bar (CSS handles positioning).
+ * Scrolls smoothly to #contact on click.
+ */
+function initCpfCtaBar() {
+  const contactSection = document.getElementById("contact");
+  if (!contactSection) return; // only on pages with a lead form
+
+  const bar = document.createElement("div");
+  bar.className = "cpf-cta-bar";
+
+  const btn = document.createElement("button");
+  btn.className = "cpf-cta-bar-btn";
+  btn.setAttribute("type", "button");
+  btn.setAttribute("data-cta-id", "cpf-cta-bar");
+  btn.textContent = "Vérifier mon éligibilité CPF →";
+
+  btn.addEventListener("click", () => {
+    contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Focus the first input after scroll for immediate interaction
+    setTimeout(() => {
+      const firstInput = contactSection.querySelector("input:not([type=hidden])");
+      if (firstInput) firstInput.focus({ preventScroll: true });
+    }, 600);
+    emitEvent("cta_click", { cta_id: "cpf-cta-bar" });
+  });
+
+  bar.appendChild(btn);
+
+  // Insert before the <header> so it appears above everything on desktop
+  const header = document.querySelector("header");
+  if (header) {
+    document.body.insertBefore(bar, header);
+  } else {
+    document.body.prepend(bar);
+  }
+}
+
+// =========================
 // Boot
 // =========================
 
@@ -1117,6 +1160,9 @@ async function init() {
 
     // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
     preserveUtmOnLinks();
+
+    // Inject CPF eligibility CTA bar on pages that have a lead form.
+    initCpfCtaBar();
 
     // Display security code on the thank-you page if present in URL.
     const securityCodeParam = new URLSearchParams(window.location.search).get("code");

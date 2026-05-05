@@ -2611,3 +2611,62 @@ footer p {
 @keyframes btn-spin {
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
+
+/* ── CPF eligibility CTA bar ───────────────────────────────────────────── */
+
+/* Desktop: sticky bar above the header */
+.cpf-cta-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: #16a34a;
+  text-align: center;
+  padding: 10px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.cpf-cta-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #15803d;
+  border: none;
+  padding: 9px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 140ms, transform 120ms;
+  text-decoration: none;
+}
+
+.cpf-cta-bar-btn:hover {
+  background: #f0fdf4;
+  transform: translateY(-1px);
+}
+
+/* Mobile: fixed bottom bar (thumb-friendly) */
+@media (max-width: 767px) {
+  .cpf-cta-bar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .cpf-cta-bar-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 13px 20px;
+  }
+
+  /* Avoid the fixed bar overlapping the form submit button */
+  body { padding-bottom: 68px; }
+}
