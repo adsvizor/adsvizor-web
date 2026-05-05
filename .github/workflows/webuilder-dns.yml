@@ -38,8 +38,8 @@ jobs:
             exit 0
           fi
 
-          # Compare current commit with previous to find new clients/ directories
-          NEW_SLUGS=$(git diff --name-only HEAD~1 HEAD \
+          # Only detect NEWLY ADDED config.json files (not updates to existing clients)
+          NEW_SLUGS=$(git diff --name-only --diff-filter=A HEAD~1 HEAD \
             | grep '^clients/[^/]*/config\.json$' \
             | sed 's|clients/\([^/]*\)/config\.json|\1|' \
             | sort -u)
