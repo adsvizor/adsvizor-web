@@ -54,11 +54,43 @@ function readUtmFromSession() {
   return utm;
 }
 
+// Persist UTMs to localStorage with 30-day expiry (matches Google's conversion window).
+// This survives across sessions so leads who return days after clicking an ad
+// still have UTM attribution in the sheet.
+const UTM_LOCAL_KEY = "adsvizor_utm";
+const UTM_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+function readUtmFromLocal() {
+  try {
+    const raw = localStorage.getItem(UTM_LOCAL_KEY);
+    if (!raw) return {};
+    const { utm, expires } = JSON.parse(raw);
+    if (!utm || Date.now() > expires) { localStorage.removeItem(UTM_LOCAL_KEY); return {}; }
+    return utm;
+  } catch { return {}; }
+}
+
+function persistUtmToLocal(utm) {
+  try {
+    const existing = readUtmFromLocal();
+    // Only overwrite individual keys that have a value (don't clobber prior UTMs with blanks).
+    const merged = { ...existing };
+    for (const key of UTM_KEYS) {
+      const value = utm[key];
+      if (value && String(value).trim()) merged[key] = String(value).trim();
+    }
+    if (Object.keys(merged).length > 0) {
+      localStorage.setItem(UTM_LOCAL_KEY, JSON.stringify({ utm: merged, expires: Date.now() + UTM_TTL_MS }));
+    }
+  } catch {}
+}
+
 function persistUtmToSession(utm) {
   for (const key of UTM_KEYS) {
     const value = utm[key];
     if (value && String(value).trim()) sessionStorage.setItem(key, String(value).trim());
   }
+  persistUtmToLocal(utm);
 }
 
 function setHiddenUtmFields(form, utm) {
@@ -318,7 +350,9 @@ async function loadClientConfig(form) {
 function initUtmTracking(form) {
   const utmFromUrl = parseUtmFromUrl();
   const utmFromSession = readUtmFromSession();
-  const utm = { ...utmFromSession, ...utmFromUrl };
+  const utmFromLocal = readUtmFromLocal(); // cross-session fallback (30-day localStorage)
+  // Priority: URL params > session (same tab) > localStorage (prior visit)
+  const utm = { ...utmFromLocal, ...utmFromSession, ...utmFromUrl };
 
   persistUtmToSession(utm);
   setHiddenUtmFields(form, utm);
@@ -328,7 +362,8 @@ function preserveUtmOnLinks() {
   // Keeps UTM params in URL when navigating via links that opt-in.
   const utmFromUrl = parseUtmFromUrl();
   const utmFromSession = readUtmFromSession();
-  const utm = { ...utmFromSession, ...utmFromUrl };
+  const utmFromLocal = readUtmFromLocal();
+  const utm = { ...utmFromLocal, ...utmFromSession, ...utmFromUrl };
   const hasAnyUtm = UTM_KEYS.some((k) => typeof utm[k] === "string" && utm[k].trim());
   if (!hasAnyUtm) return;
 
@@ -392,9 +427,10 @@ function buildLeadPayload(form, config) {
   const consentLabelEl = document.querySelector('label[for="consent_marketing"]');
   const consentText = consentLabelEl ? consentLabelEl.textContent.trim() : "";
 
-  // UTM: read from hidden form fields (set at page load), with sessionStorage fallback
-  // in case the DOM was rehydrated or the hidden input values were somehow cleared.
-  const storedUtm = readUtmFromSession();
+  // UTM: read from hidden form fields (set at page load), with sessionStorage then
+  // localStorage fallback in case the DOM was rehydrated or the hidden input values
+  // were somehow cleared (covers return visits days after the initial ad click).
+  const storedUtm = { ...readUtmFromLocal(), ...readUtmFromSession() };
   function fdUtm(key) {
     const v = fd.get(key);
     return (v && safeString(v).trim()) || storedUtm[key] || null;
@@ -804,7 +840,7 @@ function initMultiStepForm(form, config) {
     const firstName = safeString(fd.get("first_name") ?? "").trim();
     const lastName  = safeString(fd.get("last_name")  ?? "").trim();
     const rawPhone  = safeString(fd.get("phone") ?? "").trim();
-    const utm = readUtmFromSession();
+    const utm = { ...readUtmFromLocal(), ...readUtmFromSession() };
     const payload = {
       client_slug: safeString(config.client_slug || form.dataset.clientSlug || ""),
       offer_id:    safeString(form.dataset.offerId || config.offer_id || ""),
@@ -1033,9 +1069,9 @@ async function init() {
     emitEvent("page_view", { path: window.location.pathname, has_form: Boolean(form) });
     initCtaTracking();
 
-    // UTM: always persist to session; only inject into hidden fields if a form exists.
+    // UTM: always persist to session + localStorage; only inject into hidden fields if a form exists.
     if (form) initUtmTracking(form);
-    else persistUtmToSession({ ...readUtmFromSession(), ...parseUtmFromUrl() });
+    else persistUtmToSession({ ...readUtmFromLocal(), ...readUtmFromSession(), ...parseUtmFromUrl() });
 
     const config = await loadClientConfig(form);
 
