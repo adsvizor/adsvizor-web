@@ -98,9 +98,7 @@ function doPost(e) {
     if (!isValidEmail_(email)) return jsonResponse_({ status: "error", message: "visitor_email is invalid." });
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    if (!ss)    return jsonResponse_({ status: "error", message: "No active spreadsheet." });
-    const sheet = ss.getActiveSheet();
-    if (!sheet) return jsonResponse_({ status: "error", message: "No active sheet." });
+    if (!ss) return jsonResponse_({ status: "error", message: "No active spreadsheet." });
 
     const lock = LockService.getScriptLock();
     if (!lock.tryLock(25000)) {
@@ -108,13 +106,17 @@ function doPost(e) {
     }
 
     try {
+      // Write directly to today's date tab — ignore any other sheets
+      const nowIso  = new Date().toISOString();
+      const dateStr = nowIso.substring(0, 10); // "YYYY-MM-DD"
+      const sheet   = getOrCreateDateSheet_(ss, dateStr);
+
       // Schema sync inside the lock so concurrent writes don't double-add columns
       ensureSchema_(sheet);
 
       // Build column-name → 0-based-index map from CURRENT sheet header
       const colMap = getColMap_(sheet);
 
-      const nowIso    = new Date().toISOString();
       const isPartial = payload.partial === true;
       const newStatus = isPartial ? "Partiel" : "Complet";
       const utm       = (payload.utm && typeof payload.utm === "object") ? payload.utm : {};
@@ -225,9 +227,6 @@ function doPost(e) {
         sheet.appendRow(row);
       }
 
-      // ── Sync date tab ────────────────────────────────────────────────
-      syncDateTab_(sheet, nowIso);
-
     } finally {
       lock.releaseLock();
     }
@@ -303,80 +302,22 @@ function setCellByName_(sheet, row1based, colMap, colName, value) {
 // ---------------------------------------------------------------------------
 
 /**
- * Creates (or updates) a tab named "YYYY-MM-DD" containing all leads from
- * the main sheet submitted on that date. Safe to call after every write.
+ * Returns the sheet named "YYYY-MM-DD" for the given date, creating it if
+ * it doesn't exist. All leads are written directly to date tabs — no other
+ * sheet (e.g. "Sheet3") is ever touched by this script.
  */
-function syncDateTab_(mainSheet, isoTimestamp) {
-  const dateStr = isoTimestamp.substring(0, 10); // "YYYY-MM-DD"
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  // Get or create the date tab — use try/catch to handle race conditions
-  // where getSheetByName returns null but the sheet was already created
-  let dateSheet = ss.getSheetByName(dateStr);
-  if (!dateSheet) {
+function getOrCreateDateSheet_(ss, dateStr) {
+  let sheet = ss.getSheetByName(dateStr);
+  if (!sheet) {
     try {
-      dateSheet = ss.insertSheet(dateStr);
-      // Move date tab right after the main sheet
-      try {
-        const mainIdx = ss.getSheets().indexOf(mainSheet);
-        ss.moveActiveSheet(mainIdx + 2);
-      } catch (_) {}
+      sheet = ss.insertSheet(dateStr);
     } catch (_) {
-      // Sheet was created between our check and insertSheet (race condition)
-      dateSheet = ss.getSheetByName(dateStr);
-      if (!dateSheet) return; // give up gracefully
+      // Race condition: another execution created it between our check and insert
+      sheet = ss.getSheetByName(dateStr);
+      if (!sheet) throw new Error("Could not get or create sheet: " + dateStr);
     }
   }
-
-  // Sync headers from main sheet
-  const mainLastCol = mainSheet.getLastColumn();
-  if (mainLastCol === 0) return;
-  const headers = mainSheet.getRange(1, 1, 1, mainLastCol).getValues()[0];
-
-  // Find all main-sheet rows whose "Date soumission" starts with dateStr
-  const mainData = mainSheet.getDataRange().getValues();
-  const colMap = getColMap_(mainSheet);
-  const dateColIdx = colMap["Date soumission"];
-  if (dateColIdx === undefined) return;
-
-  const matchingRows = mainData.slice(1).filter(function(row) {
-    return asString_(row[dateColIdx]).substring(0, 10) === dateStr;
-  });
-
-  // Rebuild date tab completely (clear + rewrite)
-  dateSheet.clearContents();
-  dateSheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  dateSheet.setFrozenRows(1);
-
-  if (matchingRows.length > 0) {
-    dateSheet.getRange(2, 1, matchingRows.length, headers.length).setValues(matchingRows);
-  }
-}
-
-/**
- * Rebuilds ALL date tabs from scratch based on current main sheet data.
- * Run manually from the Apps Script editor when needed.
- */
-function rebuildAllDateTabs() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const mainSheet = ss.getActiveSheet();
-  const mainData  = mainSheet.getDataRange().getValues();
-  const colMap    = getColMap_(mainSheet);
-  const dateColIdx = colMap["Date soumission"];
-  if (dateColIdx === undefined) { Logger.log("Column 'Date soumission' not found."); return; }
-
-  // Collect unique dates from all data rows
-  const dates = new Set();
-  for (let i = 1; i < mainData.length; i++) {
-    const d = asString_(mainData[i][dateColIdx]).substring(0, 10);
-    if (d.length === 10) dates.add(d);
-  }
-
-  dates.forEach(function(dateStr) {
-    syncDateTab_(mainSheet, dateStr + "T00:00:00.000Z");
-    Logger.log("Rebuilt tab: " + dateStr);
-  });
-  Logger.log("Done. " + dates.size + " date tab(s) rebuilt.");
+  return sheet;
 }
 
 // ---------------------------------------------------------------------------
