@@ -310,15 +310,22 @@ function syncDateTab_(mainSheet, isoTimestamp) {
   const dateStr = isoTimestamp.substring(0, 10); // "YYYY-MM-DD"
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // Get or create the date tab
+  // Get or create the date tab — use try/catch to handle race conditions
+  // where getSheetByName returns null but the sheet was already created
   let dateSheet = ss.getSheetByName(dateStr);
   if (!dateSheet) {
-    dateSheet = ss.insertSheet(dateStr);
-    // Move date tab after the main sheet
     try {
-      const mainIdx = ss.getSheets().indexOf(mainSheet);
-      ss.moveActiveSheet(mainIdx + 2); // 1-based after main
-    } catch (_) {}
+      dateSheet = ss.insertSheet(dateStr);
+      // Move date tab right after the main sheet
+      try {
+        const mainIdx = ss.getSheets().indexOf(mainSheet);
+        ss.moveActiveSheet(mainIdx + 2);
+      } catch (_) {}
+    } catch (_) {
+      // Sheet was created between our check and insertSheet (race condition)
+      dateSheet = ss.getSheetByName(dateStr);
+      if (!dateSheet) return; // give up gracefully
+    }
   }
 
   // Sync headers from main sheet
