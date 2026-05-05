@@ -7,18 +7,17 @@
     <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bilan de Compétences CPF — Finançable à 100% via Mon Compte Formation | AdsVizor</title>
-    <meta name="description" content="Bilan de compétences : formation certifiante éligible CPF. Faites le point sur vos compétences, vos motivations et vos aspirations pour construire un proje" />
+    <title>Bilan de Compétences CPF 2026 — Finançable à 100% via Mon Compte Formation | AdsVizor</title>
+    <meta name="description" content="Bilan de compétences éligible CPF 2026 : faites le point sur vos compétences, définissez votre projet de reconversion professionnelle. Prestataire Qualiopi. 24h. Sans avance de frais." />
     <link rel="canonical" href="https://formations.adsvizor.com/dev-personnel/formation-bilan-competences.html" />
 
-    <meta property="og:title" content="Bilan de compétences — Formation CPF | AdsVizor" />
-    <meta property="og:description" content="Bilan de compétences : formation certifiante éligible CPF. Faites le point sur vos compétences, vos motivations et vos aspirations pour construire un proje" />
+    <meta property="og:title" content="Bilan de Compétences CPF 2026 — Reconversion & Projet Professionnel | AdsVizor" />
+    <meta property="og:description" content="Bilan de compétences éligible CPF : clarifiez votre projet professionnel avec un consultant certifié Qualiopi. Financement à 100% via Mon Compte Formation." />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://formations.adsvizor.com/dev-personnel/formation-bilan-competences.html" />
     <meta property="og:image" content="/clients/formations/images/photo-1573496359142-b8d87734a5a2-800x500.webp" />
-    <link rel="preconnect" href="https://images.unsplash.com" />
 
-    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/main.css?v=3" />
     <script defer src="/script.js?v=15"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
@@ -31,6 +30,84 @@
       .nav-toggle { display: none !important; }
       header nav { display: block !important; }
     }
+
+    /* ── Sections ── */
+    .formation-section { margin: 36px 0; }
+    .formation-section h2 { font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0 0 16px; }
+    .formation-section h3 { font-size: 1rem; font-weight: 700; color: #2563eb; margin: 20px 0 8px; }
+
+    /* ── Stats strip ── */
+    .bilan-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 8px; }
+    .bilan-stat { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px 12px; text-align: center; }
+    .bilan-stat-value { display: block; font-size: 1.6rem; font-weight: 800; color: #16a34a; line-height: 1.1; }
+    .bilan-stat-label { display: block; font-size: 0.75rem; color: #374151; margin-top: 4px; line-height: 1.3; }
+    @media (max-width: 600px) { .bilan-stats { grid-template-columns: 1fr 1fr; } }
+
+    /* ── Phase timeline ── */
+    .phases-timeline { display: flex; flex-direction: column; gap: 0; }
+    .phase-block { display: flex; gap: 16px; align-items: flex-start; }
+    .phase-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .phase-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; flex-shrink: 0; }
+    .phase-dot-1 { background: #dcfce7; color: #15803d; }
+    .phase-dot-2 { background: #fef9c3; color: #854d0e; }
+    .phase-dot-3 { background: #ede9fe; color: #4c1d95; }
+    .phase-connector { width: 2px; flex-grow: 1; min-height: 24px; margin: 4px 0; }
+    .phase-connector-1 { background: linear-gradient(to bottom, #86efac, #fde68a); }
+    .phase-connector-2 { background: linear-gradient(to bottom, #fde68a, #c4b5fd); }
+    .phase-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin-bottom: 20px; flex: 1; }
+    .phase-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 10px; }
+    .phase-tag-1 { background: #dcfce7; color: #166534; }
+    .phase-tag-2 { background: #fef9c3; color: #854d0e; }
+    .phase-tag-3 { background: #ede9fe; color: #4c1d95; }
+    .phase-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .phase-meta-item { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #475569; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px 10px; }
+
+    /* ── Deliverables icon grid ── */
+    .deliverables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .deliverable-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 18px 16px; }
+    .deliverable-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+    .deliverable-card strong { display: block; font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .deliverable-card p { font-size: 0.82rem; color: #475569; margin: 0; line-height: 1.45; }
+    @media (max-width: 500px) { .deliverables-grid { grid-template-columns: 1fr; } }
+
+    /* ── Audience (métiers) ── */
+    .metiers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .metier-card { background: #eff6ff; border-radius: 10px; padding: 12px 14px; }
+    .metier-card strong { display: block; font-size: 0.88rem; font-weight: 700; color: #1e40af; }
+    .metier-card span { font-size: 0.8rem; color: #475569; }
+    @media (max-width: 600px) { .metiers-grid { grid-template-columns: 1fr; } }
+
+    /* ── Financing cards ── */
+    .financing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+    .financing-card { background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0; }
+    .financing-card .fin-icon { font-size: 1.8rem; display: block; margin-bottom: 8px; }
+    .financing-card .fin-label { font-size: 0.82rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 6px; }
+    .financing-card .fin-desc { font-size: 0.77rem; color: #475569; line-height: 1.4; }
+    @media (max-width: 600px) { .financing-grid { grid-template-columns: 1fr; } }
+
+    /* ── Qualiopi block ── */
+    .qualiopi-block { background: linear-gradient(135deg, #16a34a, #059669); border-radius: 16px; padding: 24px; color: #fff; margin-top: 0; }
+    .qualiopi-block h3 { color: #fff; margin: 0 0 10px; font-size: 1.05rem; }
+    .qualiopi-block p { margin: 0 0 12px; opacity: 0.92; font-size: 0.93rem; }
+    .qualiopi-features { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .qualiopi-feature { background: rgba(255,255,255,0.18); border-radius: 8px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid #e2e8f0; padding: 18px 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-question { font-size: 0.97rem; font-weight: 700; color: #0f172a; margin: 0 0 8px; }
+    .faq-answer { font-size: 0.9rem; color: #374151; margin: 0; line-height: 1.6; }
+
+    /* ── Mobile CTA ── */
+    .formation-mobile-cta { display: none; text-align: center; margin: 32px 0 8px; }
+    @media (max-width: 899px) { .formation-mobile-cta { display: block; } }
+
+    /* ── Niveau cards (for phases fallback) ── */
+    .niveau-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .niveau-label { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 10px; }
+    .niveau-debutant .niveau-label { background: #dcfce7; color: #166534; }
+    .niveau-intermediaire .niveau-label { background: #fef9c3; color: #854d0e; }
+    .niveau-avance .niveau-label { background: #ede9fe; color: #4c1d95; }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
@@ -45,6 +122,12 @@
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-bilan"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mon éligibilité CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="AdsVizor" class="site-logo" width="200" height="200" /></picture></a>
@@ -66,63 +149,258 @@
     <main>
       <div class="page-layout">
 
-        <!-- LEFT: content -->
         <div class="page-content">
 
-          <section class="hero" aria-labelledby="formation-title">
-            <img class="hero-img" src="/clients/formations/images/photo-1573496359142-b8d87734a5a2-800x500.webp" alt="Conseillère accompagnant un professionnel lors d'un bilan de compétences" fetchpriority="high" />
+          <!-- ── Hero ── -->
+          <section class="hero" aria-labelledby="page-title">
+            <img class="hero-img" src="/clients/formations/images/photo-1573496359142-b8d87734a5a2-800x500.webp"
+              alt="Consultante accompagnant un professionnel lors d'un bilan de compétences CPF" fetchpriority="high" />
             <div class="hero-body">
-              <p class="hero-badge">Orientation & Reconversion — Éligible CPF</p>
-              <h1 id="formation-title">Formation Bilan de compétences — Construisez votre projet professionnel avec clarté</h1>
-              <p class="hero-sub">L'outil de référence pour prendre du recul, identifier vos atouts et définir une trajectoire professionnelle qui vous ressemble vraiment.</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-formation-bilan-competences">Demander le programme</a>
+              <p class="hero-badge">Reconversion & Orientation — Éligible CPF 2026</p>
+              <h1 id="page-title">Bilan de Compétences CPF — Définissez votre projet de reconversion professionnelle</h1>
+              <p class="hero-sub">Le dispositif officiel pour analyser vos compétences, identifier vos motivations et construire un projet professionnel concret. 100 % finançable via Mon Compte Formation, sans avance de frais.</p>
+              <button class="hero-cta" type="button" data-cta-id="cta-bilan-hero"
+                onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+                Vérifier mon éligibilité CPF →
+              </button>
             </div>
           </section>
 
-          <section class="formation-detail-section" aria-labelledby="detail-title">
+          <section class="formation-detail-section">
+            <p class="formation-breadcrumb">
+              <a href="/formations.html">← Toutes les formations</a>
+            </p>
 
-            <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
-
-            <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
-            <p class="formation-desc">Le bilan de compétences est un dispositif encadré par la loi qui vous permet d'analyser vos compétences professionnelles et personnelles, vos aptitudes et vos motivations. Il aboutit à la définition d'un projet professionnel réaliste et adapté à votre marché du travail.</p>
-            <p class="formation-desc">Réalisé avec un consultant certifié et en totale confidentialité, il se déroule en trois phases : une phase préliminaire d'analyse de vos besoins, une phase d'investigation approfondie, et une phase de conclusion avec remise d'un document de synthèse qui vous appartient.</p>
-
-            <h3 class="formation-section-heading">Pour qui ?</h3>
-            <p class="formation-desc">Salariés envisageant une reconversion professionnelle, personnes en quête de sens dans leur carrière, cadres souhaitant évoluer ou changer de secteur, demandeurs d'emploi souhaitant se repositionner.</p>
-
-            <h3 class="formation-section-heading">Ce que vous apprendrez</h3>
-            <ul class="formation-points">
-              <li>Analyse approfondie de vos compétences, savoir-faire et soft skills</li>
-              <li>Définition d'un projet professionnel concret et validé par le marché</li>
-              <li>Document de synthèse confidentiel remis à la fin, utilisable pour vos entretiens</li>
-            </ul>
-
-            <div class="formation-info-grid">
-              <div class="formation-info-card">
-                <span class="formation-info-label">Durée</span>
-                <span class="formation-info-value">24 heures réparties sur 3 mois en moyenne</span>
+            <!-- ── Stats strip ── -->
+            <div class="bilan-stats" aria-label="Chiffres clés du bilan de compétences">
+              <div class="bilan-stat">
+                <span class="bilan-stat-value">200 000</span>
+                <span class="bilan-stat-label">bilans financés par an en France</span>
               </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Certification</span>
-                <span class="formation-info-value">Prestataire certifié Qualiopi — éligible CPF à 100 %</span>
+              <div class="bilan-stat">
+                <span class="bilan-stat-value">24h</span>
+                <span class="bilan-stat-label">durée maximum légale</span>
               </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Financement</span>
-                <span class="formation-info-value">100 % éligible CPF — sans avance de frais</span>
+              <div class="bilan-stat">
+                <span class="bilan-stat-value">3 mois</span>
+                <span class="bilan-stat-label">sur lesquels s'étalent les séances</span>
+              </div>
+              <div class="bilan-stat">
+                <span class="bilan-stat-value">100 %</span>
+                <span class="bilan-stat-label">finançable via votre CPF</span>
               </div>
             </div>
 
+            <!-- ── What is it ── -->
+            <div class="formation-section">
+              <h2>Qu'est-ce qu'un bilan de compétences CPF ?</h2>
+              <p>Le <strong>bilan de compétences CPF</strong> est un dispositif encadré par le Code du travail (articles L6313-4 et R6313-4 à R6313-8) qui permet d'analyser en profondeur vos compétences professionnelles et personnelles, vos aptitudes et vos motivations. Il aboutit à la définition d'un <strong>projet professionnel réaliste</strong> et validé par le marché, accompagné d'un plan d'action concret.</p>
+              <p>Réalisé avec un <strong>consultant certifié Qualiopi</strong>, en totale confidentialité, le bilan se déroule sur <strong>24 heures maximum</strong> réparties sur 3 mois. En 2026, c'est l'un des dispositifs les plus demandés sur <strong>Mon Compte Formation</strong> — plus de 200 000 bilans sont financés chaque année en France.</p>
+            </div>
+
+            <!-- ── 3 phases timeline ── -->
+            <div class="formation-section">
+              <h2>Les 3 phases du bilan de compétences</h2>
+
+              <div class="phases-timeline">
+
+                <!-- Phase 1 -->
+                <div class="phase-block">
+                  <div class="phase-line">
+                    <div class="phase-dot phase-dot-1">1</div>
+                    <div class="phase-connector phase-connector-1"></div>
+                  </div>
+                  <div class="phase-card">
+                    <span class="phase-tag phase-tag-1">Phase préliminaire</span>
+                    <h3 style="color:#15803d;margin:0 0 8px;">Analyse de vos besoins</h3>
+                    <p style="margin:0 0 10px;font-size:0.92rem;color:#374151;">Définir ensemble vos attentes, préciser le format du bilan et poser les bases de votre accompagnement.</p>
+                    <ul style="margin:0 0 10px;padding-left:18px;font-size:0.88rem;color:#475569;">
+                      <li>Entretien d'accueil avec votre consultant dédié</li>
+                      <li>Analyse de votre parcours professionnel et personnel</li>
+                      <li>Identification de vos motivations et de vos freins</li>
+                      <li>Définition des objectifs du bilan</li>
+                    </ul>
+                    <div class="phase-meta">
+                      <span class="phase-meta-item">⏱ 2 à 3 heures</span>
+                      <span class="phase-meta-item">💬 Entretien individuel</span>
+                      <span class="phase-meta-item">🖥 Présentiel ou visio</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="phase-block">
+                  <div class="phase-line">
+                    <div class="phase-dot phase-dot-2">2</div>
+                    <div class="phase-connector phase-connector-2"></div>
+                  </div>
+                  <div class="phase-card">
+                    <span class="phase-tag phase-tag-2">Phase d'investigation</span>
+                    <h3 style="color:#854d0e;margin:0 0 8px;">Exploration de vos compétences</h3>
+                    <p style="margin:0 0 10px;font-size:0.92rem;color:#374151;">Le cœur du bilan. Explorez vos compétences, vos valeurs et identifiez les métiers qui correspondent à votre profil.</p>
+                    <ul style="margin:0 0 10px;padding-left:18px;font-size:0.88rem;color:#475569;">
+                      <li>Inventaire complet de vos compétences, savoir-faire et soft skills</li>
+                      <li>Tests de personnalité et d'aptitudes (MBTI, Holland, etc.)</li>
+                      <li>Exploration de pistes métiers et de secteurs porteurs</li>
+                      <li>Enquêtes métier et rencontres professionnelles si nécessaire</li>
+                      <li>Validation de la faisabilité de votre projet professionnel</li>
+                    </ul>
+                    <div class="phase-meta">
+                      <span class="phase-meta-item">⏱ 16 à 18 heures</span>
+                      <span class="phase-meta-item">📝 Exercices entre séances</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="phase-block">
+                  <div class="phase-line">
+                    <div class="phase-dot phase-dot-3">3</div>
+                  </div>
+                  <div class="phase-card">
+                    <span class="phase-tag phase-tag-3">Phase de conclusion</span>
+                    <h3 style="color:#4c1d95;margin:0 0 8px;">Votre projet professionnel formalisé</h3>
+                    <p style="margin:0 0 10px;font-size:0.92rem;color:#374151;">Vous repartez avec un plan d'action clair et un document de synthèse confidentiel qui vous appartient seul.</p>
+                    <ul style="margin:0 0 10px;padding-left:18px;font-size:0.88rem;color:#475569;">
+                      <li>Présentation des résultats et du projet professionnel retenu</li>
+                      <li>Rédaction du <strong>document de synthèse confidentiel</strong></li>
+                      <li>Plan d'action détaillé : formations, démarches, calendrier</li>
+                      <li>Entretien de suivi à 6 mois inclus</li>
+                    </ul>
+                    <div class="phase-meta">
+                      <span class="phase-meta-item">⏱ 3 à 4 heures</span>
+                      <span class="phase-meta-item">🔒 Document 100 % confidentiel</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- ── Deliverables icon grid ── -->
+            <div class="formation-section">
+              <h2>Ce que vous obtenez à l'issue du bilan</h2>
+              <div class="deliverables-grid">
+                <div class="deliverable-card">
+                  <span class="deliverable-icon">📄</span>
+                  <strong>Document de synthèse confidentiel</strong>
+                  <p>Récapitulatif de vos compétences, motivations et du projet retenu — il vous appartient et ne peut être transmis sans votre accord.</p>
+                </div>
+                <div class="deliverable-card">
+                  <span class="deliverable-icon">🗺</span>
+                  <strong>Plan d'action opérationnel</strong>
+                  <p>Étapes concrètes, formations à envisager, démarches à effectuer, calendrier réaliste pour atteindre votre objectif.</p>
+                </div>
+                <div class="deliverable-card">
+                  <span class="deliverable-icon">🎯</span>
+                  <strong>Clarté professionnelle</strong>
+                  <p>Vous savez exactement où vous en êtes, ce que vous voulez et comment y accéder — souvent transformateur.</p>
+                </div>
+                <div class="deliverable-card">
+                  <span class="deliverable-icon">📞</span>
+                  <strong>Suivi à 6 mois inclus</strong>
+                  <p>Votre consultant vérifie l'avancée de votre projet et ajuste le plan si nécessaire — sans frais supplémentaires.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Audience ── -->
+            <div class="formation-section">
+              <h2>Pour qui est fait le bilan de compétences CPF ?</h2>
+              <p>Le bilan de compétences s'adresse à tout actif souhaitant faire le point sur sa carrière :</p>
+              <div class="metiers-grid">
+                <div class="metier-card"><strong>🔄 Salarié(e) en reconversion</strong><span>Changer de métier ou de secteur après plusieurs années en poste</span></div>
+                <div class="metier-card"><strong>📈 Cadre en évolution</strong><span>Accéder à un poste à responsabilité ou manager une équipe</span></div>
+                <div class="metier-card"><strong>🔍 Demandeur d'emploi</strong><span>Clarifier son projet pour cibler les bonnes offres et formations</span></div>
+                <div class="metier-card"><strong>💡 Professionnel en quête de sens</strong><span>Retrouver de la motivation et aligner travail et valeurs</span></div>
+                <div class="metier-card"><strong>🌅 Proche de la retraite</strong><span>Préparer une transition douce ou une activité complémentaire</span></div>
+                <div class="metier-card"><strong>👤 Tout actif après 5 ans</strong><span>Le bilan CPF est ouvert à tout salarié du secteur privé ou public</span></div>
+              </div>
+            </div>
+
+            <!-- ── Financing ── -->
+            <div class="formation-section">
+              <h2>Financement CPF — Faire un bilan de compétences sans rien débourser</h2>
+              <p>Le bilan de compétences est l'une des formations les plus facilement finançables via le <strong>Compte Personnel de Formation (CPF)</strong>. Votre situation détermine votre mode de prise en charge :</p>
+
+              <div class="financing-grid">
+                <div class="financing-card">
+                  <span class="fin-icon">💼</span>
+                  <span class="fin-label">Salarié du privé</span>
+                  <span class="fin-desc">Financement CPF + reste à charge pris en charge possible par l'employeur via l'OPCO</span>
+                </div>
+                <div class="financing-card">
+                  <span class="fin-icon">🔍</span>
+                  <span class="fin-label">Demandeur d'emploi</span>
+                  <span class="fin-desc">Prise en charge à 100 % par France Travail sur prescription de votre conseiller</span>
+                </div>
+                <div class="financing-card">
+                  <span class="fin-icon">🏛</span>
+                  <span class="fin-label">Fonctionnaire</span>
+                  <span class="fin-desc">Financement via le CPF de transition ou le plan de formation de l'administration</span>
+                </div>
+              </div>
+
+              <p style="font-size:0.9rem;color:#374151;background:#f0fdf4;border-left:3px solid #16a34a;padding:12px 16px;border-radius:0 8px 8px 0;margin-top:4px;">
+                💬 Notre conseiller vérifie gratuitement votre solde CPF et votre éligibilité avant toute inscription. Si votre solde est insuffisant, des solutions de co-financement existent — nous vous les présentons sans engagement.
+              </p>
+            </div>
+
+            <!-- ── Qualiopi ── -->
+            <div class="formation-section">
+              <h2>Prestataire certifié Qualiopi</h2>
+              <div class="qualiopi-block">
+                <h3>✅ Certification Qualiopi — qualité garantie par l'État</h3>
+                <p>Tous nos partenaires sont certifiés <strong>Qualiopi</strong>, gage de qualité exigé pour accéder aux financements publics (CPF, France Travail, OPCO). La certification garantit un suivi individualisé, la confidentialité totale de vos données et le respect du référentiel national qualité.</p>
+                <div class="qualiopi-features">
+                  <span class="qualiopi-feature">Consultants Bac+5 spécialisés</span>
+                  <span class="qualiopi-feature">Document de synthèse confidentiel</span>
+                  <span class="qualiopi-feature">Suivi post-bilan à 6 mois</span>
+                  <span class="qualiopi-feature">RGPD conforme</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── FAQ ── -->
+            <div class="formation-section">
+              <h2>Questions fréquentes — Bilan de compétences CPF</h2>
+
+              <div class="faq-item">
+                <p class="faq-question">❓ Mon employeur peut-il savoir que je fais un bilan de compétences ?</p>
+                <p class="faq-answer">Non. Si vous réalisez votre bilan sur vos heures personnelles via votre CPF, vous n'avez aucune obligation d'en informer votre employeur. Le bilan est strictement confidentiel : le document de synthèse ne lui est jamais transmis sans votre consentement explicite.</p>
+              </div>
+
+              <div class="faq-item">
+                <p class="faq-question">❓ Combien de temps dure un bilan de compétences ?</p>
+                <p class="faq-answer">Le bilan dure <strong>24 heures maximum</strong>, réparties sur 3 mois. Les séances individuelles de 1h30 à 2h se déroulent en visioconférence ou en présentiel, espacées d'une à deux semaines pour vous laisser le temps de réaliser les exercices entre les rendez-vous.</p>
+              </div>
+
+              <div class="faq-item">
+                <p class="faq-question">❓ Quel est le coût d'un bilan de compétences et comment le financer via le CPF ?</p>
+                <p class="faq-answer">Le coût varie entre 1 500 € et 3 000 € selon le prestataire. Le CPF finance jusqu'à 100 % de ce montant si votre solde est suffisant. Un reste à charge de 150 € peut s'appliquer — votre OPCO ou employeur peut le couvrir. Pour les demandeurs d'emploi, France Travail finance intégralement le bilan.</p>
+              </div>
+
+              <div class="faq-item">
+                <p class="faq-question">❓ Quelle est la différence entre bilan de compétences et entretien professionnel ?</p>
+                <p class="faq-answer">Le <strong>bilan de compétences</strong> est un dispositif légal externe (art. L6313-4), réalisé par un prestataire Qualiopi sur 24h, éligible au CPF, qui produit un document de synthèse confidentiel. L'<strong>entretien professionnel</strong> est un entretien interne conduit par l'employeur tous les 2 ans. Seul le bilan externe est finançable via votre CPF.</p>
+              </div>
+
+            </div>
+
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button class="btn" type="button"
+                onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});">
+                Vérifier mon éligibilité CPF →
+              </button>
             </div>
 
           </section>
         </div>
 
-        <!-- RIGHT: floating form -->
+        <!-- ── Sidebar form ── -->
         <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
-            <h2 id="lead-form-title">Demandez le programme du bilan de compétences</h2>
+            <h2 id="lead-form-title">Vérifier mon éligibilité CPF</h2>
 
             <div class="form-progress" aria-hidden="true">
               <div class="form-progress-fill"></div>
@@ -133,7 +411,7 @@
             </div>
 
             <form
-              id="lead-form"
+              id="lead-form-bilan"
               action="https://formations.adsvizor.com/api/leads"
               method="post"
               autocomplete="on"
@@ -145,34 +423,32 @@
                 <div class="form-name-row">
                   <div>
                     <label for="first_name">Prénom</label>
-                    <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="Votre prénom" required />
+                    <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="Prénom" required />
                   </div>
                   <div>
                     <label for="last_name">Nom</label>
-                    <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="Votre nom de famille" required />
+                    <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="Nom" required />
                   </div>
                 </div>
                 <div>
                   <label for="phone">Téléphone</label>
-                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="06 00 00 00 00" required />
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 00 00 00 00" required />
                 </div>
                 <div>
-                  <label for="email">Adresse email</label>
-                  <input id="email" name="email" type="email" autocomplete="email" placeholder="votre@email.com" required />
+                  <label for="email">Email</label>
+                  <input id="email" name="email" type="email" autocomplete="email" placeholder="votre@email.fr" required />
                 </div>
-
                 <div class="form-consent">
                   <input type="checkbox" id="consent_marketing" name="consent_marketing" />
-                  <label for="consent_marketing">J'accepte d'être recontacté(e) par téléphone par AdsVizor ou un partenaire conseiller en formation au sujet de ma demande.</label>
+                  <label for="consent_marketing">J'accepte d'être contacté(e) par AdsVizor pour mon bilan de compétences CPF. Données traitées conformément à notre politique de confidentialité.</label>
                 </div>
-
                 <button type="button" class="btn-next">Continuer <span aria-hidden="true">→</span></button>
               </div>
 
               <!-- Step 2 -->
               <div class="form-step" data-step="1" hidden style="display:none">
                 <div>
-                  <label>Votre statut professionnel</label>
+                  <label>Votre situation professionnelle</label>
                   <div class="status-cards" role="group" aria-label="Statut professionnel">
                     <label class="status-card">
                       <input type="radio" name="professional_status" value="chomage" />
@@ -196,24 +472,26 @@
                     </label>
                   </div>
                 </div>
-
-                <!-- Formation pre-filled (static page — formation always known) -->
-                <input type="hidden" name="formation_interest" value="Bilan de compétences" />
-
+                <div>
+                  <input type="hidden" name="formation_interest" id="formation_interest_val" value="Bilan de Compétences CPF" />
+                  <div id="formation-prefilled-wrap">
+                    <label>Formation souhaitée</label>
+                    <p id="formation-prefilled-name" class="formation-prefilled-value">Bilan de Compétences CPF</p>
+                  </div>
+                </div>
+                <!-- Honeypot -->
                 <div class="form-honeypot" aria-hidden="true">
                   <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
                 </div>
-
-                <input type="hidden" id="utm_source"   name="utm_source"   value="" />
-                <input type="hidden" id="utm_medium"   name="utm_medium"   value="" />
+                <input type="hidden" id="utm_source" name="utm_source" value="" />
+                <input type="hidden" id="utm_medium" name="utm_medium" value="" />
                 <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
-                <input type="hidden" id="utm_term"     name="utm_term"     value="" />
-                <input type="hidden" id="utm_content"  name="utm_content"  value="" />
-                <input type="hidden" id="page_version" name="page_version" value="1.0.0" />
-
+                <input type="hidden" id="utm_term" name="utm_term" value="" />
+                <input type="hidden" id="utm_content" name="utm_content" value="" />
+                <input type="hidden" id="page_version" name="page_version" value="2.0.0" />
                 <div class="form-step-nav">
                   <button type="button" class="btn-back"><span aria-hidden="true">←</span> Retour</button>
-                  <button type="submit">Envoyer ma demande</button>
+                  <button type="submit">Vérifier mon éligibilité →</button>
                 </div>
               </div>
             </form>
@@ -224,7 +502,8 @@
     </main>
 
     <footer>
-      <p>© 2026 AdsVizor — Formations professionnelles en ligne.</p>
+      <p>© 2026 AdsVizor — Formations CPF | <a href="/privacy.html">Politique de confidentialité</a></p>
     </footer>
+
   </body>
 </html>
