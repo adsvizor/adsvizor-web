@@ -1059,6 +1059,55 @@ function initMultiStepForm(form, config) {
 }
 
 // =========================
+// CPF CTA Bar
+// =========================
+
+/**
+ * Injects a sticky "Vérifier mon éligibilité CPF" bar above the header
+ * on all pages. On pages with a lead form (#contact): scrolls to it.
+ * On other pages: links to the formations listing.
+ */
+function initCpfCtaBar() {
+  // Don't inject if bar already exists (e.g. hardcoded in formations.html)
+  if (document.querySelector(".cpf-cta-bar")) return;
+  // Don't inject on thank-you or privacy pages
+  if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) return;
+
+  const bar = document.createElement("div");
+  bar.className = "cpf-cta-bar";
+
+  const contactSection = document.getElementById("contact");
+
+  if (contactSection) {
+    const btn = document.createElement("button");
+    btn.className = "cpf-cta-bar-btn";
+    btn.setAttribute("type", "button");
+    btn.setAttribute("data-cta-id", "cpf-cta-bar");
+    btn.textContent = "Vérifier mon éligibilité CPF →";
+    btn.addEventListener("click", () => {
+      contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => {
+        const firstInput = contactSection.querySelector("input:not([type=hidden])");
+        if (firstInput) firstInput.focus({ preventScroll: true });
+      }, 600);
+      emitEvent("cta_click", { cta_id: "cpf-cta-bar" });
+    });
+    bar.appendChild(btn);
+  } else {
+    const link = document.createElement("a");
+    link.className = "cpf-cta-bar-btn";
+    link.setAttribute("href", "/formations.html");
+    link.setAttribute("data-cta-id", "cpf-cta-bar");
+    link.textContent = "Vérifier mon éligibilité CPF →";
+    bar.appendChild(link);
+  }
+
+  const header = document.querySelector("header");
+  if (header) document.body.insertBefore(bar, header);
+  else document.body.prepend(bar);
+}
+
+// =========================
 // Boot
 // =========================
 
@@ -1117,6 +1166,9 @@ async function init() {
 
     // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
     preserveUtmOnLinks();
+
+    // Sticky CPF eligibility bar — all pages except thank-you and privacy.
+    initCpfCtaBar();
 
 
     // Display security code on the thank-you page if present in URL.
