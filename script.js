@@ -455,7 +455,7 @@ function buildLeadPayload(form, config) {
     consent_marketing: consentMarketing,
     consent_url: window.location.href,
     consent_text: consentText,
-    consent_timestamp: new Date().toISOString(),
+    consent_timestamp: new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }),
     hp_trap: safeString(fd.get("hp_trap") ?? "").trim(), // honeypot
     formation_interest: fd.get("formation_interest") ? safeString(fd.get("formation_interest")).trim() : null
   };
@@ -852,7 +852,7 @@ function initMultiStepForm(form, config) {
       consent_marketing: form.querySelector("#consent_marketing")?.checked ?? false,
       consent_url: window.location.href,
       consent_text: document.querySelector('label[for="consent_marketing"]')?.textContent?.trim() ?? "",
-      consent_timestamp: new Date().toISOString(),
+      consent_timestamp: new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }),
       utm: {
         source:   utm.utm_source   || null,
         medium:   utm.utm_medium   || null,
