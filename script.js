@@ -1084,7 +1084,7 @@ function initCpfCtaBar() {
       btn.className = "cpf-cta-bar-btn";
       btn.setAttribute("type", "button");
       btn.setAttribute("data-cta-id", "cpf-cta-bar");
-      btn.textContent = "Vérifier mon éligibilité CPF →";
+      btn.textContent = "Vérifier mes droits CPF →";
       btn.addEventListener("click", () => {
         contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
         setTimeout(() => {
@@ -1099,7 +1099,7 @@ function initCpfCtaBar() {
       link.className = "cpf-cta-bar-btn";
       link.setAttribute("href", "/formations.html");
       link.setAttribute("data-cta-id", "cpf-cta-bar");
-      link.textContent = "Vérifier mon éligibilité CPF →";
+      link.textContent = "Vérifier mes droits CPF →";
       bar.appendChild(link);
     }
 
