@@ -46,6 +46,12 @@
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-marketing-digital"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mes droits CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="AdsVizor" class="site-logo" width="200" height="200" /></picture></a>
@@ -76,7 +82,7 @@
               <p class="hero-badge">Marketing & Communication — Éligible CPF</p>
               <h1 id="formation-title">Marketing digital — Développez votre visibilité en ligne et générez des résultats</h1>
               <p class="hero-sub">Maîtrisez tous les leviers du marketing digital : SEO, publicité en ligne, réseaux sociaux et analyse de données pour piloter votre stratégie.</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-formation-marketing-digital">Demander le programme</a>
+              <button type="button" class="hero-cta" data-cta-id="cta-formation-marketing-digital" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
             </div>
           </section>
 
@@ -114,7 +120,7 @@
             </div>
 
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
             </div>
 
           </section>

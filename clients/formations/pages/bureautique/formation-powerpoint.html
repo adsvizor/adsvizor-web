@@ -63,6 +63,12 @@
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-powerpoint"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mes droits CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="AdsVizor" class="site-logo" width="200" height="200" /></picture></a>
@@ -92,7 +98,7 @@
               <p class="hero-badge">Bureautique — Éligible CPF</p>
               <h1 id="page-title">Formation PowerPoint — Créez des présentations professionnelles qui marquent les esprits</h1>
               <p class="hero-sub">Formation éligible CPF, finançable à 100 %. Débutant ou expert, progressez à votre rythme avec un conseiller dédié.</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-powerpoint">Demander le programme</a>
+              <button type="button" class="hero-cta" data-cta-id="cta-powerpoint" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
             </div>
           </section>
 
@@ -201,7 +207,7 @@
             </div>
 
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
             </div>
           </section>
         </div>

@@ -48,6 +48,12 @@
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-detail"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mes droits CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="{{home_href}}" class="site-logo-link"><img src="/logo.png" alt="{{logo_text}}" class="site-logo" /></a>
@@ -82,7 +88,7 @@
               <p class="hero-badge">{{active_tag}} — Éligible CPF</p>
               <h1 id="formation-title">{{active_headline}}</h1>
               <p class="hero-sub">{{active_subheadline}}</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-detail-hero">Demander le programme</a>
+              <button type="button" class="hero-cta" data-cta-id="cta-detail-hero" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
             </div>
           </section>
 
@@ -127,7 +133,7 @@
 
             <!-- Mobile CTA (only visible on mobile, below content before form) -->
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
             </div>
 
           </section>

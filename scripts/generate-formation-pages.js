@@ -118,6 +118,12 @@ function assembleHTML(f, config) {
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-${f.slug}"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mes droits CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="${logoText}" class="site-logo" width="200" height="200" /></picture></a>
@@ -144,7 +150,7 @@ function assembleHTML(f, config) {
               <p class="hero-badge">${f.tag} — Éligible CPF</p>
               <h1 id="formation-title">${f.headline}</h1>
               <p class="hero-sub">${f.subheadline}</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-formation-${f.slug}">Demander le programme</a>
+              <button type="button" class="hero-cta" data-cta-id="cta-formation-${f.slug}" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
             </div>
           </section>
 
@@ -182,7 +188,7 @@ function assembleHTML(f, config) {
             </div>
 
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
             </div>
 
           </section>

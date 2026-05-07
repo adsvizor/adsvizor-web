@@ -45,6 +45,12 @@
   </head>
 
   <body>
+    <div class="cpf-cta-bar">
+      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-intelligence-artificielle"
+        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
+        Vérifier mes droits CPF →
+      </button>
+    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="AdsVizor" class="site-logo" width="200" height="200" /></picture></a>
@@ -75,7 +81,7 @@
               <p class="hero-badge">Intelligence artificielle — Éligible CPF</p>
               <h1 id="formation-title">Formation Intelligence artificielle — Maîtrisez l'IA pour transformer votre façon de travailler</h1>
               <p class="hero-sub">L'IA générative (ChatGPT, Copilot, Gemini) révolutionne tous les secteurs. Formez-vous pour l'utiliser efficacement dans votre métier dès aujourd'hui.</p>
-              <a href="#contact" class="hero-cta" data-cta-id="cta-formation-intelligence-artificielle">Demander le programme</a>
+              <button type="button" class="hero-cta" data-cta-id="cta-formation-intelligence-artificielle" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
             </div>
           </section>
 
@@ -113,7 +119,7 @@
             </div>
 
             <div class="formation-mobile-cta">
-              <a href="#contact" class="btn">Demander le programme →</a>
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
             </div>
 
           </section>
