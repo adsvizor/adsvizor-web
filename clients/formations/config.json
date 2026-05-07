@@ -72,7 +72,7 @@
   "testimonial_1_author": "Responsable RH — Entreprise de services",
   "testimonial_2_text": "Un excellent équilibre entre théorie et pratique. L'accompagnement après la session fait vraiment la différence.",
   "testimonial_2_author": "Manager — PME",
-  "form_title": "Demander à être contacté",
+  "form_title": "Découvrez vos droits CPF",
   "form_id": "lead-form",
   "form_action": "https://formations.adsvizor.com/api/leads",
   "client_slug": "formations",
@@ -90,7 +90,7 @@
   "field_message_label": "Formation souhaitée",
   "field_message_placeholder": "Décrivez la formation qui vous intéresse (thème, niveau, format…)",
   "field_message_rows": "4",
-  "submit_label": "Envoyer ma demande",
+  "submit_label": "Contactez-moi dans les 24h ⚡",
   "form_disclaimer_text": "J'accepte d'être recontacté(e) par téléphone par AdsVizor ou un partenaire conseiller en formation au sujet de ma demande.",
   "thankyou_title": "Merci pour votre demande !",
   "thankyou_message": "Nous avons bien reçu votre message et nous vous recontacterons dans les plus brefs délais.",
@@ -122,7 +122,7 @@
       "point_3": "Document de synthèse confidentiel remis à la fin, utilisable pour vos entretiens",
       "duration": "24 heures réparties sur 3 mois en moyenne",
       "certification": "Prestataire certifié Qualiopi — éligible CPF à 100 %",
-      "form_cta": "Demandez le programme du bilan de compétences",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-bilan-competences",
       "href": "/dev-personnel/formation-bilan-competences.html"
     },
@@ -143,7 +143,7 @@
       "point_3": "Certification reconnue dans 160 pays — validité 2 ans, idéale pour votre CV",
       "duration": "40 à 120 heures selon votre niveau de départ",
       "certification": "Certification TOEIC délivrée par ETS — reconnue mondialement",
-      "form_cta": "Demandez le programme de formation anglais TOEIC",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-anglais-toeic",
       "href": "/langues/formation-anglais-toeic.html"
     },
@@ -164,7 +164,7 @@
       "point_3": "PowerPoint : créer des présentations claires, percutantes et visuellement soignées",
       "duration": "14 à 35 heures selon les modules choisis",
       "certification": "Certification TOSA ou ICDL — reconnues par les employeurs français",
-      "form_cta": "Demandez le programme de formation bureautique",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-bureautique",
       "href": "/bureautique/formation-bureautique-office.html"
     },
@@ -185,7 +185,7 @@
       "point_3": "Mesurer les performances avec Google Analytics et des tableaux de bord clairs",
       "duration": "35 à 70 heures selon la spécialisation choisie",
       "certification": "Certifications Google Ads, Analytics ou titre RNCP Marketing Digital",
-      "form_cta": "Demandez le programme de formation marketing digital",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-marketing-digital",
       "href": "/marketing/formation-marketing-digital.html"
     },
@@ -206,7 +206,7 @@
       "point_3": "Conduite d'entretiens professionnels, de recadrage et d'évaluation annuelle",
       "duration": "21 à 56 heures selon le niveau et le parcours",
       "certification": "Titre RNCP Manager ou Certificat CléA Management",
-      "form_cta": "Demandez le programme de formation management",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-management",
       "href": "/management/formation-management-leadership.html"
     },
@@ -227,7 +227,7 @@
       "point_3": "Identifier les financements disponibles : CPF, ACRE, BPI France, love money",
       "duration": "21 à 70 heures selon le niveau d'accompagnement",
       "certification": "Attestation de formation Qualiopi + accompagnement CCI ou BGE",
-      "form_cta": "Demandez le programme de formation entrepreneuriat",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-creation-entreprise",
       "href": "/entrepreneuriat/formation-creation-entreprise.html"
     },
@@ -248,7 +248,7 @@
       "point_3": "TVA, déclarations fiscales et obligations légales de l'entreprise",
       "duration": "28 à 70 heures selon le niveau et les modules choisis",
       "certification": "Titre RNCP Gestionnaire Comptable ou certification CléA",
-      "form_cta": "Demandez le programme de formation comptabilité",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-comptabilite",
       "href": "/finance/formation-comptabilite-paie.html"
     },
@@ -269,7 +269,7 @@
       "point_3": "Gestion du temps, des priorités et prévention du burn-out professionnel",
       "duration": "14 à 35 heures selon le thème et le format choisi",
       "certification": "Attestation de formation — certains parcours éligibles CPF via titre RNCP",
-      "form_cta": "Demandez le programme de formation développement personnel",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-dev-personnel",
       "href": "/dev-personnel/formation-developpement-personnel.html"
     },
@@ -290,7 +290,7 @@
       "point_3": "Préparation aux certifications PMP (PMI), CAPM ou PSM (Scrum.org)",
       "duration": "35 à 70 heures selon la certification visée",
       "certification": "PMP (PMI), PSM (Scrum.org) ou CAPM — reconnues internationalement",
-      "form_cta": "Demandez le programme de formation gestion de projet",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-gestion-projet",
       "href": "/management/formation-gestion-de-projet.html"
     },
@@ -311,7 +311,7 @@
       "point_3": "Comprendre les limites, les enjeux éthiques et les risques de l'IA en entreprise",
       "duration": "14 à 35 heures selon le niveau et la spécialisation",
       "certification": "Attestation de formation + certifications Microsoft AI ou Google AI Essentials",
-      "form_cta": "Demandez le programme de formation intelligence artificielle",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-ia",
       "href": "/ia/formation-intelligence-artificielle.html"
     },
@@ -333,7 +333,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Demandez le programme de formation allemand",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-allemand"
     },
     {
@@ -354,7 +354,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Demandez le programme de formation espagnol",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-espagnol"
     },
     {
@@ -375,7 +375,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Demandez le programme de formation italien",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-italien"
     },
     {
@@ -396,7 +396,7 @@
       "point_3": "Certification LILATE LSF reconnue France compétences",
       "duration": "10 heures (module d'initiation certifiant)",
       "certification": "Certification LILATE LSF — reconnue France compétences",
-      "form_cta": "Demandez le programme de formation LSF",
+      "form_cta": "Découvrez vos droits CPF pour cette formation",
       "offer_id": "cpf-lsf"
     }
   ],
@@ -509,13 +509,4 @@
   "post_8_title": "Reconversion professionnelle en cybersécurité via le CPF : comment Julien a tout misé à 38 ans",
   "post_8_excerpt": "Julien Marchand n'avait pas prévu de changer de vie à 38 ans. Magasinier depuis quinze ans dans un entrepôt logistique de Clermont-Ferrand, il voyait ses perspectives s'amenuiser année après année : a…",
   "post_9_href": "blog/cpf-actualites-2026.html",
-  "post_9_date": "24 avril 2026",
-  "post_9_tag": "Actualités",
-  "post_9_title": "CPF 2025-2026 : tout ce qui change — et comment en profiter malgré les réformes",
-  "post_9_excerpt": "Reste à charge de 150 €, nouveaux plafonds de prise en charge, FranceConnect+ obligatoire : le tour complet des réformes CPF 2025-2026 et les stratégies pour se former encore à coût zéro.",
-  "post_10_href": "blog/sophie-marchand.html",
-  "post_10_date": "22 avril 2026",
-  "post_10_tag": "Témoignage",
-  "post_10_title": "De secrétaire à cheffe de projet digital : comment Sophie a changé de vie grâce au CPF",
-  "post_10_excerpt": "Après 11 ans dans un poste administratif sans perspectives, Sophie Marchand a utilisé son CPF pour se former au management de projets digitaux. Six mois plus tard, elle signait un CDI avec 38 % d'augmentation — sans débourser un centime."
-}
+  "post_9_dat
