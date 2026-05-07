@@ -122,7 +122,7 @@
       "point_3": "Document de synthèse confidentiel remis à la fin, utilisable pour vos entretiens",
       "duration": "24 heures réparties sur 3 mois en moyenne",
       "certification": "Prestataire certifié Qualiopi — éligible CPF à 100 %",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Bilan de compétences",
       "offer_id": "cpf-bilan-competences",
       "href": "/dev-personnel/formation-bilan-competences.html"
     },
@@ -143,7 +143,7 @@
       "point_3": "Certification reconnue dans 160 pays — validité 2 ans, idéale pour votre CV",
       "duration": "40 à 120 heures selon votre niveau de départ",
       "certification": "Certification TOEIC délivrée par ETS — reconnue mondialement",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Anglais professionnel & TOEIC",
       "offer_id": "cpf-anglais-toeic",
       "href": "/langues/formation-anglais-toeic.html"
     },
@@ -164,7 +164,7 @@
       "point_3": "PowerPoint : créer des présentations claires, percutantes et visuellement soignées",
       "duration": "14 à 35 heures selon les modules choisis",
       "certification": "Certification TOSA ou ICDL — reconnues par les employeurs français",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Bureautique — Excel, Word, PowerPoint",
       "offer_id": "cpf-bureautique",
       "href": "/bureautique/formation-bureautique-office.html"
     },
@@ -185,7 +185,7 @@
       "point_3": "Mesurer les performances avec Google Analytics et des tableaux de bord clairs",
       "duration": "35 à 70 heures selon la spécialisation choisie",
       "certification": "Certifications Google Ads, Analytics ou titre RNCP Marketing Digital",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Marketing digital & réseaux sociaux",
       "offer_id": "cpf-marketing-digital",
       "href": "/marketing/formation-marketing-digital.html"
     },
@@ -206,7 +206,7 @@
       "point_3": "Conduite d'entretiens professionnels, de recadrage et d'évaluation annuelle",
       "duration": "21 à 56 heures selon le niveau et le parcours",
       "certification": "Titre RNCP Manager ou Certificat CléA Management",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Management & leadership",
       "offer_id": "cpf-management",
       "href": "/management/formation-management-leadership.html"
     },
@@ -227,7 +227,7 @@
       "point_3": "Identifier les financements disponibles : CPF, ACRE, BPI France, love money",
       "duration": "21 à 70 heures selon le niveau d'accompagnement",
       "certification": "Attestation de formation Qualiopi + accompagnement CCI ou BGE",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Création & reprise d'entreprise",
       "offer_id": "cpf-creation-entreprise",
       "href": "/entrepreneuriat/formation-creation-entreprise.html"
     },
@@ -248,7 +248,7 @@
       "point_3": "TVA, déclarations fiscales et obligations légales de l'entreprise",
       "duration": "28 à 70 heures selon le niveau et les modules choisis",
       "certification": "Titre RNCP Gestionnaire Comptable ou certification CléA",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Comptabilité, paie & gestion",
       "offer_id": "cpf-comptabilite",
       "href": "/finance/formation-comptabilite-paie.html"
     },
@@ -269,7 +269,7 @@
       "point_3": "Gestion du temps, des priorités et prévention du burn-out professionnel",
       "duration": "14 à 35 heures selon le thème et le format choisi",
       "certification": "Attestation de formation — certains parcours éligibles CPF via titre RNCP",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Développement personnel & soft skills",
       "offer_id": "cpf-dev-personnel",
       "href": "/dev-personnel/formation-developpement-personnel.html"
     },
@@ -290,7 +290,7 @@
       "point_3": "Préparation aux certifications PMP (PMI), CAPM ou PSM (Scrum.org)",
       "duration": "35 à 70 heures selon la certification visée",
       "certification": "PMP (PMI), PSM (Scrum.org) ou CAPM — reconnues internationalement",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Gestion de projet — Agile, Scrum, PMP",
       "offer_id": "cpf-gestion-projet",
       "href": "/management/formation-gestion-de-projet.html"
     },
@@ -311,7 +311,7 @@
       "point_3": "Comprendre les limites, les enjeux éthiques et les risques de l'IA en entreprise",
       "duration": "14 à 35 heures selon le niveau et la spécialisation",
       "certification": "Attestation de formation + certifications Microsoft AI ou Google AI Essentials",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Intelligence artificielle & outils numériques",
       "offer_id": "cpf-ia",
       "href": "/ia/formation-intelligence-artificielle.html"
     },
@@ -333,7 +333,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Allemand professionnel",
       "offer_id": "cpf-allemand"
     },
     {
@@ -354,7 +354,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Espagnol professionnel",
       "offer_id": "cpf-espagnol"
     },
     {
@@ -375,7 +375,7 @@
       "point_3": "Certification LILATE reconnue France compétences — niveaux A1 à C2",
       "duration": "10 à 20 heures selon votre niveau de départ",
       "certification": "Certification LILATE — reconnue France compétences",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Italien professionnel",
       "offer_id": "cpf-italien"
     },
     {
@@ -396,7 +396,7 @@
       "point_3": "Certification LILATE LSF reconnue France compétences",
       "duration": "10 heures (module d'initiation certifiant)",
       "certification": "Certification LILATE LSF — reconnue France compétences",
-      "form_cta": "Découvrez vos droits CPF pour cette formation",
+      "form_cta": "Découvrez vos droits CPF pour : Langue des Signes (LSF)",
       "offer_id": "cpf-lsf"
     }
   ],
