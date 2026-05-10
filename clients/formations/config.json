@@ -64,6 +64,7 @@
   "field_formation_opt_management": "Management & Commerce",
   "field_formation_opt_comptabilite": "Comptabilité & Gestion",
   "field_formation_opt_sante": "Santé & Social",
+  "field_formation_opt_bilan": "Bilan de compétences",
   "field_formation_opt_autre": "Autre formation professionnelle",
   "field_formation_opt_permis": "Permis de conduire (CACES)",
   "field_formation_permis_msg": "Nous ne proposons pas de formations au permis de conduire (CACES). Pour cette demande, nous vous recommandons de contacter directement une auto-école agréée CPF.",

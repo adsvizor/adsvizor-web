@@ -866,9 +866,14 @@ function initMultiStepForm(form, config) {
       hp_trap: ""
     };
     try {
-      // Blob with application/json so the Cloudflare Worker parses it correctly
-      const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-      navigator.sendBeacon(config.form_action, blob);
+      // fetch + keepalive: same delivery guarantee as sendBeacon (survives page unload),
+      // but properly handles CORS preflight — works cross-origin in localhost dev too.
+      fetch(config.form_action, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
       emitEvent("form_partial", { status: "beacon", step: "abandoned" });
     } catch {}
   }
