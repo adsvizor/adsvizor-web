@@ -356,6 +356,16 @@ function initUtmTracking(form) {
 
   persistUtmToSession(utm);
   setHiddenUtmFields(form, utm);
+
+  // Capture search_query = {searchterm} from Google Ads tracking template.
+  // Stored in sessionStorage for the duration of the visit; not persisted cross-session
+  // since a search query is only meaningful for the current landing.
+  const sqFromUrl = new URLSearchParams(window.location.search).get("search_query");
+  const sqStored  = sessionStorage.getItem("adsvizor_search_query");
+  const searchQuery = (sqFromUrl && sqFromUrl.trim()) || sqStored || null;
+  if (sqFromUrl && sqFromUrl.trim()) sessionStorage.setItem("adsvizor_search_query", sqFromUrl.trim());
+  const sqInput = form.querySelector("#search_query");
+  if (sqInput && searchQuery) sqInput.value = searchQuery;
 }
 
 function preserveUtmOnLinks() {
@@ -457,7 +467,10 @@ function buildLeadPayload(form, config) {
     consent_text: consentText,
     consent_timestamp: new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }),
     hp_trap: safeString(fd.get("hp_trap") ?? "").trim(), // honeypot
-    formation_interest: fd.get("formation_interest") ? safeString(fd.get("formation_interest")).trim() : null
+    formation_interest: fd.get("formation_interest") ? safeString(fd.get("formation_interest")).trim() : null,
+    search_query: fd.get("search_query")
+      ? safeString(fd.get("search_query")).trim() || null
+      : (sessionStorage.getItem("adsvizor_search_query") || null)
   };
 
   return payload;
@@ -861,6 +874,7 @@ function initMultiStepForm(form, config) {
         content:  utm.utm_content  || null
       },
       page_version: safeString(config.page_version || ""),
+      search_query: sessionStorage.getItem("adsvizor_search_query") || null,
       partial: true,
       step: "abandoned",
       hp_trap: ""

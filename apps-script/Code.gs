@@ -12,7 +12,7 @@
  * - Auto-creates a date tab (YYYY-MM-DD) for each new submission date
  * - reorderColumns_() function: run once manually to physically reorder existing sheet
  *
- * Column schema v7 (26 columns):
+ * Column schema v8 (27 columns):
  *  0  Date soumission
  *  1  Mis à jour
  *  2  Nom
@@ -32,13 +32,14 @@
  * 16  UTM Source
  * 17  UTM Medium
  * 18  UTM Campagne
- * 19  UTM Terme
+ * 19  UTM Terme           ← {keyword} matched keyword
  * 20  UTM Contenu
- * 21  Consent URL
- * 22  Consent Texte
- * 23  Consent Timestamp
- * 24  Consent IP
- * 25  Consent User-Agent
+ * 21  Requête recherche   ← {searchterm} exact query typed by user
+ * 22  Consent URL
+ * 23  Consent Texte
+ * 24  Consent Timestamp
+ * 25  Consent IP
+ * 26  Consent User-Agent
  */
 
 const SHEET_COLUMNS = [
@@ -61,16 +62,17 @@ const SHEET_COLUMNS = [
   "UTM Source",            // 16
   "UTM Medium",            // 17
   "UTM Campagne",          // 18
-  "UTM Terme",             // 19
+  "UTM Terme",             // 19  ← {keyword} matched keyword
   "UTM Contenu",           // 20
-  "Consent URL",           // 21
-  "Consent Texte",         // 22
-  "Consent Timestamp",     // 23
-  "Consent IP",            // 24
-  "Consent User-Agent",    // 25
+  "Requête recherche",     // 21  ← {searchterm} exact query typed by user
+  "Consent URL",           // 22
+  "Consent Texte",         // 23
+  "Consent Timestamp",     // 24
+  "Consent IP",            // 25
+  "Consent User-Agent",    // 26
 ];
 
-const NUM_COLS = SHEET_COLUMNS.length; // 26
+const NUM_COLS = SHEET_COLUMNS.length; // 27
 
 // ---------------------------------------------------------------------------
 // Main handler
@@ -167,6 +169,7 @@ function doPost(e) {
           "UTM Campagne":         utm.campaign,
           "UTM Terme":            utm.term,
           "UTM Contenu":          utm.content,
+          "Requête recherche":    payload.search_query,
           "Consent URL":          payload.consent_url,
           "Consent Texte":        payload.consent_text,
           "Consent Timestamp":    payload.consent_timestamp,
@@ -218,6 +221,7 @@ function doPost(e) {
         set_("UTM Campagne",        nullIfEmpty_(asString_(utm.campaign)));
         set_("UTM Terme",           nullIfEmpty_(asString_(utm.term)));
         set_("UTM Contenu",         nullIfEmpty_(asString_(utm.content)));
+        set_("Requête recherche",   nullIfEmpty_(asString_(payload.search_query)));
         set_("Consent URL",         nullIfEmpty_(asString_(payload.consent_url)));
         set_("Consent Texte",       nullIfEmpty_(asString_(payload.consent_text)));
         set_("Consent Timestamp",   nullIfEmpty_(asString_(payload.consent_timestamp)));
