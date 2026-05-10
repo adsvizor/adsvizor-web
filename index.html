@@ -17,6 +17,35 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://formations.adsvizor.com/" />
     <meta property="og:image" content="https://formations.adsvizor.com/og-image.jpg" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{meta_title}}" />
+    <meta name="twitter:description" content="{{meta_description}}" />
+    <meta name="twitter:image" content="{{og_image_url}}" />
+    <meta name="robots" content="index, follow" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "{{og_url}}#organization",
+          "name": "{{logo_text}}",
+          "url": "{{og_url}}",
+          "logo": { "@type": "ImageObject", "url": "{{og_url}}logo.png" },
+          "description": "{{meta_description}}"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "{{og_url}}#website",
+          "url": "{{og_url}}",
+          "name": "{{meta_title}}",
+          "inLanguage": "fr-FR",
+          "publisher": { "@id": "{{og_url}}#organization" }
+        }
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="stylesheet" href="/main.css?v=3" />
