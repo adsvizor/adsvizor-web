@@ -77,7 +77,7 @@
   "form_id": "lead-form",
   "form_action": "https://formations.adsvizor.com/api/leads",
   "client_slug": "formations",
-  "offer_id": "lead-gen-v1",
+  "offer_id": "accueil",
   "page_version": "1.0.0",
   "field_first_name_label": "Prénom",
   "field_first_name_placeholder": "Votre prénom",
