@@ -1111,16 +1111,32 @@ function initHeaderCta() {
   const nav = header.querySelector("nav");
   if (!nav) return;
 
-  // Create wrapper
+  // Create wrapper — set inline flex so it works regardless of CSS cache state
   const wrapper = document.createElement("div");
   wrapper.className = "header-right";
+  wrapper.style.cssText = "display:flex;align-items:center;gap:20px;flex-shrink:0;";
 
-  // Orange CTA button
+  // Orange CTA button — inline styles guarantee rendering even if CSS is stale
   const cta = document.createElement("a");
   cta.className = "btn-header-cta";
   cta.setAttribute("data-cta-id", "header-cta");
   cta.setAttribute("data-preserve-utm", "true");
   cta.textContent = "✅ Vérifier mes droits CPF";
+  cta.style.cssText = [
+    "display:inline-flex",
+    "align-items:center",
+    "gap:6px",
+    "padding:10px 20px",
+    "background:#f97316",
+    "color:#ffffff",
+    "font-size:0.9rem",
+    "font-weight:700",
+    "text-decoration:none",
+    "border-radius:999px",
+    "white-space:nowrap",
+    "box-shadow:0 4px 16px rgba(249,115,22,0.45)",
+    "flex-shrink:0",
+  ].join(";");
 
   const contactSection = document.getElementById("contact");
   if (contactSection) {
