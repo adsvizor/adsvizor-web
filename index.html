@@ -72,15 +72,20 @@
         <a href="{{home_href}}" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="{{logo_text}}" class="site-logo" width="200" height="200" /></picture></a>
       </div>
 
-      <nav aria-label="{{nav_aria_label}}">
-        <ul>
-          <li><a href="{{nav_item_0_href}}">{{nav_item_0_label}}</a></li>
-          <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
-          <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
-          <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
-          <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
-        </ul>
-      </nav>
+      <div class="header-right">
+        <a href="#contact" class="btn-header-cta" data-cta-id="header-cta" data-preserve-utm="true">
+          ✅ Vérifier mes droits CPF
+        </a>
+        <nav aria-label="{{nav_aria_label}}">
+          <ul>
+            <li><a href="{{nav_item_0_href}}">{{nav_item_0_label}}</a></li>
+            <li><a href="{{nav_item_1_href}}">{{nav_item_1_label}}</a></li>
+            <li><a href="{{nav_item_2_href}}">{{nav_item_2_label}}</a></li>
+            <li><a href="{{nav_item_3_href}}">{{nav_item_3_label}}</a></li>
+            <li><a href="{{nav_item_4_href}}">{{nav_item_4_label}}</a></li>
+          </ul>
+        </nav>
+      </div>
     </header>
     <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu">
       <span></span>
@@ -154,6 +159,15 @@
                 <h3>{{why_us_d_title}}</h3>
                 <p>{{why_us_d_text}}</p>
               </div>
+            </div>
+          </section>
+
+          <!-- Trust logos: Mon Compte Formation (EDOF) & Qualiopi -->
+          <section class="trust-strip" aria-label="Certifications et accréditations">
+            <p class="trust-strip-heading">Ils nous font confiance</p>
+            <div class="trust-logos">
+              <img src="/logo_moncompteformation_rvb-1024x603.png" alt="Mon Compte Formation — EDOF" class="trust-logo trust-logo--mcf" width="1024" height="603" loading="lazy" />
+              <img src="/logo-qualiopi.png" alt="Qualiopi — processus certifié — Actions de formation" class="trust-logo trust-logo--qualiopi" width="480" height="240" loading="lazy" />
             </div>
           </section>
 

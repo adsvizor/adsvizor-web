@@ -118,6 +118,50 @@ header > div a:hover {
   opacity: 0.85;
 }
 
+/* ── Header right: CTA + nav grouped together ── */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Header CTA button (orange — high contrast vs blue theme) ── */
+.btn-header-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #f97316;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.45);
+  transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-header-cta:hover,
+.btn-header-cta:focus-visible {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(249, 115, 22, 0.55);
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.btn-header-cta:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
+}
+
+/* Hide header CTA on mobile — hamburger takes over */
+@media (max-width: 767px) {
+  .btn-header-cta { display: none; }
+}
+
 .site-logo-link {
   display: flex;
   align-items: center;
@@ -2428,6 +2472,58 @@ footer p {
   .why-us-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* ── Trust strip (Ils nous font confiance) ── */
+.trust-strip {
+  margin: 32px 0 0;
+  padding: 28px 24px;
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.trust-strip-heading {
+  margin: 0 0 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.trust-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.trust-logo {
+  width: auto;
+  object-fit: contain;
+  transition: opacity 200ms ease;
+}
+
+.trust-logo:hover {
+  opacity: 0.85;
+}
+
+/* MCF logo is square-ish — cap height */
+.trust-logo--mcf {
+  height: 88px;
+}
+
+/* Qualiopi is wide with small text — needs more height to stay legible */
+.trust-logo--qualiopi {
+  height: 110px;
+}
+
+@media (max-width: 480px) {
+  .trust-logo--mcf     { height: 70px; }
+  .trust-logo--qualiopi { height: 88px; }
 }
 
 /* ── Formation dropdown & prefilled ── */
