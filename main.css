@@ -157,24 +157,17 @@ header > div a:hover {
   box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
 }
 
-/* Mobile: button fills the space between logo and hamburger, centered */
+/* Mobile: compact CTA, margin-right leaves room for the fixed hamburger (44px + 10px gap) */
 @media (max-width: 767px) {
-  .header-right {
-    flex: 1 !important;
-    justify-content: center;
-  }
-
   .btn-header-cta {
-    font-size: 0.82rem !important;
-    padding: 10px 18px !important;
-    box-shadow: 0 3px 14px rgba(249, 115, 22, 0.5) !important;
-    margin-right: 54px; /* 44px hamburger + 10px gap */
-    margin-left: 8px;
-    flex: 1;
-    text-align: center;
-    justify-content: center;
-    max-width: none;
+    font-size: 0.7rem !important;
+    padding: 7px 10px !important;
+    box-shadow: none !important;
+    margin-right: 54px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
   }
 }
 
@@ -2488,43 +2481,6 @@ footer p {
   .why-us-grid {
     grid-template-columns: 1fr 1fr;
   }
-}
-
-/* ── Trust block inside hero (replaces subheadline) ── */
-.hero-trust-block {
-  margin-top: 24px;
-  text-align: center;
-}
-
-.hero-trust-label {
-  margin: 0 0 14px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-}
-
-.hero-trust-logos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.hero-trust-logo {
-  display: block;
-  width: 190px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-  background: #ffffff;
-  padding: 10px 14px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-}
-
-@media (max-width: 767px) {
-  .hero-trust-logo { width: 145px; }
 }
 
 /* ── Trust strip (Ils nous font confiance) ── */
