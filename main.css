@@ -157,9 +157,18 @@ header > div a:hover {
   box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
 }
 
-/* Hide header CTA on mobile — hamburger takes over */
+/* Mobile: compact CTA, margin-right leaves room for the fixed hamburger (44px + 10px gap) */
 @media (max-width: 767px) {
-  .btn-header-cta { display: none; }
+  .btn-header-cta {
+    font-size: 0.7rem !important;
+    padding: 7px 10px !important;
+    box-shadow: none !important;
+    margin-right: 54px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
 }
 
 .site-logo-link {
