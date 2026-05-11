@@ -1082,56 +1082,65 @@ function initMultiStepForm(form, config) {
 // =========================
 
 /**
- * Injects a sticky "Vérifier mon éligibilité CPF" bar above the header
- * on all pages. On pages with a lead form (#contact): scrolls to it.
- * On other pages: links to the formations listing.
+ * Remove any hardcoded green CPF bar and ensure the orange header CTA
+ * ("✅ Vérifier mes droits CPF") is present in the header on every page.
+ *
+ * - index.html already has it in the HTML → nothing injected, bar still removed.
+ * - All other pages (formations, blog, contact, static formation pages) get it
+ *   injected dynamically.
+ * - thank-you and privacy pages are skipped (no form to scroll to).
  */
-function initCpfCtaBar() {
-  // Don't inject on thank-you or privacy pages
-  if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) return;
-
-  let bar = document.querySelector(".cpf-cta-bar");
-
-  if (!bar) {
-    bar = document.createElement("div");
-    bar.className = "cpf-cta-bar";
-
-    const contactSection = document.getElementById("contact");
-
-    if (contactSection) {
-      const btn = document.createElement("button");
-      btn.className = "cpf-cta-bar-btn";
-      btn.setAttribute("type", "button");
-      btn.setAttribute("data-cta-id", "cpf-cta-bar");
-      btn.textContent = "Vérifier mes droits CPF →";
-      btn.addEventListener("click", () => {
-        contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(() => {
-          const firstInput = contactSection.querySelector("input:not([type=hidden])");
-          if (firstInput) firstInput.focus({ preventScroll: true });
-        }, 600);
-        emitEvent("cta_click", { cta_id: "cpf-cta-bar" });
-      });
-      bar.appendChild(btn);
-    } else {
-      const link = document.createElement("a");
-      link.className = "cpf-cta-bar-btn";
-      link.setAttribute("href", "/formations.html");
-      link.setAttribute("data-cta-id", "cpf-cta-bar");
-      link.textContent = "Vérifier mes droits CPF →";
-      bar.appendChild(link);
-    }
-
-    const header = document.querySelector("header");
-    if (header) document.body.insertBefore(bar, header);
-    else document.body.prepend(bar);
+function initHeaderCta() {
+  // Skip pages where the CTA makes no sense
+  if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) {
+    // Still remove any leftover green bar on those pages
+    document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
+    return;
   }
 
-  // Push fixed hamburger + nav dropdown below the bar on mobile
-  requestAnimationFrame(() => {
-    const h = bar.offsetHeight;
-    if (h > 0) document.documentElement.style.setProperty("--cpf-bar-h", h + "px");
-  });
+  // 1. Remove every hardcoded green bar
+  document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
+
+  // 2. If the orange CTA is already in the header (index.html), nothing to do
+  if (document.querySelector(".btn-header-cta")) return;
+
+  // 3. Build the header-right wrapper with the orange CTA + existing nav
+  const header = document.querySelector("header");
+  if (!header) return;
+
+  const nav = header.querySelector("nav");
+  if (!nav) return;
+
+  // Create wrapper
+  const wrapper = document.createElement("div");
+  wrapper.className = "header-right";
+
+  // Orange CTA button
+  const cta = document.createElement("a");
+  cta.className = "btn-header-cta";
+  cta.setAttribute("data-cta-id", "header-cta");
+  cta.setAttribute("data-preserve-utm", "true");
+  cta.textContent = "✅ Vérifier mes droits CPF";
+
+  const contactSection = document.getElementById("contact");
+  if (contactSection) {
+    cta.setAttribute("href", "#contact");
+    cta.addEventListener("click", (e) => {
+      e.preventDefault();
+      contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => {
+        const firstInput = contactSection.querySelector("input:not([type=hidden])");
+        if (firstInput) firstInput.focus({ preventScroll: true });
+      }, 600);
+    });
+  } else {
+    cta.setAttribute("href", "/#contact");
+  }
+
+  // Move nav inside wrapper, append wrapper to header
+  wrapper.appendChild(cta);
+  wrapper.appendChild(nav);
+  header.appendChild(wrapper);
 }
 
 // =========================
@@ -1194,8 +1203,9 @@ async function init() {
     // After placeholders: ensure UTM-preserving links get updated (e.g., thank-you CTA).
     preserveUtmOnLinks();
 
-    // Sticky CPF eligibility bar — all pages except thank-you and privacy.
-    initCpfCtaBar();
+    // Remove any hardcoded green CPF bar and ensure the orange header CTA
+    // is present on every page (static formation pages, blog, contact, etc.)
+    initHeaderCta();
 
 
     // Display security code on the thank-you page if present in URL.
