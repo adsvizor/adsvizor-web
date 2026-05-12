@@ -111,7 +111,7 @@ function assembleHTML(f, config) {
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
     <link rel="stylesheet" href="/main.css?v=7" />
-    <script defer src="/script.js?v=20"></script>
+    <script defer src="/script.js?v=21"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }

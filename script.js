@@ -1481,8 +1481,8 @@ function initForm3(form, config) {
     }
   });
 
-  // Initialisation — afficher l'étape 0
-  showStep('0');
+  // Initialisation — afficher l'étape 0 sans scroll (évite le défilement auto sur mobile)
+  showStep('0', false);
 }
 
 // =========================
