@@ -878,10 +878,18 @@ form button[type="submit"]:focus-visible {
 
 /* Invalid field highlight (set via JS on failed validation) */
 form input.input-error,
-form textarea.input-error {
+form textarea.input-error,
+form select.input-error {
   border-color: #ef4444 !important;
   background: #fff5f5;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+/* ── Simple 1-step form submit button ── */
+form[data-simple="true"] button[type="submit"] {
+  margin-top: 4px;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
 }
 
 /* Error block */

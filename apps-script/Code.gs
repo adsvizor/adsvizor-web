@@ -1,9 +1,13 @@
 /**
- * AdsVizor Lead Capture — Google Apps Script Web App  v7
+ * AdsVizor Lead Capture — Google Apps Script Web App  v8
  *
  * Source of truth: this file lives at apps-script/Code.gs in the repo.
  * To deploy: copy entire contents → paste into script.google.com editor →
  *            save → Deploy → Manage deployments → New version.
+ *
+ * Changes in v8:
+ * - visitor_email is now OPTIONAL (simple 1-step form has no email field)
+ * - Upsert key: email when present, phone number as fallback
  *
  * Changes in v7:
  * - New column order (Code sécurité, Statut professionnel, Ville, Région moved up)
@@ -95,9 +99,10 @@ function doPost(e) {
     const clientSlug = asString_(payload.client_slug).trim();
     if (!clientSlug) return jsonResponse_({ status: "error", message: "client_slug is required." });
 
+    // email is optional — simple 1-step form omits it; use phone as fallback upsert key
     const email = asString_(payload.visitor_email).trim().toLowerCase();
-    if (!email)                return jsonResponse_({ status: "error", message: "visitor_email is required." });
-    if (!isValidEmail_(email)) return jsonResponse_({ status: "error", message: "visitor_email is invalid." });
+    if (email && !isValidEmail_(email)) return jsonResponse_({ status: "error", message: "visitor_email is invalid." });
+    const phone = asString_(payload.visitor_phone).trim();
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     if (!ss) return jsonResponse_({ status: "error", message: "No active spreadsheet." });
@@ -125,13 +130,22 @@ function doPost(e) {
       const formation = mergeFormation_(payload.formation_interest, payload.visitor_message);
 
       const emailColIdx = colMap["Email"];
+      const phoneColIdx = colMap["Téléphone"];
       const data = sheet.getDataRange().getValues();
       let existingSheetRow = -1;
 
+      // Upsert key: email when provided, phone number as fallback
       for (let i = 1; i < data.length; i++) {
-        if (asString_(data[i][emailColIdx]).trim().toLowerCase() === email) {
-          existingSheetRow = i + 1; // 1-based
-          break;
+        if (email) {
+          if (asString_(data[i][emailColIdx]).trim().toLowerCase() === email) {
+            existingSheetRow = i + 1; // 1-based
+            break;
+          }
+        } else if (phone) {
+          if (asString_(data[i][phoneColIdx]).trim() === phone) {
+            existingSheetRow = i + 1; // 1-based
+            break;
+          }
         }
       }
 
@@ -245,7 +259,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return jsonResponse_({ status: "ok", message: "AdsVizor lead endpoint v7 is running." });
+  return jsonResponse_({ status: "ok", message: "AdsVizor lead endpoint v8 is running." });
 }
 
 // ---------------------------------------------------------------------------

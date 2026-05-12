@@ -1078,6 +1078,163 @@ function initMultiStepForm(form, config) {
 }
 
 // =========================
+// 7b) SIMPLE 1-STEP FORM
+// =========================
+
+/**
+ * Lightweight single-step form handler.
+ * Used on index.html and contact.html (with formation dropdown)
+ * and on static formation pages (formation pre-filled via hidden input).
+ * Toggle: set data-simple="true" on the <form> to use this handler;
+ *         remove it to revert to the classic multi-step form (initMultiStepForm).
+ */
+function initSimpleForm(form, config) {
+  // ── Formation dropdown → hidden input sync ──
+  const formationVal    = form.querySelector("#formation_interest_val");
+  const formationSelect = form.querySelector("#formation_select");
+
+  if (formationSelect && formationVal) {
+    formationSelect.addEventListener("change", () => {
+      formationVal.value = formationSelect.value;
+    });
+    // Pre-fill from session (set by CTA click on listings page)
+    const sessionFormation = sessionStorage.getItem("adsvizor_formation");
+    sessionStorage.removeItem("adsvizor_formation");
+    if (sessionFormation) {
+      // Try to match option by value
+      for (const opt of formationSelect.options) {
+        if (opt.value === sessionFormation) { formationSelect.value = sessionFormation; break; }
+      }
+      formationVal.value = sessionFormation;
+    }
+  }
+
+  // ── Form start event (fires on first interaction) ──
+  const formStartOnce = (() => {
+    let fired = false;
+    return () => {
+      if (fired) return;
+      fired = true;
+      emitEvent("form_start", { client_slug: config.client_slug, offer_id: form.dataset.offerId || config.offer_id });
+    };
+  })();
+  for (const el of form.querySelectorAll("input, select")) {
+    el.addEventListener("focus",  formStartOnce, { passive: true });
+    el.addEventListener("input",  formStartOnce, { passive: true });
+    el.addEventListener("change", formStartOnce, { passive: true });
+  }
+
+  // ── Clear error highlight on input ──
+  for (const el of form.querySelectorAll("input, select")) {
+    el.addEventListener("input",  () => el.classList.remove("input-error"), { passive: true });
+    el.addEventListener("change", () => el.classList.remove("input-error"), { passive: true });
+  }
+
+  const submitBtn    = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn ? submitBtn.textContent : "";
+
+  // ── bfcache fix: restore button state when user navigates back ──
+  window.addEventListener("pageshow", (e) => {
+    if (!e.persisted || !submitBtn) return;
+    submitBtn.disabled = false;
+    submitBtn.classList.remove("btn-loading");
+    if (originalLabel) submitBtn.textContent = originalLabel;
+    clearFormError(form);
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearFormError(form);
+
+    if (!config.form_action || config.form_action === "APPS_SCRIPT_URL") {
+      showFormError(form, "Le formulaire n'est pas encore configuré. Veuillez réessayer plus tard.");
+      return;
+    }
+
+    // Honeypot — bots fill it, humans don't
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot && honeypot.value.trim()) return;
+
+    // Consent check
+    const consentEl = form.querySelector("#consent_marketing");
+    if (consentEl && !consentEl.checked) {
+      showFormError(form, "Veuillez accepter d'être recontacté(e) pour continuer.");
+      return;
+    }
+
+    // Validate required inputs
+    let valid = true, phoneInvalid = false;
+    for (const inp of form.querySelectorAll("input[required]")) {
+      const empty    = !inp.value.trim();
+      const badPhone = inp.type === "tel" && !empty && !isValidFrenchPhone(inp.value);
+      inp.classList.toggle("input-error", empty || badPhone);
+      if (badPhone) phoneInvalid = true;
+      if (empty || badPhone) valid = false;
+    }
+
+    // Validate formation dropdown if present and no hidden value
+    const hiddenFormation = form.querySelector('input[name="formation_interest"]');
+    const hasHiddenValue  = hiddenFormation && hiddenFormation.value.trim();
+    if (formationSelect && !hasHiddenValue && !formationSelect.value) {
+      formationSelect.classList.add("input-error");
+      valid = false;
+    }
+
+    if (!valid) {
+      showFormError(form, phoneInvalid
+        ? "Numéro de téléphone invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78)."
+        : "Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
+
+    // Sync dropdown → hidden input one last time before building payload
+    if (formationSelect && formationVal && formationSelect.value) {
+      formationVal.value = formationSelect.value;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add("btn-loading");
+      submitBtn.textContent = "";
+    }
+
+    try {
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
+      const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
+
+      emitEvent("form_submit", {
+        status:       "attempt",
+        client_slug:  payload.client_slug,
+        offer_id:     payload.offer_id,
+        page_version: payload.page_version,
+        utm_source:   payload.utm.source,
+        utm_medium:   payload.utm.medium,
+        utm_campaign: payload.utm.campaign,
+        utm_term:     payload.utm.term,
+        utm_content:  payload.utm.content
+      });
+
+      await postLead(config.form_action, payload);
+
+      saveEnhancedConversionsData(payload);
+      emitEvent("form_submit", { status: "success", client_slug: payload.client_slug, offer_id: payload.offer_id, security_code: securityCode });
+      window.location.href = `thank-you.html?code=${securityCode}`;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
+      emitEvent("form_submit", { status: "error", message });
+      showFormError(form, message);
+      savePendingLead(buildLeadPayload(form, config), message);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("btn-loading");
+        if (originalLabel) submitBtn.textContent = originalLabel;
+      }
+    }
+  });
+}
+
+// =========================
 // CPF CTA Bar
 // =========================
 
@@ -1207,9 +1364,16 @@ async function init() {
     // Fire-and-forget — never blocks the UI or delays page display.
     retryPendingLead(config.form_action).catch(() => {});
 
-    // Init multi-step form BEFORE body.ready so steps are in the right state
-    // when the page becomes visible (prevents flash of both steps showing).
-    if (form) initMultiStepForm(form, config);
+    // Init form BEFORE body.ready so the correct state is set before the page is visible.
+    // data-simple="true"  → lightweight 1-step handler (index, contact, formation pages)
+    // (no attribute)      → classic 2-step handler (legacy — easy revert: remove data-simple)
+    if (form) {
+      if (form.dataset.simple === "true") {
+        initSimpleForm(form, config);
+      } else {
+        initMultiStepForm(form, config);
+      }
+    }
 
     document.body.classList.add("ready");
 

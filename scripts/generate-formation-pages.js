@@ -92,8 +92,8 @@ function assembleHTML(f, config) {
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
-    <link rel="stylesheet" href="/main.css?v=2" />
-    <script defer src="/script.js?v=13"></script>
+    <link rel="stylesheet" href="/main.css?v=4" />
+    <script defer src="/script.js?v=16"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }
@@ -150,7 +150,13 @@ function assembleHTML(f, config) {
               <p class="hero-badge">${f.tag} — Éligible CPF</p>
               <h1 id="formation-title">${f.headline}</h1>
               <p class="hero-sub">${f.subheadline}</p>
-              <button type="button" class="hero-cta" data-cta-id="cta-formation-${f.slug}" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF</button>
+              <div class="hero-trust-block">
+                <p class="hero-trust-label">🏆 Certifié &amp; agréé — Votre financement CPF est entre de bonnes mains</p>
+                <div class="hero-trust-logos">
+                  <img src="/logo_moncompteformation_rvb-1024x603.png" alt="Mon Compte Formation — EDOF" class="hero-trust-logo hero-trust-logo--mcf" width="1024" height="603" loading="lazy" />
+                  <img src="/logo-qualiopi.png" alt="Qualiopi — processus certifié — Actions de formation" class="hero-trust-logo hero-trust-logo--qualiopi" width="480" height="240" loading="lazy" />
+                </div>
+              </div>
             </div>
           </section>
 
@@ -199,14 +205,9 @@ function assembleHTML(f, config) {
           <section aria-labelledby="lead-form-title" id="contact">
             <h2 id="lead-form-title">${f.form_cta}</h2>
 
-            <div class="form-progress" aria-hidden="true">
-              <div class="form-progress-fill"></div>
-            </div>
-            <div class="form-step-labels" aria-hidden="true">
-              <span class="form-step-label is-active">Vos coordonnées</span>
-              <span class="form-step-label">Votre profil</span>
-            </div>
-
+            <!-- Formulaire simple 1-étape — formation pré-remplie automatiquement -->
+            <!-- Pour revenir au formulaire 2-étapes: supprimer data-simple="true" et
+                 restaurer les form-step[data-step="0/1"] avec statut + email -->
             <form
               id="lead-form"
               action="${formAction}"
@@ -214,83 +215,43 @@ function assembleHTML(f, config) {
               autocomplete="on"
               data-client-slug="${CLIENT_SLUG}"
               data-offer-id="${f.offer_id || offerId}"
+              data-simple="true"
             >
-              <!-- Step 1 -->
-              <div class="form-step" data-step="0">
-                <div class="form-name-row">
-                  <div>
-                    <label for="first_name">${config.field_first_name_label}</label>
-                    <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="${config.field_first_name_placeholder}" required />
-                  </div>
-                  <div>
-                    <label for="last_name">${config.field_last_name_label}</label>
-                    <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="${config.field_last_name_placeholder}" required />
-                  </div>
+              <div class="form-name-row">
+                <div>
+                  <label for="first_name">${config.field_first_name_label}</label>
+                  <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="${config.field_first_name_placeholder}" required />
                 </div>
                 <div>
-                  <label for="phone">${config.field_phone_label}</label>
-                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="${config.field_phone_placeholder}" required />
-                </div>
-                <div>
-                  <label for="email">${config.field_email_label}</label>
-                  <input id="email" name="email" type="email" autocomplete="email" placeholder="${config.field_email_placeholder}" required />
-                </div>
-
-                <div class="form-consent">
-                  <input type="checkbox" id="consent_marketing" name="consent_marketing" />
-                  <label for="consent_marketing">${config.form_disclaimer_text}</label>
-                </div>
-
-                <button type="button" class="btn-next">Plus que 2 Clics ! <span aria-hidden="true">🎯</span></button>
-              </div>
-
-              <!-- Step 2 -->
-              <div class="form-step" data-step="1" hidden style="display:none">
-                <div>
-                  <label>${config.field_status_label}</label>
-                  <div class="status-cards" role="group" aria-label="Statut professionnel">
-                    <label class="status-card">
-                      <input type="radio" name="professional_status" value="chomage" />
-                      <span class="status-card-icon" aria-hidden="true">🔍</span>
-                      <span class="status-card-label">En recherche d'emploi</span>
-                    </label>
-                    <label class="status-card">
-                      <input type="radio" name="professional_status" value="salarie" />
-                      <span class="status-card-icon" aria-hidden="true">💼</span>
-                      <span class="status-card-label">Salarié(e)</span>
-                    </label>
-                    <label class="status-card">
-                      <input type="radio" name="professional_status" value="etudiant" />
-                      <span class="status-card-icon" aria-hidden="true">🎓</span>
-                      <span class="status-card-label">Étudiant(e)</span>
-                    </label>
-                    <label class="status-card">
-                      <input type="radio" name="professional_status" value="retraite" />
-                      <span class="status-card-icon" aria-hidden="true">🌅</span>
-                      <span class="status-card-label">Retraité(e)</span>
-                    </label>
-                  </div>
-                </div>
-
-                <!-- Formation pre-filled (static page — formation always known) -->
-                <input type="hidden" name="formation_interest" value="${f.title}" />
-
-                <div class="form-honeypot" aria-hidden="true">
-                  <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
-                </div>
-
-                <input type="hidden" id="utm_source"   name="utm_source"   value="" />
-                <input type="hidden" id="utm_medium"   name="utm_medium"   value="" />
-                <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
-                <input type="hidden" id="utm_term"     name="utm_term"     value="" />
-                <input type="hidden" id="utm_content"  name="utm_content"  value="" />
-                <input type="hidden" id="page_version" name="page_version" value="${config.page_version || '1.0.0'}" />
-
-                <div class="form-step-nav">
-                  <button type="button" class="btn-back"><span aria-hidden="true">←</span> Retour</button>
-                  <button type="submit">${config.submit_label}</button>
+                  <label for="last_name">${config.field_last_name_label}</label>
+                  <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="${config.field_last_name_placeholder}" required />
                 </div>
               </div>
+              <div>
+                <label for="phone">${config.field_phone_label}</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="${config.field_phone_placeholder}" required />
+              </div>
+
+              <!-- Formation pré-remplie (page statique — formation toujours connue) -->
+              <input type="hidden" name="formation_interest" value="${f.title}" />
+
+              <div class="form-consent">
+                <input type="checkbox" id="consent_marketing" name="consent_marketing" />
+                <label for="consent_marketing">${config.form_disclaimer_text}</label>
+              </div>
+
+              <div class="form-honeypot" aria-hidden="true">
+                <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
+              </div>
+
+              <input type="hidden" id="utm_source"   name="utm_source"   value="" />
+              <input type="hidden" id="utm_medium"   name="utm_medium"   value="" />
+              <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+              <input type="hidden" id="utm_term"     name="utm_term"     value="" />
+              <input type="hidden" id="utm_content"  name="utm_content"  value="" />
+              <input type="hidden" id="page_version" name="page_version" value="${config.page_version || '1.0.0'}" />
+
+              <button type="submit">Vérifier mes droits CPF →</button>
             </form>
           </section>
         </aside>
