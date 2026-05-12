@@ -157,6 +157,11 @@ header > div a:hover {
   box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
 }
 
+/* Desktop: hide CTA — form is always visible in the right column */
+@media (min-width: 768px) {
+  .btn-header-cta { display: none !important; }
+}
+
 /* Mobile: compact CTA, margin-right leaves room for the fixed hamburger (44px + 10px gap) */
 @media (max-width: 767px) {
   .btn-header-cta {
@@ -458,6 +463,39 @@ section.hero h1 {
   transform: translateY(-2px);
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
   text-decoration: none;
+}
+
+/* ── Hero trust logos block ── */
+.hero-trust-block {
+  margin-top: 24px;
+  text-align: center;
+}
+.hero-trust-label {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+.hero-trust-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.hero-trust-logo {
+  display: block;
+  width: 190px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 8px 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+@media (max-width: 767px) {
+  .hero-trust-logo { width: 150px; }
 }
 
 .hero-cta:focus-visible {
