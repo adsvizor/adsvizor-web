@@ -429,12 +429,16 @@ function buildLeadPayload(form, config) {
   const rawPhone = fd.get("phone");
   const visitorPhone = rawPhone ? normalizePhoneNumber(safeString(rawPhone).trim()) : null;
   const visitorMessage = fd.get("message");
-  const consentMarketing = fd.get("consent_marketing") === "on";
+  // Accept "on" (old checkbox), "true" (form3 hidden input), or actual truthy string
+  const consentMarketing = fd.get("consent_marketing") === "on"
+    || fd.get("consent_marketing") === "true";
 
   const professionalStatus = fd.get("professional_status");
 
   // Capture consent proof context (RGPD)
-  const consentLabelEl = document.querySelector('label[for="consent_marketing"]');
+  // form3 has no label[for="consent_marketing"] — fall back to .f3-consent-text span
+  const consentLabelEl = document.querySelector('label[for="consent_marketing"]')
+    || document.querySelector('.f3-consent-text');
   const consentText = consentLabelEl ? consentLabelEl.textContent.trim() : "";
 
   // UTM: read from hidden form fields (set at page load), with sessionStorage then
