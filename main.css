@@ -1630,6 +1630,36 @@ footer p {
   text-decoration: underline;
 }
 
+.formation-section {
+  margin: 0 0 20px;
+}
+
+.subpages-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.subpages-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--color-accent-light, #eff6ff);
+  color: var(--color-accent, #2563eb);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.subpages-nav a:hover {
+  background: #dbeafe;
+  border-color: var(--color-accent, #2563eb);
+}
+
 .formation-detail-title {
   font-size: 1.35rem;
   font-weight: 700;
@@ -2054,11 +2084,11 @@ footer p {
   }
 
   .form-float {
-    width: 390px;
+    width: 420px;
     flex-shrink: 0;
     position: sticky;
     top: 72px;
-    padding: 32px 0 32px 36px;
+    padding: 32px 0 32px 28px;
   }
 
   .form-float section[aria-labelledby="lead-form-title"] {
@@ -2805,5 +2835,459 @@ footer p {
     justify-content: center;
     font-size: 1rem;
     padding: 13px 20px;
+  }
+}
+
+/* ========================================================================
+   FORM 3 — Funnel éligibilité (design premium)
+   ======================================================================== */
+
+/* Masquer le titre de section pour form3 */
+.f3-hidden-title { display: none; }
+
+/* form3: le titre h2 est caché → on réduit le padding-top pour éviter un blanc vide */
+.form-float section:has(form[data-form="3"]) {
+  padding-top: 4px;
+}
+
+/* ── Stepper numéroté ── */
+/* Override the generic form[data-client-slug] > div { display: grid } rule */
+form[data-client-slug] > .f3-stepper,
+.f3-stepper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
+}
+.f3-stepper--hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.f3-stepper-step {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+.f3-stepper-step.active {
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+}
+.f3-stepper-step.done {
+  background: #10b981;
+  color: #ffffff;
+}
+.f3-stepper-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  transition: background 0.35s ease;
+}
+.f3-stepper-line.done {
+  background: #10b981;
+}
+
+/* ── Conteneur de chaque étape ── */
+.f3-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Étape 0 : carte intro avec dégradé ── */
+.f3-step-intro {
+  gap: 14px;
+}
+
+.f3-intro-card {
+  /* background-image set inline via {{hero_image_url}} — see index.html */
+  background-color: #1e3a8a; /* fallback if image fails */
+  background-size: cover;
+  background-position: center top;
+  border-radius: var(--radius-md);
+  padding: 22px 18px 18px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Gradient overlay on top of the photo */
+.f3-intro-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(150deg, rgba(15,30,115,0.80) 0%, rgba(80,20,180,0.68) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* No ::after decoration needed */
+.f3-intro-card::after { display: none; }
+
+.f3-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.85);
+  position: relative;
+  z-index: 1;
+}
+
+.f3-headline {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+}
+
+.f3-trust-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.f3-trust-pills span {
+  flex: 0 0 calc(50% - 3px); /* always two per row, never clipped */
+  text-align: center;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  padding: 4px 6px;
+  backdrop-filter: blur(4px);
+}
+
+/* Texte de consentement */
+.f3-consent-text {
+  font-size: 0.68rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+/* Checkbox de consentement */
+.f3-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  line-height: 1.5;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.f3-checkbox-row:hover {
+  border-color: rgba(37,99,235,0.3);
+  background: var(--color-accent-light);
+}
+.f3-checkbox-row input[type="checkbox"] {
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+/* ── Question label ── */
+.f3-question {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* ── Radio-cards en grille 2 colonnes ── */
+.f3-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.f3-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: #ffffff;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  position: relative;
+  user-select: none;
+}
+.f3-option:hover {
+  border-color: rgba(37,99,235,0.35);
+  background: var(--color-accent-light);
+}
+
+.f3-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+
+.f3-opt-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.f3-opt-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  line-height: 1.25;
+}
+
+/* Pas de cercle radio — l'option entière change de couleur */
+.f3-option::after { display: none; }
+
+.f3-option:has(input:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+}
+.f3-option:has(input:checked) .f3-opt-label {
+  color: var(--color-accent-dark);
+  font-weight: 700;
+}
+.f3-option:has(input:checked) .f3-opt-icon {
+  filter: drop-shadow(0 0 4px rgba(37,99,235,0.3));
+}
+
+.f3-option:has(input:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Rangée bouton retour + bouton principal ── */
+.f3-btn-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.f3-back-btn {
+  flex-shrink: 0;
+  padding: 0 14px;
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.f3-back-btn:hover {
+  border-color: rgba(37,99,235,0.4);
+  color: var(--color-accent);
+}
+
+.f3-btn-row .f3-btn,
+.f3-btn-row button[type="submit"] {
+  flex: 1;
+}
+
+/* ── Bouton principal ── */
+.f3-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--gradient-accent);
+  color: #ffffff;
+  font-size: 0.93rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+  line-height: 1.2;
+}
+.f3-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(37,99,235,0.42);
+}
+.f3-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.f3-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.f3-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.3);
+}
+
+/* Bouton secondaire (inéligible) */
+.f3-btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border: 1.5px solid var(--color-border);
+  box-shadow: none;
+}
+.f3-btn--secondary:hover:not(:disabled) {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  border-color: rgba(37,99,235,0.3);
+  transform: translateY(-1px);
+}
+
+/* Bouton succès (éligible) */
+.f3-btn--success {
+  background: linear-gradient(135deg, #059669, #10b981);
+  box-shadow: 0 4px 14px rgba(5,150,105,0.4);
+  animation: f3-pulse 2.4s ease-in-out infinite;
+}
+.f3-btn--success:hover:not(:disabled) {
+  box-shadow: 0 8px 22px rgba(5,150,105,0.5);
+}
+
+@keyframes f3-pulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(5,150,105,0.4); }
+  50%       { box-shadow: 0 4px 22px rgba(5,150,105,0.65); }
+}
+
+/* ── Carte résultat (même structure que les autres étapes) ── */
+.f3-result-card {
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.f3-result-card--eligible {
+  background: linear-gradient(135deg, rgba(209,250,229,0.9), rgba(167,243,208,0.65));
+  border: 1px solid rgba(16,185,129,0.25);
+  backdrop-filter: blur(8px);
+}
+.f3-result-card--ineligible {
+  background: linear-gradient(135deg, rgba(255,237,213,0.95), rgba(254,215,170,0.65));
+  border: 1px solid rgba(249,115,22,0.2);
+  backdrop-filter: blur(8px);
+}
+
+.f3-result-emoji {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.f3-result-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.3;
+}
+.f3-result-title--good { color: #065f46; }
+.f3-result-title--bad  { color: #92400e; }
+
+.f3-result-text {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0;
+}
+.f3-result-card--eligible .f3-result-text { color: #065f46; }
+.f3-result-card--ineligible .f3-result-text,
+.f3-result-card--ineligible .f3-result-sub { color: #78350f; }
+
+.f3-result-sub {
+  font-size: 0.8rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Badges éligible */
+.f3-eligible-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+.f3-eligible-badges span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #065f46;
+  background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 999px;
+  padding: 5px 13px;
+  white-space: nowrap;
+}
+
+/* ── Compact desktop sidebar ── */
+@media (min-width: 768px) {
+  .form-float .f3-intro-card {
+    padding: 18px 16px 16px;
+  }
+  .form-float .f3-headline {
+    font-size: 1rem;
+  }
+  .form-float .f3-trust-pills span {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+  }
+  .form-float .f3-option {
+    padding: 8px 6px;
+  }
+  .form-float .f3-opt-icon {
+    font-size: 1.1rem;
+  }
+  .form-float .f3-opt-label {
+    font-size: 0.75rem;
+  }
+  .form-float .f3-btn {
+    padding: 12px 16px;
+    font-size: 0.88rem;
+  }
+  .form-float .f3-back-btn {
+    font-size: 0.78rem;
+    padding: 0 10px;
+  }
+  .form-float .f3-eligible-badges span {
+    font-size: 0.76rem;
+    padding: 4px 10px;
+  }
+  .form-float .f3-result-card {
+    padding: 16px 14px;
   }
 }

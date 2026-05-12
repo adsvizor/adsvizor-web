@@ -1,153 +1,72 @@
-<!doctype html>
-<html lang="fr" data-static="true">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+/**
+ * patch-form3.js
+ * Replaces the old lead form (<aside class="form-float">…</aside>) in every
+ * hand-crafted formation page with the form3 funnel.
+ *
+ * Only touches files that do NOT already have data-form="3".
+ *
+ * Usage:
+ *   node scripts/patch-form3.js
+ */
 
-    <title>Création & reprise d'entreprise — Formation CPF | AdsVizor</title>
-    <meta name="description" content="Création & reprise d'entreprise : formation certifiante éligible CPF. Valider votre idée, rédiger un business plan, comprendre la fiscalité — les bases ind" />
-    <link rel="canonical" href="https://formations.adsvizor.com/entrepreneuriat/formation-creation-entreprise.html" />
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-    <meta property="og:title" content="Création & reprise d'entreprise — Formation CPF | AdsVizor" />
-    <meta property="og:description" content="Création & reprise d'entreprise : formation certifiante éligible CPF. Valider votre idée, rédiger un business plan, comprendre la fiscalité — les bases ind" />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://formations.adsvizor.com/entrepreneuriat/formation-creation-entreprise.html" />
-    <meta property="og:image" content="/clients/formations/images/photo-1559136555-9303baea8ebd-800x500.webp" />
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT      = path.join(__dirname, '..');
+const PAGES_DIR = path.join(ROOT, 'clients/formations/pages');
 
-    <link rel="preconnect" href="https://images.unsplash.com" />
+// ── Category → form3 radio value ────────────────────────────────────────────
+const CATEGORY_MAP = {
+  bureautique:    'Informatique &amp; Digital',
+  ia:             'Informatique &amp; Digital',
+  langues:        'Langues étrangères',
+  management:     'Management &amp; Commerce',
+  marketing:      'Management &amp; Commerce',
+  finance:        'Comptabilité &amp; Gestion',
+  entrepreneuriat:'Autre formation professionnelle',
+  'dev-personnel':'Autre formation professionnelle',
+};
 
-    <link rel="preload" as="image" href="/clients/formations/images/photo-1559136555-9303baea8ebd-800x500.webp" fetchpriority="high" />
-    <link rel="stylesheet" href="/main.css?v=5" />
-    <script defer src="/script.js?v=17"></script>
-  <style>
-    .site-logo { height: 60px; width: auto; }
-    @media (min-width: 768px) { .site-logo { height: 72px; } }
-    @media (max-width: 767px) {
-      .nav-toggle { display: flex !important; }
-      header nav:not(.is-open) { display: none !important; }
-    }
-    @media (min-width: 768px) {
-      .nav-toggle { display: none !important; }
-      header nav { display: block !important; }
-    }
-  </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GT-KD7C7TR3');
-    gtag('config', 'AW-18122720723');
-  </script>
-  </head>
+function getCategoryFromDir(dir) {
+  const cat = path.basename(dir);
+  return CATEGORY_MAP[cat] || 'Autre formation professionnelle';
+}
 
-  <body>
-    <div class="cpf-cta-bar">
-      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-creation-entreprise"
-        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
-        Vérifier mes droits CPF →
-      </button>
-    </div>
-    <header>
-      <div>
-        <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="AdsVizor" class="site-logo" width="200" height="200" /></picture></a>
-      </div>
-      <nav aria-label="Navigation principale">
-        <ul>
-          <li><a href="/">🏠 Accueil</a></li>
-          <li><a href="formations.html">Nos Formations</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="contact.html">Contactez Nous</a></li>
-          <li><a href="privacy.html">Confidentialité</a></li>
-        </ul>
-      </nav>
-    </header>
-    <button class="nav-toggle" aria-expanded="false" aria-label="Ouvrir le menu">
-      <span></span><span></span><span></span>
-    </button>
+// ── Extract hero image URL from existing HTML ────────────────────────────────
+function extractHeroImage(html) {
+  const m = html.match(/<img class="hero-img"[^>]+src="([^"]+)"/);
+  return m ? m[1] : '';
+}
 
-    <main>
-      <div class="page-layout">
+// ── Extract offer_id from existing HTML ──────────────────────────────────────
+function extractOfferId(html) {
+  const m = html.match(/data-offer-id="([^"]+)"/);
+  return m ? m[1] : '';
+}
 
-        <!-- LEFT: content -->
-        <div class="page-content">
+// ── Extract form action URL ──────────────────────────────────────────────────
+function extractFormAction(html) {
+  const m = html.match(/action="([^"]+)"/);
+  return m ? m[1] : 'https://formations.adsvizor.com/api/leads';
+}
 
-          <section class="hero" aria-labelledby="formation-title">
-            <img class="hero-img" src="/clients/formations/images/photo-1559136555-9303baea8ebd-800x500.webp" alt="Entrepreneurs planifiant leur projet sur un tableau blanc" fetchpriority="high" />
-            <div class="hero-body">
-              <p class="hero-badge">Entrepreneuriat — Éligible CPF</p>
-              <h1 id="formation-title">Création d'entreprise — Lancez votre projet avec toutes les clés pour réussir</h1>
-              <p class="hero-sub">Un parcours structuré pour transformer votre idée en entreprise : étude de marché, business plan, aspects juridiques et recherche de financement.</p>
-              <div class="hero-trust-block">
-                <p class="hero-trust-label">🏆 Certifié &amp; agréé — Votre financement CPF est entre de bonnes mains</p>
-                <div class="hero-trust-logos">
-                  <img src="/logo_moncompteformation_rvb-1024x603.png" alt="Mon Compte Formation — EDOF" class="hero-trust-logo hero-trust-logo--mcf" width="1024" height="603" loading="lazy" />
-                  <img src="/logo-qualiopi.png" alt="Qualiopi — processus certifié — Actions de formation" class="hero-trust-logo hero-trust-logo--qualiopi" width="480" height="240" loading="lazy" />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="formation-detail-section" aria-labelledby="detail-title">
-
-            <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
-
-            <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
-            <p class="formation-desc">La formation création / reprise d'entreprise vous prépare à toutes les étapes du lancement de votre projet : étude de marché, modèle économique, aspects juridiques et fiscaux, recherche de financement et premiers pas opérationnels. Un accompagnement structuré pour partir sur de bonnes bases.</p>
-            <p class="formation-desc">Vous repartirez avec un business plan complet, une bonne compréhension des obligations légales et fiscales, et un réseau de contacts utiles (CCI, BPI France, réseaux d'entrepreneurs). La formation est orientée action : chaque session avance votre projet concret.</p>
-
-            <h3 class="formation-section-heading">Pour qui ?</h3>
-            <p class="formation-desc">Porteurs de projet souhaitant créer une entreprise, auto-entrepreneurs déjà lancés souhaitant se structurer, salariés en reconversion vers l'indépendance, repreneurs d'une activité existante.</p>
-
-            <h3 class="formation-section-heading">Ce que vous apprendrez</h3>
-            <ul class="formation-points">
-              <li>Construire un business plan solide et convaincant pour les banques et investisseurs</li>
-              <li>Choisir le bon statut juridique (SAS, SARL, micro-entreprise) et comprendre la fiscalité</li>
-              <li>Identifier les financements disponibles : CPF, ACRE, BPI France, love money</li>
-            </ul>
-
-            <div class="formation-info-grid">
-              <div class="formation-info-card">
-                <span class="formation-info-label">Durée</span>
-                <span class="formation-info-value">21 à 70 heures selon le niveau d'accompagnement</span>
-              </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Certification</span>
-                <span class="formation-info-value">Attestation de formation Qualiopi + accompagnement CCI ou BGE</span>
-              </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Financement</span>
-                <span class="formation-info-value">100 % éligible CPF — sans avance de frais</span>
-              </div>
-            </div>
-
-            <div class="formation-mobile-cta">
-              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
-            </div>
-
-          </section>
-        </div>
-
-        <!-- RIGHT: floating form -->
-        <aside class="form-float">
+// ── Build replacement aside with form3 ──────────────────────────────────────
+function buildForm3Aside(imageUrl, offerId, formAction, preselectFormation) {
+  return `        <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
-            <h2 id="lead-form-title" class="f3-hidden-title">Découvrez vos droits CPF pour : Création & reprise d'entreprise</h2>
+            <h2 id="lead-form-title" class="f3-hidden-title">Vérifiez vos droits CPF</h2>
 
-            <!-- Formulaire 3 — Funnel éligibilité multi-étapes
-                 data-preselect-formation → initForm3() pre-checks the matching radio on step 1 -->
             <form
               id="lead-form"
-              action="https://formations.adsvizor.com/api/leads"
+              action="${formAction}"
               method="post"
               autocomplete="on"
               data-client-slug="formations"
-              data-offer-id="cpf-creation-entreprise"
+              data-offer-id="${offerId}"
               data-form="3"
-              data-preselect-formation="Autre formation professionnelle"
+              data-preselect-formation="${preselectFormation}"
             >
               <!-- Stepper numéroté (masqué sur étape 0) -->
               <div class="f3-stepper f3-stepper--hidden" aria-label="Progression">
@@ -160,7 +79,7 @@
 
               <!-- ── Étape 0 : intro + consentement ── -->
               <div class="f3-step f3-step-intro" data-step="0">
-                <div class="f3-intro-card" style="background-image: url('/clients/formations/images/photo-1559136555-9303baea8ebd-800x500.webp')">
+                <div class="f3-intro-card" style="background-image: url('${imageUrl}')">
                   <p class="f3-headline">Vérification de votre éligibilité. C'est parti !</p>
                   <div class="f3-trust-pills">
                     <span>✅ Sans engagement</span>
@@ -174,7 +93,7 @@
                 <button type="button" class="f3-btn" data-action="to-1" disabled>Commençons ! →</button>
               </div>
 
-              <!-- ── Étape 1 : formation souhaitée (pré-sélectionnée via data-preselect-formation) ── -->
+              <!-- ── Étape 1 : formation souhaitée (pré-sélectionnée) ── -->
               <div class="f3-step" data-step="1" hidden style="display:none">
                 <p class="f3-question">Quelle formation vous intéresse ?</p>
                 <div class="f3-options" role="group" aria-label="Formation souhaitée">
@@ -252,7 +171,7 @@
                   </div>
                 </div>
                 <div>
-                  <label for="email">Adresse email</label>
+                  <label for="email">Email</label>
                   <input id="email" name="email" type="email" autocomplete="email" placeholder="votre@email.com" />
                 </div>
                 <div>
@@ -270,7 +189,7 @@
                 <input type="hidden" id="utm_term"     name="utm_term"     value="" />
                 <input type="hidden" id="utm_content"  name="utm_content"  value="" />
                 <input type="hidden" id="search_query" name="search_query" value="" />
-                <input type="hidden" id="page_version" name="page_version" value="1.0.0" />
+                <input type="hidden" id="page_version" name="page_version" value="" />
                 <div class="f3-btn-row">
                   <button type="button" class="f3-back-btn" data-action="back-to-3">← Retour</button>
                   <button type="submit">Confirmer ma demande →</button>
@@ -279,13 +198,67 @@
 
             </form>
           </section>
-        </aside>
+        </aside>`;
+}
 
-      </div>
-    </main>
+// ── Walk pages directory recursively ────────────────────────────────────────
+function walk(dir) {
+  const results = [];
+  for (const entry of readdirSync(dir)) {
+    const full = path.join(dir, entry);
+    if (statSync(full).isDirectory()) {
+      results.push(...walk(full));
+    } else if (entry.endsWith('.html')) {
+      results.push(full);
+    }
+  }
+  return results;
+}
 
-    <footer>
-      <p>© 2026 AdsVizor — Formations professionnelles en ligne.</p>
-    </footer>
-  </body>
-</html>
+// ── Main ────────────────────────────────────────────────────────────────────
+const files = walk(PAGES_DIR);
+let patched = 0, skipped = 0;
+
+for (const filePath of files) {
+  const html = readFileSync(filePath, 'utf-8');
+
+  // Skip if already using form3
+  if (html.includes('data-form="3"')) {
+    console.log(`⏭  Already form3: ${path.relative(ROOT, filePath)}`);
+    skipped++;
+    continue;
+  }
+
+  // Skip if no aside.form-float (not a formation page with a sidebar form)
+  if (!html.includes('<aside class="form-float">')) {
+    console.log(`⏭  No aside found: ${path.relative(ROOT, filePath)}`);
+    skipped++;
+    continue;
+  }
+
+  const dir             = path.dirname(filePath);
+  const preselectFormation = getCategoryFromDir(dir);
+  const imageUrl        = extractHeroImage(html);
+  const offerId         = extractOfferId(html);
+  const formAction      = extractFormAction(html);
+
+  // Replace entire <aside class="form-float">…</aside> block
+  const newAside = buildForm3Aside(imageUrl, offerId, formAction, preselectFormation);
+  const patched_html = html.replace(
+    /<aside class="form-float">[\s\S]*?<\/aside>/,
+    newAside
+  );
+
+  if (patched_html === html) {
+    console.log(`⚠️  No replacement made: ${path.relative(ROOT, filePath)}`);
+    skipped++;
+    continue;
+  }
+
+  writeFileSync(filePath, patched_html, 'utf-8');
+  console.log(`✅ Patched: ${path.relative(ROOT, filePath)}`);
+  console.log(`   preselect="${preselectFormation}" | offer="${offerId}" | img="${imageUrl.slice(0,50)}…"`);
+  patched++;
+}
+
+console.log(`\n🎉 Done — ${patched} file(s) patched, ${skipped} skipped.`);

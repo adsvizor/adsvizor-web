@@ -62,10 +62,28 @@ function buildNav(config) {
   return items.join('\n          ');
 }
 
+// ── Formation category → form3 radio value ────────────────────────────────────
+
+/**
+ * Maps a formation to the matching radio value in form3 step 1.
+ * Uses f.href (e.g. "/langues/formation-anglais-toeic.html") to derive the category.
+ */
+function getFormationCategory(f) {
+  const category = (f.href || '').replace(/^\//, '').split('/')[0];
+  const slug     = (f.slug || '').toLowerCase();
+
+  if (category === 'langues')                                          return 'Langues étrangères';
+  if (category === 'finance')                                          return 'Comptabilité &amp; Gestion';
+  if (category === 'dev-personnel' && slug.includes('bilan'))          return 'Bilan de compétences';
+  if (category === 'management' || category === 'marketing')           return 'Management &amp; Commerce';
+  if (category === 'bureautique' || category === 'ia')                 return 'Informatique &amp; Digital';
+  return 'Autre formation professionnelle';
+}
+
 // ── HTML assembly ─────────────────────────────────────────────────────────────
 
 function assembleHTML(f, config) {
-  const canonicalUrl = `${baseUrl}/formation-${f.slug}.html`;
+  const canonicalUrl = `${baseUrl}${f.href}`;
   const metaTitle    = `${f.title} — Formation CPF | ${logoText}`;
   const metaDesc     = `${f.title} : formation certifiante éligible CPF. ${f.excerpt}`.slice(0, 155);
 
@@ -92,8 +110,8 @@ function assembleHTML(f, config) {
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
-    <link rel="stylesheet" href="/main.css?v=4" />
-    <script defer src="/script.js?v=16"></script>
+    <link rel="stylesheet" href="/main.css?v=5" />
+    <script defer src="/script.js?v=17"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }
@@ -203,11 +221,10 @@ function assembleHTML(f, config) {
         <!-- RIGHT: floating form -->
         <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
-            <h2 id="lead-form-title">${f.form_cta}</h2>
+            <h2 id="lead-form-title" class="f3-hidden-title">${f.form_cta}</h2>
 
-            <!-- Formulaire simple 1-étape — formation pré-remplie automatiquement -->
-            <!-- Pour revenir au formulaire 2-étapes: supprimer data-simple="true" et
-                 restaurer les form-step[data-step="0/1"] avec statut + email -->
+            <!-- Formulaire 3 — Funnel éligibilité multi-étapes
+                 data-preselect-formation → initForm3() pre-checks the matching radio on step 1 -->
             <form
               id="lead-form"
               action="${formAction}"
@@ -215,43 +232,137 @@ function assembleHTML(f, config) {
               autocomplete="on"
               data-client-slug="${CLIENT_SLUG}"
               data-offer-id="${f.offer_id || offerId}"
-              data-simple="true"
+              data-form="3"
+              data-preselect-formation="${getFormationCategory(f)}"
             >
-              <div class="form-name-row">
-                <div>
-                  <label for="first_name">${config.field_first_name_label}</label>
-                  <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="${config.field_first_name_placeholder}" required />
+              <!-- Stepper numéroté (masqué sur étape 0) -->
+              <div class="f3-stepper f3-stepper--hidden" aria-label="Progression">
+                <div class="f3-stepper-step" data-sn="1"><span>1</span></div>
+                <div class="f3-stepper-line"></div>
+                <div class="f3-stepper-step" data-sn="2"><span>2</span></div>
+                <div class="f3-stepper-line"></div>
+                <div class="f3-stepper-step" data-sn="3"><span>3</span></div>
+              </div>
+
+              <!-- ── Étape 0 : intro + consentement ── -->
+              <div class="f3-step f3-step-intro" data-step="0">
+                <div class="f3-intro-card" style="background-image: url('${f.image_url}')">
+                  <p class="f3-headline">Vérification de votre éligibilité. C'est parti !</p>
+                  <div class="f3-trust-pills">
+                    <span>✅ Sans engagement</span>
+                    <span>🔒 Données sécurisées</span>
+                  </div>
+                </div>
+                <label class="f3-checkbox-row">
+                  <input type="checkbox" id="f3_recall" />
+                  <span class="f3-consent-text">J'accepte d'être recontacté(e) par un conseiller en formations pour vérifier mes droits CPF.</span>
+                </label>
+                <button type="button" class="f3-btn" data-action="to-1" disabled>Commençons ! →</button>
+              </div>
+
+              <!-- ── Étape 1 : formation souhaitée (pré-sélectionnée via data-preselect-formation) ── -->
+              <div class="f3-step" data-step="1" hidden style="display:none">
+                <p class="f3-question">Quelle formation vous intéresse ?</p>
+                <div class="f3-options" role="group" aria-label="Formation souhaitée">
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Informatique &amp; Digital" /><span class="f3-opt-icon">💻</span><span class="f3-opt-label">Informatique &amp; Digital</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Langues étrangères" /><span class="f3-opt-icon">🌍</span><span class="f3-opt-label">Langues étrangères</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Management &amp; Commerce" /><span class="f3-opt-icon">📊</span><span class="f3-opt-label">Management &amp; Commerce</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Comptabilité &amp; Gestion" /><span class="f3-opt-icon">🧾</span><span class="f3-opt-label">Comptabilité &amp; Gestion</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Santé &amp; Social" /><span class="f3-opt-icon">🏥</span><span class="f3-opt-label">Santé &amp; Social</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Bilan de compétences" /><span class="f3-opt-icon">🎯</span><span class="f3-opt-label">Bilan de compétences</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="permis-cases" /><span class="f3-opt-icon">🚗</span><span class="f3-opt-label">Permis / CACES</span></label>
+                  <label class="f3-option"><input type="radio" name="formation_choice" value="Autre formation professionnelle" /><span class="f3-opt-icon">✨</span><span class="f3-opt-label">Autre</span></label>
+                </div>
+                <div class="f3-btn-row">
+                  <button type="button" class="f3-back-btn" data-action="back-to-0">← Retour</button>
+                  <button type="button" class="f3-btn" data-action="to-2" disabled>Suivant →</button>
+                </div>
+              </div>
+
+              <!-- ── Étape 2 : statut professionnel ── -->
+              <div class="f3-step" data-step="2" hidden style="display:none">
+                <p class="f3-question">Quel est votre statut professionnel ?</p>
+                <div class="f3-options" role="group" aria-label="Statut professionnel">
+                  <label class="f3-option"><input type="radio" name="professional_status" value="salarie" /><span class="f3-opt-icon">💼</span><span class="f3-opt-label">Secteur privé</span></label>
+                  <label class="f3-option"><input type="radio" name="professional_status" value="fonction_publique" /><span class="f3-opt-icon">🏛️</span><span class="f3-opt-label">Fonction publique</span></label>
+                  <label class="f3-option"><input type="radio" name="professional_status" value="chomage" /><span class="f3-opt-icon">🔍</span><span class="f3-opt-label">En recherche d'emploi</span></label>
+                  <label class="f3-option"><input type="radio" name="professional_status" value="etudiant" /><span class="f3-opt-icon">🎓</span><span class="f3-opt-label">Étudiant(e)</span></label>
+                </div>
+                <div class="f3-btn-row">
+                  <button type="button" class="f3-back-btn" data-action="back-to-1">← Retour</button>
+                  <button type="button" class="f3-btn" data-action="result" disabled>Voir mes résultats →</button>
+                </div>
+              </div>
+
+              <!-- ── Étape 3a : inéligible ── -->
+              <div class="f3-step" data-step="3a" hidden style="display:none">
+                <div class="f3-result-card f3-result-card--ineligible">
+                  <div class="f3-result-emoji">😔</div>
+                  <p class="f3-result-title f3-result-title--bad">Votre profil n'est pas éligible au CPF</p>
+                  <p class="f3-result-text">Le CPF est réservé aux actifs du secteur privé et aux demandeurs d'emploi. Votre situation ne permet pas d'en bénéficier directement.</p>
+                </div>
+                <div class="f3-btn-row">
+                  <button type="button" class="f3-back-btn" data-action="back-to-2">← Retour</button>
+                  <button type="button" class="f3-btn f3-btn--secondary" data-action="to-4">Être contacté(e) quand même →</button>
+                </div>
+              </div>
+
+              <!-- ── Étape 3b : éligible ── -->
+              <div class="f3-step" data-step="3b" hidden style="display:none">
+                <div class="f3-result-card f3-result-card--eligible">
+                  <div class="f3-result-emoji">🏆</div>
+                  <p class="f3-result-title f3-result-title--good">Félicitations — vous êtes éligible !</p>
+                  <p class="f3-result-text">Votre profil correspond aux critères CPF. Financez votre formation sans avance de frais via Mon Compte Formation.</p>
+                  <div class="f3-eligible-badges">
+                    <span>✅ 100% financé</span>
+                    <span>⏱️ Réponse sous 24h</span>
+                  </div>
+                </div>
+                <div class="f3-btn-row">
+                  <button type="button" class="f3-back-btn" data-action="back-to-2">← Retour</button>
+                  <button type="button" class="f3-btn f3-btn--success" data-action="to-4">Être rappelé(e) par un conseiller →</button>
+                </div>
+              </div>
+
+              <!-- ── Étape 4 : coordonnées ── -->
+              <div class="f3-step" data-step="4" hidden style="display:none">
+                <p class="f3-question">Vos coordonnées</p>
+                <div class="form-name-row">
+                  <div>
+                    <label for="first_name">${config.field_first_name_label}</label>
+                    <input id="first_name" name="first_name" type="text" autocomplete="given-name" placeholder="${config.field_first_name_placeholder}" required />
+                  </div>
+                  <div>
+                    <label for="last_name">${config.field_last_name_label}</label>
+                    <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="${config.field_last_name_placeholder}" required />
+                  </div>
                 </div>
                 <div>
-                  <label for="last_name">${config.field_last_name_label}</label>
-                  <input id="last_name" name="last_name" type="text" autocomplete="family-name" placeholder="${config.field_last_name_placeholder}" required />
+                  <label for="email">${config.field_email_label}</label>
+                  <input id="email" name="email" type="email" autocomplete="email" placeholder="${config.field_email_placeholder}" />
+                </div>
+                <div>
+                  <label for="phone">${config.field_phone_label}</label>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="${config.field_phone_placeholder}" required />
+                </div>
+                <input type="hidden" name="formation_interest" id="formation_interest_val" value="" />
+                <input type="hidden" name="consent_marketing" value="true" />
+                <div class="form-honeypot" aria-hidden="true">
+                  <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
+                </div>
+                <input type="hidden" id="utm_source"   name="utm_source"   value="" />
+                <input type="hidden" id="utm_medium"   name="utm_medium"   value="" />
+                <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+                <input type="hidden" id="utm_term"     name="utm_term"     value="" />
+                <input type="hidden" id="utm_content"  name="utm_content"  value="" />
+                <input type="hidden" id="search_query" name="search_query" value="" />
+                <input type="hidden" id="page_version" name="page_version" value="${config.page_version || '1.0.0'}" />
+                <div class="f3-btn-row">
+                  <button type="button" class="f3-back-btn" data-action="back-to-3">← Retour</button>
+                  <button type="submit">Confirmer ma demande →</button>
                 </div>
               </div>
-              <div>
-                <label for="phone">${config.field_phone_label}</label>
-                <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="${config.field_phone_placeholder}" required />
-              </div>
 
-              <!-- Formation pré-remplie (page statique — formation toujours connue) -->
-              <input type="hidden" name="formation_interest" value="${f.title}" />
-
-              <div class="form-consent">
-                <input type="checkbox" id="consent_marketing" name="consent_marketing" />
-                <label for="consent_marketing">${config.form_disclaimer_text}</label>
-              </div>
-
-              <div class="form-honeypot" aria-hidden="true">
-                <input type="text" name="hp_trap" id="hp_trap" autocomplete="nope" tabindex="-1" />
-              </div>
-
-              <input type="hidden" id="utm_source"   name="utm_source"   value="" />
-              <input type="hidden" id="utm_medium"   name="utm_medium"   value="" />
-              <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
-              <input type="hidden" id="utm_term"     name="utm_term"     value="" />
-              <input type="hidden" id="utm_content"  name="utm_content"  value="" />
-              <input type="hidden" id="page_version" name="page_version" value="${config.page_version || '1.0.0'}" />
-
-              <button type="submit">Vérifier mes droits CPF →</button>
             </form>
           </section>
         </aside>
@@ -280,7 +391,7 @@ function buildSitemap(formations, config, baseUrl) {
   ];
 
   const formationPages = formations.map(f => ({
-    url: `${baseUrl}/formation-${f.slug}.html`,
+    url: `${baseUrl}${f.href}`,
     priority: '0.9',
     freq: 'monthly'
   }));
@@ -321,12 +432,14 @@ console.log(`📦 Client: ${CLIENT_SLUG}`);
 console.log(`🏗️  Generating ${formations.length} formation pages...\n`);
 
 for (const f of formations) {
-  const filename = `formation-${f.slug}.html`;
-  const filePath = path.join(outDir, filename);
+  // f.href = "/langues/formation-anglais-toeic.html" → write to pages/langues/formation-anglais-toeic.html
+  const hrefRelative = f.href.replace(/^\//, '');           // "langues/formation-anglais-toeic.html"
+  const filePath     = path.join(outDir, hrefRelative);
+  mkdirSync(path.dirname(filePath), { recursive: true });   // ensure subdirectory exists
   const html = assembleHTML(f, config);
   writeFileSync(filePath, html, 'utf-8');
-  console.log(`✅ clients/${CLIENT_SLUG}/pages/${filename}`);
-  console.log(`   → ${baseUrl}/formation-${f.slug}.html`);
+  console.log(`✅ clients/${CLIENT_SLUG}/pages/${hrefRelative}`);
+  console.log(`   → ${baseUrl}${f.href}`);
 }
 
 // Generate sitemap.xml at repo root

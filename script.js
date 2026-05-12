@@ -1235,6 +1235,251 @@ function initSimpleForm(form, config) {
 }
 
 // =========================
+// 7c) FUNNEL FORM (form3)
+// =========================
+
+/**
+ * Multi-step eligibility funnel — form3.
+ * Activate: set data-form="3" on <form>.
+ * To revert to form2 (simple): set data-simple="true" and remove data-form="3".
+ * To revert to form1 (2-step): remove both attributes.
+ *
+ * Flow: 0 (intro + consent) → 1 (statut) → 2 (formation) → 3a/3b (résultat) → 4 (coordonnées).
+ * Inéligible: etudiant, fonction_publique, permis-cases.
+ */
+function initForm3(form, config) {
+  let lastResultStep = '3b'; // tracks 3a vs 3b so "Retour" from step 4 returns to the right screen
+
+  // Stepper: maps step id → [circle1State, circle2State, circle3State]
+  // States: null = inactive, 'active' = current, 'done' = completed
+  const STEPPER_STATES = {
+    '0':  [null,     null,     null],
+    '1':  ['active', null,     null],
+    '2':  ['done',   'active', null],
+    '3a': ['done',   'done',   'active'],
+    '3b': ['done',   'done',   'active'],
+    '4':  ['done',   'done',   'active'],
+  };
+
+  const stepperEl = form.querySelector('.f3-stepper');
+
+  function updateStepper(sid) {
+    if (!stepperEl) return;
+    const states = STEPPER_STATES[sid] || [null, null, null];
+    // Show/hide stepper (hidden on intro screen)
+    stepperEl.classList.toggle('f3-stepper--hidden', sid === '0');
+    // Update circles
+    stepperEl.querySelectorAll('.f3-stepper-step').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (states[i]) el.classList.add(states[i]);
+    });
+    // Update connector lines: line[i] is filled when step[i] is 'done'
+    stepperEl.querySelectorAll('.f3-stepper-line').forEach((el, i) => {
+      el.classList.toggle('done', states[i] === 'done');
+    });
+  }
+
+  function showStep(id) {
+    const sid = String(id);
+    form.querySelectorAll('.f3-step').forEach(s => {
+      const show = s.dataset.step === sid;
+      s.hidden = !show;
+      s.style.display = show ? '' : 'none';
+    });
+    updateStepper(sid);
+    clearFormError(form);
+    // Scroll form card into view on mobile
+    const card = form.closest('section');
+    if (card && window.innerWidth < 768) {
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+  }
+
+  // ── Étape 0 : checkbox active le bouton ──
+  const recallCheckbox = form.querySelector('#f3_recall');
+  const btnTo1 = form.querySelector('[data-action="to-1"]');
+  if (recallCheckbox && btnTo1) {
+    recallCheckbox.addEventListener('change', () => {
+      btnTo1.disabled = !recallCheckbox.checked;
+    });
+  }
+
+  // ── Étape 1 (formation) : radio active "Étape suivante" ──
+  const btnTo2 = form.querySelector('[data-action="to-2"]');
+  form.querySelectorAll('[name="formation_choice"]').forEach(r => {
+    r.addEventListener('change', () => { if (btnTo2) btnTo2.disabled = false; });
+  });
+
+  // ── Pré-sélection formation (pages statiques de formation) ──
+  // data-preselect-formation="Langues étrangères" on the <form> element
+  const preselectFormation = form.dataset.preselectFormation;
+  if (preselectFormation) {
+    const matchingRadio = form.querySelector(`[name="formation_choice"][value="${preselectFormation}"]`);
+    if (matchingRadio) {
+      matchingRadio.checked = true;
+      // Sync hidden field
+      const hiddenF = form.querySelector('#formation_interest_val');
+      if (hiddenF) {
+        hiddenF.value = preselectFormation === 'permis-cases'
+          ? 'Permis de conduire / CACES'
+          : preselectFormation;
+      }
+      // Enable "Suivant →" immediately
+      if (btnTo2) btnTo2.disabled = false;
+    }
+  }
+
+  // ── Étape 2 (statut) : radio active "Voir mes résultats" ──
+  const btnResult = form.querySelector('[data-action="result"]');
+  form.querySelectorAll('[name="professional_status"]').forEach(r => {
+    r.addEventListener('change', () => { if (btnResult) btnResult.disabled = false; });
+  });
+
+  // ── Navigation par data-action ──
+  form.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.type === 'submit' || btn.disabled) return;
+    const action = btn.dataset.action;
+
+    if (action === 'to-1')      { showStep('1'); return; }
+    if (action === 'to-2')      { showStep('2'); return; }
+    if (action === 'to-4')      { showStep('4'); return; }
+    if (action === 'back-to-0') { showStep('0'); return; }
+    if (action === 'back-to-1') { showStep('1'); return; }
+    if (action === 'back-to-2') { showStep('2'); return; }
+    if (action === 'back-to-3') { showStep(lastResultStep); return; }
+
+    if (action === 'result') {
+      const status    = form.querySelector('[name="professional_status"]:checked')?.value;
+      const formation = form.querySelector('[name="formation_choice"]:checked')?.value;
+
+      // Persiste la formation dans le champ caché
+      const hiddenF = form.querySelector('#formation_interest_val');
+      if (hiddenF) {
+        hiddenF.value = formation === 'permis-cases'
+          ? 'Permis de conduire / CACES'
+          : (formation || '');
+      }
+
+      const ineligible = status === 'etudiant'
+        || status === 'fonction_publique'
+        || formation === 'permis-cases';
+
+      lastResultStep = ineligible ? '3a' : '3b';
+      showStep(lastResultStep);
+    }
+  });
+
+  // ── Événement form_start (premier contact) ──
+  const formStartOnce = (() => {
+    let fired = false;
+    return () => {
+      if (fired) return; fired = true;
+      emitEvent('form_start', { client_slug: config.client_slug, offer_id: form.dataset.offerId || config.offer_id });
+    };
+  })();
+  form.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('focus',  formStartOnce, { passive: true });
+    el.addEventListener('change', formStartOnce, { passive: true });
+  });
+
+  // ── Effacer l'erreur à la saisie ──
+  form.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('input-error'), { passive: true });
+  });
+
+  // ── Soumission ──
+  const submitBtn     = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn?.textContent || '';
+
+  // Fix bfcache : remettre à zéro si l'utilisateur revient via "Retour"
+  window.addEventListener('pageshow', e => {
+    if (!e.persisted || !submitBtn) return;
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('btn-loading');
+    if (originalLabel) submitBtn.textContent = originalLabel;
+    clearFormError(form);
+    showStep('0');
+    if (recallCheckbox) recallCheckbox.checked = false;
+    if (btnTo1) btnTo1.disabled = true;
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    clearFormError(form);
+
+    if (!config.form_action || config.form_action === 'APPS_SCRIPT_URL') {
+      showFormError(form, "Le formulaire n'est pas encore configuré.");
+      return;
+    }
+
+    // Honeypot
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot?.value.trim()) return;
+
+    // Validation des champs de l'étape 4
+    let valid = true, phoneInvalid = false;
+    for (const inp of form.querySelectorAll('input[required]')) {
+      const empty    = !inp.value.trim();
+      const badPhone = inp.type === 'tel' && !empty && !isValidFrenchPhone(inp.value);
+      inp.classList.toggle('input-error', empty || badPhone);
+      if (badPhone) phoneInvalid = true;
+      if (empty || badPhone) valid = false;
+    }
+
+    if (!valid) {
+      showFormError(form, phoneInvalid
+        ? 'Numéro de téléphone invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).'
+        : 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.textContent = '';
+    }
+
+    try {
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
+      const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
+
+      emitEvent('form_submit', {
+        status:       'attempt',
+        client_slug:  payload.client_slug,
+        offer_id:     payload.offer_id,
+        page_version: payload.page_version,
+        utm_source:   payload.utm.source,
+        utm_medium:   payload.utm.medium,
+        utm_campaign: payload.utm.campaign,
+        utm_term:     payload.utm.term,
+        utm_content:  payload.utm.content
+      });
+
+      await postLead(config.form_action, payload);
+
+      saveEnhancedConversionsData(payload);
+      emitEvent('form_submit', { status: 'success', client_slug: payload.client_slug, security_code: securityCode });
+      window.location.href = `thank-you.html?code=${securityCode}`;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.';
+      emitEvent('form_submit', { status: 'error', message });
+      showFormError(form, message);
+      savePendingLead(buildLeadPayload(form, config), message);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-loading');
+        if (originalLabel) submitBtn.textContent = originalLabel;
+      }
+    }
+  });
+
+  // Initialisation — afficher l'étape 0
+  showStep('0');
+}
+
+// =========================
 // CPF CTA Bar
 // =========================
 
@@ -1365,10 +1610,13 @@ async function init() {
     retryPendingLead(config.form_action).catch(() => {});
 
     // Init form BEFORE body.ready so the correct state is set before the page is visible.
-    // data-simple="true"  → lightweight 1-step handler (index, contact, formation pages)
-    // (no attribute)      → classic 2-step handler (legacy — easy revert: remove data-simple)
+    // data-form="3"       → funnel éligibilité multi-étapes (form3)
+    // data-simple="true"  → formulaire simple 1-étape (form2)
+    // (aucun attribut)    → formulaire classique 2-étapes (form1 — revert: supprimer data-form/data-simple)
     if (form) {
-      if (form.dataset.simple === "true") {
+      if (form.dataset.form === "3") {
+        initForm3(form, config);
+      } else if (form.dataset.simple === "true") {
         initSimpleForm(form, config);
       } else {
         initMultiStepForm(form, config);
