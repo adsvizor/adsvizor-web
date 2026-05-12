@@ -1104,7 +1104,10 @@ function initHeaderCta() {
   // 2. If the orange CTA is already in the header (index.html), nothing to do
   if (document.querySelector(".btn-header-cta")) return;
 
-  // 3. Build the header-right wrapper with the orange CTA + existing nav
+  // 3. On desktop (≥768px) the lead form is always visible — skip button injection
+  if (window.innerWidth >= 768) return;
+
+  // 4. Build the header-right wrapper with the orange CTA + existing nav
   const header = document.querySelector("header");
   if (!header) return;
 
