@@ -110,8 +110,8 @@ function assembleHTML(f, config) {
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
-    <link rel="stylesheet" href="/main.css?v=6" />
-    <script defer src="/script.js?v=18"></script>
+    <link rel="stylesheet" href="/main.css?v=7" />
+    <script defer src="/script.js?v=20"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }

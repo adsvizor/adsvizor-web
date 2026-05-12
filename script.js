@@ -1629,6 +1629,9 @@ async function init() {
       }
     }
 
+    // Prevent mobile browsers (iOS Safari bfcache / scroll restoration) from
+    // landing mid-page when the user navigates to a new URL via the nav menu.
+    if (!window.location.hash) window.scrollTo(0, 0);
     document.body.classList.add("ready");
 
     // Build formation card grid on the listing page.
