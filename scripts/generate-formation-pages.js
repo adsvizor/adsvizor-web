@@ -80,9 +80,47 @@ function getFormationCategory(f) {
   return 'Autre formation professionnelle';
 }
 
+// ── Subpages nav (language series) ───────────────────────────────────────────
+
+const LANG_EMOJI = {
+  'anglais-toeic': '🇬🇧',
+  'allemand':      '🇩🇪',
+  'espagnol':      '🇪🇸',
+  'italien':       '🇮🇹',
+  'lsf':           '🤟',
+};
+
+/**
+ * For formations in the /langues/ category, returns a subpages-nav block
+ * linking to all sibling language pages. Returns '' for other categories.
+ */
+function buildSubpagesNav(f, allFormations) {
+  const category = (f.href || '').replace(/^\//, '').split('/')[0];
+  if (category !== 'langues') return '';
+
+  const siblings = allFormations.filter(s =>
+    (s.href || '').replace(/^\//, '').split('/')[0] === 'langues'
+  );
+
+  const links = siblings.map(s => {
+    const emoji  = LANG_EMOJI[s.slug] || '🌍';
+    const active = s.slug === f.slug ? ' class="active"' : '';
+    return `<a href="${s.href}"${active}>${emoji} ${s.title.replace(' professionnel', '').replace(' (LSF)', '')}</a>`;
+  }).join('\n                ');
+
+  return `
+            <!-- Sous-formations navigation -->
+            <div class="formation-section">
+              <p style="font-size:0.88rem;color:#64748b;margin-bottom:8px;">Formations spécialisées dans cette série :</p>
+              <div class="subpages-nav">
+                ${links}
+              </div>
+            </div>`;
+}
+
 // ── HTML assembly ─────────────────────────────────────────────────────────────
 
-function assembleHTML(f, config) {
+function assembleHTML(f, config, allFormations) {
   const canonicalUrl = `${baseUrl}${f.href}`;
   const metaTitle    = `${f.title} — Formation CPF | ${logoText}`;
   const metaDesc     = `${f.title} : formation certifiante éligible CPF. ${f.excerpt}`.slice(0, 155);
@@ -181,7 +219,7 @@ function assembleHTML(f, config) {
           <section class="formation-detail-section" aria-labelledby="detail-title">
 
             <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
-
+${buildSubpagesNav(f, allFormations)}
             <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
             <p class="formation-desc">${f.description_1}</p>
             <p class="formation-desc">${f.description_2}</p>
@@ -436,7 +474,7 @@ for (const f of formations) {
   const hrefRelative = f.href.replace(/^\//, '');           // "langues/formation-anglais-toeic.html"
   const filePath     = path.join(outDir, hrefRelative);
   mkdirSync(path.dirname(filePath), { recursive: true });   // ensure subdirectory exists
-  const html = assembleHTML(f, config);
+  const html = assembleHTML(f, config, formations);
   writeFileSync(filePath, html, 'utf-8');
   console.log(`✅ clients/${CLIENT_SLUG}/pages/${hrefRelative}`);
   console.log(`   → ${baseUrl}${f.href}`);
