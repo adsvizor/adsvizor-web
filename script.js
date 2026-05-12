@@ -1283,7 +1283,7 @@ function initForm3(form, config) {
     });
   }
 
-  function showStep(id) {
+  function showStep(id, scroll = true) {
     const sid = String(id);
     form.querySelectorAll('.f3-step').forEach(s => {
       const show = s.dataset.step === sid;
@@ -1292,10 +1292,12 @@ function initForm3(form, config) {
     });
     updateStepper(sid);
     clearFormError(form);
-    // Scroll form card into view on mobile
-    const card = form.closest('section');
-    if (card && window.innerWidth < 768) {
-      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    // Scroll form card into view on mobile — but NOT on bfcache restore
+    if (scroll) {
+      const card = form.closest('section');
+      if (card && window.innerWidth < 768) {
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      }
     }
   }
 
@@ -1403,7 +1405,7 @@ function initForm3(form, config) {
     submitBtn.classList.remove('btn-loading');
     if (originalLabel) submitBtn.textContent = originalLabel;
     clearFormError(form);
-    showStep('0');
+    showStep('0', false); // bfcache restore: reset state without scrolling
     if (recallCheckbox) recallCheckbox.checked = false;
     if (btnTo1) btnTo1.disabled = true;
   });

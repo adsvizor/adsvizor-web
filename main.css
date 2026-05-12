@@ -358,6 +358,7 @@ section {
   box-shadow: 0 4px 6px rgba(15, 23, 42, 0.04), 0 20px 50px rgba(15, 23, 42, 0.1);
   padding: 32px 28px 28px;
   margin: 24px 18px;
+  overflow: hidden;
 }
 
 .form-float section[aria-labelledby="lead-form-title"] h2 {
@@ -3243,7 +3244,11 @@ form[data-client-slug] > .f3-stepper,
   display: flex;
   gap: 8px;
   justify-content: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+}
+.f3-eligible-badges span {
+  flex: 0 0 calc(50% - 4px);
+  text-align: center;
 }
 .f3-eligible-badges span {
   font-size: 0.82rem;
