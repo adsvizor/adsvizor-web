@@ -25,7 +25,9 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="/main.css?v=4" />
+    <style>body{visibility:hidden}</style>
+    <link rel="preload" href="/main.css?v=10" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/main.css?v=10" /></noscript>
     <script defer src="script.js?v=15"></script>
   <style>
     /* Logo */
