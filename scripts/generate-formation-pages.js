@@ -477,7 +477,12 @@ function buildSitemap(formations, config, baseUrl) {
     });
   }
 
-  const allPages = [...staticPages, ...formationPages, ...blogPages];
+  const bureautiqueSubPages = BUREAUTIQUE_SUBPAGES.map(s => ({
+    url: `${baseUrl}${s.href}`,
+    priority: '0.8',
+    freq: 'monthly'
+  }));
+  const allPages = [...staticPages, ...formationPages, ...bureautiqueSubPages, ...blogPages];
 
   const urls = allPages.map(p => `
   <url>
@@ -516,10 +521,10 @@ for (const f of formations) {
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
 const sitemap = buildSitemap(formations, config, baseUrl);
 writeFileSync(sitemapPath, sitemap, 'utf-8');
-console.log(`\n🗺️  sitemap.xml generated (+ 4} URLs + blog posts)`);
+console.log(`\n[sitemap] sitemap.xml generated`);
 console.log(`   → ${baseUrl}/sitemap.xml`);
 
-console.log(`\n🎉 Done — ${formations.length} pages generated.`);
+console.log(`\n[done] ${formations.length} pages generated.`);
 console.log(`\nNext steps:`);
 console.log(`  git add clients/${CLIENT_SLUG}/pages/formation-*.html`);
 console.log(`  git commit -m "feat(${CLIENT_SLUG}): generate static formation pages"`);
