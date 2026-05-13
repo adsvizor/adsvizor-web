@@ -1499,54 +1499,42 @@ function initForm3(form, config) {
  * - thank-you and privacy pages are skipped (no form to scroll to).
  */
 function initHeaderCta() {
-  // Skip pages where the CTA makes no sense
-  if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) {
-    // Still remove any leftover green bar on those pages
-    document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
-    return;
-  }
-
-  // 1. Remove every hardcoded green bar
+  // Remove any leftover green bar on all pages
   document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
 
-  // 2. If the orange CTA is already in the header (index.html), nothing to do
-  if (document.querySelector(".btn-header-cta")) return;
+  // Skip pages where the CTA makes no sense
+  if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) return;
 
-  // 3. On desktop (≥768px) the lead form is always visible — skip button injection
+  // On desktop (>=768px) the lead form is always visible — no CTA needed
   if (window.innerWidth >= 768) return;
 
-  // 4. Build the header-right wrapper with the orange CTA + existing nav
-  const header = document.querySelector("header");
-  if (!header) return;
+  // If the CTA already exists (index.html has it hardcoded), nothing to do
+  if (document.querySelector(".btn-header-cta")) return;
 
-  const nav = header.querySelector("nav");
-  if (!nav) return;
+  // Find the H1 inside the hero to insert the CTA after it
+  const h1 = document.querySelector("section.hero h1, .hero-body h1");
+  if (!h1) return;
 
-  // Create wrapper — set inline flex so it works regardless of CSS cache state
-  const wrapper = document.createElement("div");
-  wrapper.className = "header-right";
-  wrapper.style.cssText = "display:flex;align-items:center;gap:20px;flex-shrink:0;";
-
-  // Orange CTA button — inline styles guarantee rendering even if CSS is stale
+  // Build CTA button — inline styles guarantee rendering even if CSS is stale
   const cta = document.createElement("a");
   cta.className = "btn-header-cta";
-  cta.setAttribute("data-cta-id", "header-cta");
+  cta.setAttribute("data-cta-id", "hero-cta");
   cta.setAttribute("data-preserve-utm", "true");
   cta.textContent = "✅ Vérifier mes droits CPF";
   cta.style.cssText = [
-    "display:inline-flex",
-    "align-items:center",
-    "gap:6px",
-    "padding:10px 20px",
+    "display:block",
+    "width:fit-content",
+    "margin:20px auto 28px",
+    "padding:14px 28px",
     "background:#c2410c",
     "color:#ffffff",
-    "font-size:0.9rem",
+    "font-size:1rem",
     "font-weight:700",
     "text-decoration:none",
     "border-radius:999px",
     "white-space:nowrap",
     "box-shadow:0 4px 16px rgba(194,65,12,0.45)",
-    "flex-shrink:0",
+    "text-align:center",
   ].join(";");
 
   const contactSection = document.getElementById("contact");
@@ -1564,10 +1552,8 @@ function initHeaderCta() {
     cta.setAttribute("href", "/#contact");
   }
 
-  // Move nav inside wrapper, append wrapper to header
-  wrapper.appendChild(cta);
-  wrapper.appendChild(nav);
-  header.appendChild(wrapper);
+  // Insert immediately after the H1
+  h1.insertAdjacentElement("afterend", cta);
 }
 
 // =========================

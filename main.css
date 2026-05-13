@@ -125,20 +125,21 @@ header > div a:hover {
   gap: 20px;
 }
 
-/* ── Header CTA button (orange — high contrast vs blue theme) ── */
+/* ── Hero CTA button (mobile only — centré sous le titre) ── */
 .btn-header-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
+  display: block;
+  width: fit-content;
+  margin: 20px auto 28px;
+  padding: 14px 28px;
   background: #c2410c;
   color: #ffffff;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   text-decoration: none;
   border-radius: 999px;
   white-space: nowrap;
+  text-align: center;
   box-shadow: 0 4px 16px rgba(194, 65, 12, 0.45);
   transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
@@ -146,7 +147,7 @@ header > div a:hover {
 .btn-header-cta:hover,
 .btn-header-cta:focus-visible {
   background: #9a3412;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 6px 22px rgba(194, 65, 12, 0.55);
   text-decoration: none;
   color: #ffffff;
@@ -160,20 +161,6 @@ header > div a:hover {
 /* Desktop: hide CTA — form is always visible in the right column */
 @media (min-width: 768px) {
   .btn-header-cta { display: none !important; }
-}
-
-/* Mobile: CTA bien visible — taille suffisante pour le tap */
-@media (max-width: 767px) {
-  .btn-header-cta {
-    font-size: 0.8rem !important;
-    padding: 9px 16px !important;
-    box-shadow: none !important;
-    margin-right: 54px;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: unset;
-    max-width: 200px;
-  }
 }
 
 .site-logo-link {
@@ -3300,3 +3287,4 @@ form[data-client-slug] > .f3-stepper,
 }
 
 /* v11 */
+/* v12 */
