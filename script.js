@@ -1538,14 +1538,14 @@ function initHeaderCta() {
     "align-items:center",
     "gap:6px",
     "padding:10px 20px",
-    "background:#f97316",
+    "background:#c2410c",
     "color:#ffffff",
     "font-size:0.9rem",
     "font-weight:700",
     "text-decoration:none",
     "border-radius:999px",
     "white-space:nowrap",
-    "box-shadow:0 4px 16px rgba(249,115,22,0.45)",
+    "box-shadow:0 4px 16px rgba(194,65,12,0.45)",
     "flex-shrink:0",
   ].join(";");
 
