@@ -3289,3 +3289,7 @@ form[data-client-slug] > .f3-stepper,
 /* v11 */
 /* v12 */
 /* v13 */
+
+/* Ancien bouton "Parler à un conseiller" — remplacé par btn-header-cta dans le hero */
+.formation-mobile-cta { display: none !important; }
+/* v14 */
