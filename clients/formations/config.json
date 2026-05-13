@@ -129,16 +129,16 @@
     },
     {
       "slug": "anglais-toeic",
-      "title": "Anglais professionnel & TOEIC",
+      "title": "Formation en anglais — Certification TOEIC CPF",
       "tag": "Langues étrangères",
       "image_url": "/clients/formations/images/photo-1546410531-bb4caa6b424d-800x500.webp",
       "image_alt": "Apprenante étudiant l'anglais avec des supports de cours",
       "excerpt": "L'anglais est la langue des affaires. Une certification TOEIC reconnue internationalement ouvre des portes dans toutes les entreprises.",
-      "headline": "Anglais professionnel & TOEIC — La certification qui ouvre des portes",
-      "subheadline": "Atteignez le niveau professionnel requis et décrochez une certification TOEIC reconnue dans plus de 160 pays et 14 000 entreprises.",
-      "description_1": "La formation anglais professionnel avec préparation au TOEIC vous permet d'atteindre rapidement le niveau requis dans le monde des affaires. Vocabulaire sectoriel, communication en réunion, rédaction d'emails professionnels, compréhension orale : tous les aspects sont couverts.",
-      "description_2": "La certification TOEIC (Test of English for International Communication) est l'une des plus reconnues au monde. Elle figure sur votre CV et constitue un critère de sélection pour de nombreux recruteurs, notamment dans les grandes entreprises et les multinationales.",
-      "for_who": "Professionnels souhaitant évoluer dans un environnement international, candidats à des postes nécessitant un anglais certifié, personnes préparant une expatriation ou une mobilité internationale.",
+      "headline": "Formation en anglais — Certification TOEIC finançable CPF",
+      "subheadline": "Formation anglais adulte éligible CPF : atteignez le niveau professionnel et décrochez la certification TOEIC reconnue dans 160 pays et 14 000 entreprises.",
+      "description_1": "Cette formation en anglais éligible CPF vous prépare au niveau professionnel requis dans le monde des affaires. Conçue pour adultes en activité, elle couvre le vocabulaire sectoriel, la communication en réunion, la rédaction d'emails professionnels et la compréhension orale — avec un accompagnement personnalisé à votre rythme.",
+      "description_2": "La formation anglais CPF inclut la préparation complète à la certification TOEIC (Test of English for International Communication), reconnue dans plus de 160 pays et 14 000 entreprises. Elle figure sur votre CV et constitue un critère de sélection pour de nombreux recruteurs, notamment dans les grandes entreprises et les multinationales.",
+      "for_who": "Adultes en reconversion ou en évolution professionnelle souhaitant maîtriser l'anglais en milieu professionnel, candidats à des postes nécessitant un anglais certifié, personnes préparant une expatriation ou une mobilité internationale.",
       "point_1": "Préparation ciblée aux 4 épreuves du TOEIC : écoute, lecture, expression orale et écrite",
       "point_2": "Vocabulaire professionnel spécialisé selon votre secteur d'activité",
       "point_3": "Certification reconnue dans 160 pays — validité 2 ans, idéale pour votre CV",
@@ -146,7 +146,8 @@
       "certification": "Certification TOEIC délivrée par ETS — reconnue mondialement",
       "form_cta": "Découvrez vos droits CPF pour : Anglais professionnel & TOEIC",
       "offer_id": "cpf-anglais-toeic",
-      "href": "/langues/formation-anglais-toeic.html"
+      "href": "/langues/formation-anglais-toeic.html",
+      "nav_label": "Anglais TOEIC"
     },
     {
       "slug": "bureautique-office",

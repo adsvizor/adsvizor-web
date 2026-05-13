@@ -137,7 +137,7 @@ function buildSubpagesNav(f, allFormations) {
   const links = siblings.map(s => {
     const emoji  = LANG_EMOJI[s.slug] || '🌍';
     const active = s.slug === f.slug ? ' class="active"' : '';
-    return `<a href="${s.href}"${active}>${emoji} ${s.title.replace(' professionnel', '').replace(' (LSF)', '')}</a>`;
+    return `<a href="${s.href}"${active}>${emoji} ${(s.nav_label || s.title.replace(' professionnel', '').replace(' (LSF)', ''))}</a>`;
   }).join('\n                ');
 
   return `
