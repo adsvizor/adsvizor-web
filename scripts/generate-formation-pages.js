@@ -180,6 +180,7 @@ function assembleHTML(f, config, allFormations) {
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
+    <style>body{visibility:hidden}</style>
     <link rel="preload" href="/main.css?v=8" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/main.css?v=8" /></noscript>
     <script defer src="/script.js?v=21"></script>
