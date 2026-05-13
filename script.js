@@ -1508,8 +1508,32 @@ function initHeaderCta() {
   // On desktop (>=768px) the lead form is always visible — no CTA needed
   if (window.innerWidth >= 768) return;
 
-  // If the CTA already exists (index.html has it hardcoded), nothing to do
-  if (document.querySelector(".btn-header-cta")) return;
+  const contactSection = document.getElementById("contact");
+
+  // Helper: attach smooth-scroll click listener to a CTA element
+  function attachScrollListener(el) {
+    if (contactSection) {
+      el.setAttribute("href", window.location.pathname + "#contact");
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(() => {
+          const firstInput = contactSection.querySelector("input:not([type=hidden])");
+          if (firstInput) firstInput.focus({ preventScroll: true });
+        }, 600);
+      });
+    } else {
+      el.setAttribute("href", "/#contact");
+    }
+  }
+
+  // If the CTA already exists in the HTML (formations.html, blog.html, index.html),
+  // just wire up the smooth-scroll listener and stop.
+  const existing = document.querySelector(".btn-header-cta");
+  if (existing) {
+    attachScrollListener(existing);
+    return;
+  }
 
   // Find the H1 inside the hero to insert the CTA after it
   const h1 = document.querySelector("section.hero h1, .hero-body h1");
@@ -1520,7 +1544,7 @@ function initHeaderCta() {
   cta.className = "btn-header-cta";
   cta.setAttribute("data-cta-id", "hero-cta");
   cta.setAttribute("data-preserve-utm", "true");
-  cta.textContent = "✅ Vérifier mes droits CPF";
+  cta.textContent = "\u2705 V\u00e9rifier mes droits CPF";
   cta.style.cssText = [
     "display:block",
     "width:fit-content",
@@ -1537,20 +1561,12 @@ function initHeaderCta() {
     "text-align:center",
   ].join(";");
 
-  const contactSection = document.getElementById("contact");
-  if (contactSection) {
-    cta.setAttribute("href", "#contact");
-    cta.addEventListener("click", (e) => {
-      e.preventDefault();
-      contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(() => {
-        const firstInput = contactSection.querySelector("input:not([type=hidden])");
-        if (firstInput) firstInput.focus({ preventScroll: true });
-      }, 600);
-    });
-  } else {
-    cta.setAttribute("href", "/#contact");
-  }
+  attachScrollListener(cta);
+
+  // Insert immediately after the H1
+  h1.insertAdjacentElement("afterend", cta);
+}
+
 
   // Insert immediately after the H1
   h1.insertAdjacentElement("afterend", cta);
