@@ -90,12 +90,40 @@ const LANG_EMOJI = {
   'lsf':           '🤟',
 };
 
+// Hard-coded list of bureautique sub-tool pages (not in config.json)
+const BUREAUTIQUE_SUBPAGES = [
+  { href: '/bureautique/formation-excel.html',                label: '📊 Excel' },
+  { href: '/bureautique/formation-word.html',                 label: '📝 Word' },
+  { href: '/bureautique/formation-powerpoint.html',           label: '📊 PowerPoint' },
+  { href: '/bureautique/formation-outils-collaboratifs.html', label: '🤝 Outils Collaboratifs' },
+  { href: '/bureautique/formation-wordpress.html',            label: '🌐 WordPress' },
+  { href: '/bureautique/formation-pao.html',                  label: '🎨 PAO' },
+  { href: '/bureautique/formation-bases-informatique.html',   label: '💻 Bases Informatiques' },
+];
+
 /**
- * For formations in the /langues/ category, returns a subpages-nav block
- * linking to all sibling language pages. Returns '' for other categories.
+ * For formations in the /langues/ or /bureautique/ category, returns a
+ * subpages-nav block linking to sibling pages. Returns '' for other categories.
  */
 function buildSubpagesNav(f, allFormations) {
   const category = (f.href || '').replace(/^\//, '').split('/')[0];
+
+  // Bureautique overview → link to all sub-tool pages
+  if (category === 'bureautique') {
+    const links = BUREAUTIQUE_SUBPAGES.map(s =>
+      `<a href="${s.href}">${s.label}</a>`
+    ).join('\n                ');
+
+    return `
+            <!-- Sous-formations navigation -->
+            <div class="formation-section">
+              <p style="font-size:0.88rem;color:#64748b;margin-bottom:8px;">Formations spécialisées dans cette série :</p>
+              <div class="subpages-nav">
+                ${links}
+              </div>
+            </div>`;
+  }
+
   if (category !== 'langues') return '';
 
   const siblings = allFormations.filter(s =>
