@@ -1568,10 +1568,6 @@ function initHeaderCta() {
 }
 
 
-  // Insert immediately after the H1
-  h1.insertAdjacentElement("afterend", cta);
-}
-
 // =========================
 // Boot
 // =========================
