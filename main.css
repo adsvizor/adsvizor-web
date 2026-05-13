@@ -131,7 +131,7 @@ header > div a:hover {
   align-items: center;
   gap: 6px;
   padding: 10px 20px;
-  background: #f97316;
+  background: #c2410c;
   color: #ffffff;
   font-family: var(--font-sans);
   font-size: 0.9rem;
@@ -139,22 +139,22 @@ header > div a:hover {
   text-decoration: none;
   border-radius: 999px;
   white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 4px 16px rgba(194, 65, 12, 0.45);
   transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .btn-header-cta:hover,
 .btn-header-cta:focus-visible {
-  background: #ea580c;
+  background: #9a3412;
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(249, 115, 22, 0.55);
+  box-shadow: 0 6px 22px rgba(194, 65, 12, 0.55);
   text-decoration: none;
   color: #ffffff;
 }
 
 .btn-header-cta:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 2px 8px rgba(194, 65, 12, 0.35);
 }
 
 /* Desktop: hide CTA — form is always visible in the right column */
@@ -162,17 +162,17 @@ header > div a:hover {
   .btn-header-cta { display: none !important; }
 }
 
-/* Mobile: compact CTA, margin-right leaves room for the fixed hamburger (44px + 10px gap) */
+/* Mobile: CTA bien visible — taille suffisante pour le tap */
 @media (max-width: 767px) {
   .btn-header-cta {
-    font-size: 0.7rem !important;
-    padding: 7px 10px !important;
+    font-size: 0.8rem !important;
+    padding: 9px 14px !important;
     box-shadow: none !important;
     margin-right: 54px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 160px;
+    max-width: 165px;
   }
 }
 
