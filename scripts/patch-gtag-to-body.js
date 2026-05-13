@@ -27,8 +27,8 @@ const GTAG_IN_BODY = `  <!-- Google tag (gtag.js) — loaded after render for be
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'GT-KD7C7TR3');
-    gtag('config', 'AW-18122720723');
+    gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
+    gtag('config', 'AW-18122720723', { send_page_view: false });
   </script>
 </body>`;
 

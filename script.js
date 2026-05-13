@@ -1634,6 +1634,14 @@ async function init() {
     if (!window.location.hash) window.scrollTo(0, 0);
     document.body.classList.add("ready");
 
+    // Fire page_view after placeholders are replaced so GA captures the real title.
+    if (typeof gtag === 'function') {
+      gtag('event', 'page_view', {
+        page_title: document.title,
+        page_location: window.location.href,
+      });
+    }
+
     // Build formation card grid on the listing page.
     renderFormationList(config);
 
