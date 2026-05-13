@@ -166,13 +166,13 @@ header > div a:hover {
 @media (max-width: 767px) {
   .btn-header-cta {
     font-size: 0.8rem !important;
-    padding: 9px 14px !important;
+    padding: 9px 16px !important;
     box-shadow: none !important;
     margin-right: 54px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 165px;
+    overflow: visible;
+    text-overflow: unset;
+    max-width: 200px;
   }
 }
 
