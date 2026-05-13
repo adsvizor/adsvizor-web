@@ -82,11 +82,15 @@ function getFormationCategory(f) {
 
 // ── Subpages nav (language series) ───────────────────────────────────────────
 
+// Flag images via flagcdn.com — flag emojis (🇬🇧 etc.) don't render on Windows desktop
+const FLAG_IMG = (code, alt) =>
+  `<img src="https://flagcdn.com/20x15/${code}.png" alt="${alt}" width="20" height="15" style="vertical-align:middle;border-radius:2px;">`;
+
 const LANG_EMOJI = {
-  'anglais-toeic': '🇬🇧',
-  'allemand':      '🇩🇪',
-  'espagnol':      '🇪🇸',
-  'italien':       '🇮🇹',
+  'anglais-toeic': FLAG_IMG('gb', 'Drapeau Royaume-Uni'),
+  'allemand':      FLAG_IMG('de', 'Drapeau Allemagne'),
+  'espagnol':      FLAG_IMG('es', 'Drapeau Espagne'),
+  'italien':       FLAG_IMG('it', 'Drapeau Italie'),
   'lsf':           '🤟',
 };
 
@@ -512,7 +516,7 @@ for (const f of formations) {
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
 const sitemap = buildSitemap(formations, config, baseUrl);
 writeFileSync(sitemapPath, sitemap, 'utf-8');
-console.log(`\n🗺️  sitemap.xml generated (${formations.length + 4} URLs + blog posts)`);
+console.log(`\n🗺️  sitemap.xml generated (+ 4} URLs + blog posts)`);
 console.log(`   → ${baseUrl}/sitemap.xml`);
 
 console.log(`\n🎉 Done — ${formations.length} pages generated.`);
