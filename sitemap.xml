@@ -205,4 +205,22 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://formations.adsvizor.com/blog/cpf-intelligence-artificielle-formations-2025.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://formations.adsvizor.com/blog/formation-cybersecurite-cpf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://formations.adsvizor.com/blog/formation-ia-generative.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
