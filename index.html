@@ -49,8 +49,8 @@
     <link rel="preconnect" href="https://images.unsplash.com" />
 
         <style>body{visibility:hidden}</style>
-    <link rel="preload" href="/main.css?v=18" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/main.css?v=18" /></noscript>
+    <link rel="preload" href="/main.css?v=19" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/main.css?v=19" /></noscript>
     <script defer src="/script.js?v=29"></script>
   <style>
     /* Logo */
@@ -112,94 +112,6 @@
             </div>
           </section>
 
-          <!-- Stats strip -->
-          <div class="stats-strip" aria-label="{{stats_aria_label}}">
-            <div class="stat"><strong>{{stat_1_value}}</strong><span>{{stat_1_label}}</span></div>
-            <div class="stat"><strong>{{stat_2_value}}</strong><span>{{stat_2_label}}</span></div>
-            <div class="stat"><strong>{{stat_3_value}}</strong><span>{{stat_3_label}}</span></div>
-          </div>
-
-          <!-- Benefits with images -->
-          <section aria-labelledby="benefits-title">
-            <h2 id="benefits-title">{{benefits_title}}</h2>
-            <ul class="benefit-list">
-              <li class="benefit-card">
-                <img src="{{benefit_1_image_url}}" alt="{{benefit_1_image_alt}}" class="benefit-img" loading="lazy" />
-                <div class="benefit-body">
-                  <h3>{{benefit_1_title}}</h3>
-                  <p>{{benefit_1_text}}</p>
-                </div>
-              </li>
-              <li class="benefit-card">
-                <img src="{{benefit_2_image_url}}" alt="{{benefit_2_image_alt}}" class="benefit-img" loading="lazy" />
-                <div class="benefit-body">
-                  <h3>{{benefit_2_title}}</h3>
-                  <p>{{benefit_2_text}}</p>
-                </div>
-              </li>
-            </ul>
-          </section>
-
-          <!-- Why us -->
-          <section class="why-us-section" aria-labelledby="why-us-title">
-            <h2 id="why-us-title">{{why_us_title}}</h2>
-            <div class="why-us-grid">
-              <div class="why-us-card">
-                <span class="why-us-emoji">{{why_us_a_emoji}}</span>
-                <h3>{{why_us_a_title}}</h3>
-                <p>{{why_us_a_text}}</p>
-              </div>
-              <div class="why-us-card">
-                <span class="why-us-emoji">{{why_us_b_emoji}}</span>
-                <h3>{{why_us_b_title}}</h3>
-                <p>{{why_us_b_text}}</p>
-              </div>
-              <div class="why-us-card">
-                <span class="why-us-emoji">{{why_us_c_emoji}}</span>
-                <h3>{{why_us_c_title}}</h3>
-                <p>{{why_us_c_text}}</p>
-              </div>
-              <div class="why-us-card">
-                <span class="why-us-emoji">{{why_us_d_emoji}}</span>
-                <h3>{{why_us_d_title}}</h3>
-                <p>{{why_us_d_text}}</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Trust logos: Mon Compte Formation (EDOF) & Qualiopi -->
-          <section class="trust-strip" aria-label="Certifications et accréditations">
-            <p class="trust-strip-heading">Ils nous font confiance</p>
-            <div class="trust-logos">
-              <img src="/logo-mcf.webp" alt="Mon Compte Formation — EDOF" class="trust-logo trust-logo--mcf" width="440" height="259" loading="lazy" />
-              <img src="/logo-qualiopi.webp" alt="Qualiopi — processus certifié — Actions de formation" class="trust-logo trust-logo--qualiopi" width="400" height="242" loading="lazy" />
-            </div>
-          </section>
-
-          <!-- Testimonials -->
-          <section aria-labelledby="testimonials-title" hidden>
-            <h2 id="testimonials-title">{{testimonials_title}}</h2>
-            <div class="testimonial-grid">
-              <figure class="testimonial-card">
-                <blockquote><p>{{testimonial_1_text}}</p></blockquote>
-                <figcaption>
-                  <div class="testimonial-avatar" aria-hidden="true"></div>
-                  <span>{{testimonial_1_author}}</span>
-                </figcaption>
-              </figure>
-              <figure class="testimonial-card">
-                <blockquote><p>{{testimonial_2_text}}</p></blockquote>
-                <figcaption>
-                  <div class="testimonial-avatar" aria-hidden="true"></div>
-                  <span>{{testimonial_2_author}}</span>
-                </figcaption>
-              </figure>
-            </div>
-          </section>
-
-        </div>
-
-        <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
             <!-- Titre masqué pour form3 — visible uniquement pour les autres formulaires -->
             <h2 id="lead-form-title" class="f3-hidden-title">{{form_title}}</h2>
@@ -347,7 +259,93 @@
 
             </form>
           </section>
-        </aside>
+
+          <!-- Stats strip -->
+          <div class="stats-strip" aria-label="{{stats_aria_label}}">
+            <div class="stat"><strong>{{stat_1_value}}</strong><span>{{stat_1_label}}</span></div>
+            <div class="stat"><strong>{{stat_2_value}}</strong><span>{{stat_2_label}}</span></div>
+            <div class="stat"><strong>{{stat_3_value}}</strong><span>{{stat_3_label}}</span></div>
+          </div>
+
+          <!-- Benefits with images -->
+          <section aria-labelledby="benefits-title">
+            <h2 id="benefits-title">{{benefits_title}}</h2>
+            <ul class="benefit-list">
+              <li class="benefit-card">
+                <img src="{{benefit_1_image_url}}" alt="{{benefit_1_image_alt}}" class="benefit-img" loading="lazy" />
+                <div class="benefit-body">
+                  <h3>{{benefit_1_title}}</h3>
+                  <p>{{benefit_1_text}}</p>
+                </div>
+              </li>
+              <li class="benefit-card">
+                <img src="{{benefit_2_image_url}}" alt="{{benefit_2_image_alt}}" class="benefit-img" loading="lazy" />
+                <div class="benefit-body">
+                  <h3>{{benefit_2_title}}</h3>
+                  <p>{{benefit_2_text}}</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Why us -->
+          <section class="why-us-section" aria-labelledby="why-us-title">
+            <h2 id="why-us-title">{{why_us_title}}</h2>
+            <div class="why-us-grid">
+              <div class="why-us-card">
+                <span class="why-us-emoji">{{why_us_a_emoji}}</span>
+                <h3>{{why_us_a_title}}</h3>
+                <p>{{why_us_a_text}}</p>
+              </div>
+              <div class="why-us-card">
+                <span class="why-us-emoji">{{why_us_b_emoji}}</span>
+                <h3>{{why_us_b_title}}</h3>
+                <p>{{why_us_b_text}}</p>
+              </div>
+              <div class="why-us-card">
+                <span class="why-us-emoji">{{why_us_c_emoji}}</span>
+                <h3>{{why_us_c_title}}</h3>
+                <p>{{why_us_c_text}}</p>
+              </div>
+              <div class="why-us-card">
+                <span class="why-us-emoji">{{why_us_d_emoji}}</span>
+                <h3>{{why_us_d_title}}</h3>
+                <p>{{why_us_d_text}}</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Trust logos: Mon Compte Formation (EDOF) & Qualiopi -->
+          <section class="trust-strip" aria-label="Certifications et accréditations">
+            <p class="trust-strip-heading">Ils nous font confiance</p>
+            <div class="trust-logos">
+              <img src="/logo-mcf.webp" alt="Mon Compte Formation — EDOF" class="trust-logo trust-logo--mcf" width="440" height="259" loading="lazy" />
+              <img src="/logo-qualiopi.webp" alt="Qualiopi — processus certifié — Actions de formation" class="trust-logo trust-logo--qualiopi" width="400" height="242" loading="lazy" />
+            </div>
+          </section>
+
+          <!-- Testimonials -->
+          <section aria-labelledby="testimonials-title" hidden>
+            <h2 id="testimonials-title">{{testimonials_title}}</h2>
+            <div class="testimonial-grid">
+              <figure class="testimonial-card">
+                <blockquote><p>{{testimonial_1_text}}</p></blockquote>
+                <figcaption>
+                  <div class="testimonial-avatar" aria-hidden="true"></div>
+                  <span>{{testimonial_1_author}}</span>
+                </figcaption>
+              </figure>
+              <figure class="testimonial-card">
+                <blockquote><p>{{testimonial_2_text}}</p></blockquote>
+                <figcaption>
+                  <div class="testimonial-avatar" aria-hidden="true"></div>
+                  <span>{{testimonial_2_author}}</span>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+        </div>
       </div>
     </main>
 

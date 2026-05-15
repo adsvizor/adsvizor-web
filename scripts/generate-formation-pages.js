@@ -244,48 +244,6 @@ function assembleHTML(f, config, allFormations) {
             </div>
           </section>
 
-          <section class="formation-detail-section" aria-labelledby="detail-title">
-
-            <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
-${buildSubpagesNav(f, allFormations)}
-            <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
-            <p class="formation-desc">${f.description_1}</p>
-            <p class="formation-desc">${f.description_2}</p>
-
-            <h3 class="formation-section-heading">Pour qui ?</h3>
-            <p class="formation-desc">${f.for_who}</p>
-
-            <h3 class="formation-section-heading">Ce que vous apprendrez</h3>
-            <ul class="formation-points">
-              <li>${f.point_1}</li>
-              <li>${f.point_2}</li>
-              <li>${f.point_3}</li>
-            </ul>
-
-            <div class="formation-info-grid">
-              <div class="formation-info-card">
-                <span class="formation-info-label">Durée</span>
-                <span class="formation-info-value">${f.duration}</span>
-              </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Certification</span>
-                <span class="formation-info-value">${f.certification}</span>
-              </div>
-              <div class="formation-info-card">
-                <span class="formation-info-label">Financement</span>
-                <span class="formation-info-value">100 % éligible CPF — sans avance de frais</span>
-              </div>
-            </div>
-
-            <div class="formation-mobile-cta">
-              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
-            </div>
-
-          </section>
-        </div>
-
-        <!-- RIGHT: floating form -->
-        <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
             <h2 id="lead-form-title" class="f3-hidden-title">${f.form_cta}</h2>
 
@@ -430,8 +388,46 @@ ${buildSubpagesNav(f, allFormations)}
 
             </form>
           </section>
-        </aside>
 
+          <section class="formation-detail-section" aria-labelledby="detail-title">
+
+            <p class="formation-breadcrumb"><a href="/formations.html">← Toutes les formations</a></p>
+${buildSubpagesNav(f, allFormations)}
+            <h2 id="detail-title" class="formation-detail-title">À propos de cette formation</h2>
+            <p class="formation-desc">${f.description_1}</p>
+            <p class="formation-desc">${f.description_2}</p>
+
+            <h3 class="formation-section-heading">Pour qui ?</h3>
+            <p class="formation-desc">${f.for_who}</p>
+
+            <h3 class="formation-section-heading">Ce que vous apprendrez</h3>
+            <ul class="formation-points">
+              <li>${f.point_1}</li>
+              <li>${f.point_2}</li>
+              <li>${f.point_3}</li>
+            </ul>
+
+            <div class="formation-info-grid">
+              <div class="formation-info-card">
+                <span class="formation-info-label">Durée</span>
+                <span class="formation-info-value">${f.duration}</span>
+              </div>
+              <div class="formation-info-card">
+                <span class="formation-info-label">Certification</span>
+                <span class="formation-info-value">${f.certification}</span>
+              </div>
+              <div class="formation-info-card">
+                <span class="formation-info-label">Financement</span>
+                <span class="formation-info-value">100 % éligible CPF — sans avance de frais</span>
+              </div>
+            </div>
+
+            <div class="formation-mobile-cta">
+              <button type="button" class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">Voir mon financement CPF →</button>
+            </div>
+
+          </section>
+        </div>
       </div>
     </main>
 

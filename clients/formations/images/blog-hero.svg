@@ -1,0 +1,172 @@
+<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration blog formations CPF">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1f4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a3a7a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    <filter id="cardShadow" x="-5%" y="-5%" width="115%" height="125%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="url(#bgGrad)" />
+
+  <!-- Decorative circles -->
+  <circle cx="820" cy="60" r="80" fill="#2563eb" opacity="0.12"/>
+  <circle cx="80" cy="420" r="100" fill="#3b82f6" opacity="0.1"/>
+  <circle cx="450" cy="480" r="120" fill="#1d4ed8" opacity="0.08"/>
+
+  <!-- Stars/dots -->
+  <circle cx="150" cy="80" r="2.5" fill="#93c5fd" opacity="0.7"/>
+  <circle cx="720" cy="120" r="2" fill="#93c5fd" opacity="0.6"/>
+  <circle cx="800" cy="200" r="1.5" fill="#60a5fa" opacity="0.5"/>
+  <circle cx="100" cy="200" r="2" fill="#93c5fd" opacity="0.6"/>
+  <circle cx="600" cy="50" r="2" fill="#bfdbfe" opacity="0.5"/>
+
+  <!-- Open book (center) -->
+  <g filter="url(#shadow)" transform="translate(330, 110)">
+    <!-- Left page -->
+    <path d="M120,10 C100,8 40,15 10,25 L10,220 C40,212 100,206 120,208 Z" fill="#ffffff" />
+    <!-- Right page -->
+    <path d="M120,10 C140,8 200,15 230,25 L230,220 C200,212 140,206 120,208 Z" fill="#f8fafc" />
+    <!-- Spine shadow -->
+    <rect x="117" y="10" width="6" height="198" fill="#e2e8f0" rx="2"/>
+    <!-- Book cover bottom -->
+    <path d="M8,220 C40,212 100,207 120,209 C140,207 200,212 232,220 L232,228 C200,220 140,216 120,218 C100,216 40,220 8,228 Z" fill="#1e40af"/>
+
+    <!-- Left page lines (text) -->
+    <line x1="30" y1="50" x2="105" y2="48" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+    <line x1="30" y1="62" x2="105" y2="60" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+    <line x1="30" y1="74" x2="105" y2="72" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="30" y1="86" x2="95" y2="84" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Left page image placeholder -->
+    <rect x="30" y="100" width="76" height="50" rx="4" fill="#dbeafe"/>
+    <circle cx="68" cy="115" r="8" fill="#93c5fd"/>
+    <path d="M30,150 L50,130 L65,142 L80,128 L106,150 Z" fill="#60a5fa" opacity="0.6"/>
+    <!-- Left page more lines -->
+    <line x1="30" y1="162" x2="105" y2="162" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="30" y1="172" x2="90" y2="172" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Right page lines -->
+    <line x1="135" y1="50" x2="210" y2="48" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+    <line x1="135" y1="62" x2="210" y2="60" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+    <line x1="135" y1="74" x2="200" y2="72" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="135" y1="86" x2="195" y2="84" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="135" y1="98" x2="210" y2="96" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Right page chart -->
+    <rect x="135" y="112" width="16" height="40" rx="2" fill="#3b82f6" opacity="0.7"/>
+    <rect x="155" y="124" width="16" height="28" rx="2" fill="#60a5fa" opacity="0.7"/>
+    <rect x="175" y="118" width="16" height="34" rx="2" fill="#2563eb" opacity="0.7"/>
+    <rect x="195" y="108" width="16" height="44" rx="2" fill="#1d4ed8" opacity="0.7"/>
+    <line x1="135" y1="158" x2="210" y2="158" stroke="#e2e8f0" stroke-width="1" stroke-linecap="round"/>
+    <!-- Right page more lines -->
+    <line x1="135" y1="170" x2="210" y2="170" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="135" y1="182" x2="195" y2="182" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Floating article card LEFT -->
+  <g filter="url(#cardShadow)" transform="translate(65, 130)">
+    <rect width="185" height="115" rx="12" fill="#ffffff"/>
+    <!-- Card header color bar -->
+    <rect width="185" height="38" rx="12" fill="#2563eb"/>
+    <rect y="26" width="185" height="12" fill="#2563eb"/>
+    <!-- Tag badge -->
+    <rect x="12" y="10" width="60" height="18" rx="9" fill="rgba(255,255,255,0.25)"/>
+    <text x="42" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ffffff" font-weight="600">CONSEIL CPF</text>
+    <!-- Title lines -->
+    <rect x="12" y="48" width="140" height="9" rx="4" fill="#1e293b"/>
+    <rect x="12" y="62" width="110" height="9" rx="4" fill="#1e293b"/>
+    <!-- Body lines -->
+    <rect x="12" y="78" width="160" height="6" rx="3" fill="#94a3b8"/>
+    <rect x="12" y="89" width="145" height="6" rx="3" fill="#94a3b8"/>
+    <!-- Footer -->
+    <rect x="12" y="101" width="45" height="6" rx="3" fill="#3b82f6"/>
+  </g>
+
+  <!-- Floating article card RIGHT -->
+  <g filter="url(#cardShadow)" transform="translate(660, 140)">
+    <rect width="185" height="115" rx="12" fill="#ffffff"/>
+    <rect width="185" height="38" rx="12" fill="#059669"/>
+    <rect y="26" width="185" height="12" fill="#059669"/>
+    <rect x="12" y="10" width="68" height="18" rx="9" fill="rgba(255,255,255,0.25)"/>
+    <text x="46" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ffffff" font-weight="600">FORMATION</text>
+    <rect x="12" y="48" width="150" height="9" rx="4" fill="#1e293b"/>
+    <rect x="12" y="62" width="120" height="9" rx="4" fill="#1e293b"/>
+    <rect x="12" y="78" width="160" height="6" rx="3" fill="#94a3b8"/>
+    <rect x="12" y="89" width="140" height="6" rx="3" fill="#94a3b8"/>
+    <rect x="12" y="101" width="50" height="6" rx="3" fill="#059669"/>
+  </g>
+
+  <!-- Pen/quill top right -->
+  <g transform="translate(770, 30) rotate(35)">
+    <rect x="0" y="0" width="8" height="70" rx="4" fill="#fbbf24"/>
+    <path d="M1,70 L7,70 L4,90 Z" fill="#f59e0b"/>
+    <rect x="1" y="65" width="6" height="4" fill="#d97706"/>
+    <!-- Ink trail -->
+    <path d="M4,90 Q20,110 10,130" stroke="#60a5fa" stroke-width="1.5" fill="none" opacity="0.6" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- Bottom article cards row -->
+  <!-- Card 1 -->
+  <g filter="url(#cardShadow)" transform="translate(90, 340)">
+    <rect width="160" height="100" rx="10" fill="#ffffff"/>
+    <rect width="160" height="6" rx="3" fill="#7c3aed"/>
+    <rect x="10" y="18" width="120" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="30" width="100" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="46" width="140" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="56" width="120" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="66" width="130" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="80" width="50" height="14" rx="7" fill="#ede9fe"/>
+    <text x="35" y="91" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#7c3aed" font-weight="600">Guide</text>
+  </g>
+
+  <!-- Card 2 -->
+  <g filter="url(#cardShadow)" transform="translate(275, 340)">
+    <rect width="160" height="100" rx="10" fill="#ffffff"/>
+    <rect width="160" height="6" rx="3" fill="#dc2626"/>
+    <rect x="10" y="18" width="130" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="30" width="105" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="46" width="140" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="56" width="125" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="66" width="135" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="80" width="50" height="14" rx="7" fill="#fee2e2"/>
+    <text x="35" y="91" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#dc2626" font-weight="600">Conseils</text>
+  </g>
+
+  <!-- Card 3 -->
+  <g filter="url(#cardShadow)" transform="translate(460, 340)">
+    <rect width="160" height="100" rx="10" fill="#ffffff"/>
+    <rect width="160" height="6" rx="3" fill="#0891b2"/>
+    <rect x="10" y="18" width="115" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="30" width="95" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="46" width="140" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="56" width="130" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="66" width="120" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="80" width="60" height="14" rx="7" fill="#cffafe"/>
+    <text x="40" y="91" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#0891b2" font-weight="600">Actualité</text>
+  </g>
+
+  <!-- Card 4 -->
+  <g filter="url(#cardShadow)" transform="translate(645, 340)">
+    <rect width="160" height="100" rx="10" fill="#ffffff"/>
+    <rect width="160" height="6" rx="3" fill="#d97706"/>
+    <rect x="10" y="18" width="125" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="30" width="100" height="8" rx="3" fill="#1e293b"/>
+    <rect x="10" y="46" width="140" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="56" width="115" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="66" width="130" height="5" rx="2" fill="#cbd5e1"/>
+    <rect x="10" y="80" width="55" height="14" rx="7" fill="#fef3c7"/>
+    <text x="37" y="91" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#d97706" font-weight="600">Astuces</text>
+  </g>
+
+  <!-- Connecting dots between book and bottom cards -->
+  <line x1="450" y1="330" x2="450" y2="345" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.4"/>
+</svg>

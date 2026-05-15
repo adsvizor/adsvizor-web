@@ -31,8 +31,8 @@
     />
 
         <style>body{visibility:hidden}</style>
-    <link rel="preload" href="/main.css?v=18" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/main.css?v=18" /></noscript>
+    <link rel="preload" href="/main.css?v=19" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/main.css?v=19" /></noscript>
     <link rel="preload" as="image" href="/clients/formations/images/photo-1573497019940-1c28c88b4f3e-800x500.webp" fetchpriority="high" />
     <script defer src="/script.js?v=29"></script>
   <style>
@@ -98,145 +98,6 @@
             </div>
           </section>
 
-          <!-- ── Process flowchart ── -->
-          <div class="contact-section contact-section-white">
-            <h2 class="contact-section-title">{{contact_process_title}}</h2>
-            <p class="contact-section-intro">{{contact_process_intro}}</p>
-
-            <div class="flowchart" aria-label="Étapes du parcours">
-
-              <div class="flowchart-node">
-                <div class="flowchart-badge">1</div>
-                <div class="flowchart-box">
-                  <img class="flowchart-image" src="{{contact_step_1_image}}" alt="" loading="lazy" />
-                  <div class="flowchart-content">
-                    <span class="flowchart-icon">{{contact_step_1_icon}}</span>
-                    <div class="flowchart-text">
-                      <h3>{{contact_step_1_title}}</h3>
-                      <p>{{contact_step_1_text}}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flowchart-arrow" aria-hidden="true">↓</div>
-
-              <div class="flowchart-node">
-                <div class="flowchart-badge">2</div>
-                <div class="flowchart-box">
-                  <img class="flowchart-image" src="{{contact_step_2_image}}" alt="" loading="lazy" />
-                  <div class="flowchart-content">
-                    <span class="flowchart-icon">{{contact_step_2_icon}}</span>
-                    <div class="flowchart-text">
-                      <h3>{{contact_step_2_title}}</h3>
-                      <p>{{contact_step_2_text}}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flowchart-arrow" aria-hidden="true">↓</div>
-
-              <div class="flowchart-node">
-                <div class="flowchart-badge">3</div>
-                <div class="flowchart-box">
-                  <img class="flowchart-image" src="{{contact_step_3_image}}" alt="" loading="lazy" />
-                  <div class="flowchart-content">
-                    <span class="flowchart-icon">{{contact_step_3_icon}}</span>
-                    <div class="flowchart-text">
-                      <h3>{{contact_step_3_title}}</h3>
-                      <p>{{contact_step_3_text}}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flowchart-arrow" aria-hidden="true">↓</div>
-
-              <div class="flowchart-node">
-                <div class="flowchart-badge">4</div>
-                <div class="flowchart-box">
-                  <img class="flowchart-image" src="{{contact_step_4_image}}" alt="" loading="lazy" />
-                  <div class="flowchart-content">
-                    <span class="flowchart-icon">{{contact_step_4_icon}}</span>
-                    <div class="flowchart-text">
-                      <h3>{{contact_step_4_title}}</h3>
-                      <p>{{contact_step_4_text}}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flowchart-arrow" aria-hidden="true">↓</div>
-
-              <div class="flowchart-node flowchart-node-success">
-                <div class="flowchart-badge flowchart-badge-success">✓</div>
-                <div class="flowchart-box flowchart-box-success">
-                  <img class="flowchart-image" src="{{contact_step_5_image}}" alt="" loading="lazy" />
-                  <div class="flowchart-content">
-                    <span class="flowchart-icon">{{contact_step_5_icon}}</span>
-                    <div class="flowchart-text">
-                      <h3>{{contact_step_5_title}}</h3>
-                      <p>{{contact_step_5_text}}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- ── Urgency section ── -->
-          <div class="contact-section contact-section-urgency">
-
-            <div class="urgency-alert">
-              <div class="urgency-alert-icon" aria-hidden="true">⚠️</div>
-              <div class="urgency-alert-body">
-                <h2>{{contact_urgency_title}}</h2>
-                <p>{{contact_urgency_text}}</p>
-              </div>
-            </div>
-
-            <!-- Cost evolution -->
-            <div class="urgency-costs">
-              <div class="urgency-cost-item urgency-cost-past">
-                <span class="urgency-cost-when">{{contact_urgency_before_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_before_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_before_tag}}</span>
-              </div>
-              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
-              <div class="urgency-cost-item urgency-cost-now">
-                <span class="urgency-cost-when">{{contact_urgency_now_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_now_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_now_tag}}</span>
-              </div>
-              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
-              <div class="urgency-cost-item urgency-cost-future">
-                <span class="urgency-cost-when">{{contact_urgency_future_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_future_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_future_tag}}</span>
-              </div>
-            </div>
-
-            <!-- Exception notice -->
-            <div class="urgency-chomage">
-              <span aria-hidden="true">✅</span>
-              <p>{{contact_urgency_exception_text}}</p>
-            </div>
-
-          </div>
-
-          <!-- Mobile CTA -->
-          <div class="formation-mobile-cta">
-            <a href="#contact" class="btn">{{contact_mobile_cta_label}}</a>
-          </div>
-
-        </div><!-- /page-content -->
-
-        <!-- ═══════════════════════════════
-             RIGHT COLUMN — floating form
-             ═══════════════════════════════ -->
-        <aside class="form-float">
           <section aria-labelledby="lead-form-title" id="contact">
             <h2 id="lead-form-title" class="f3-hidden-title">Vérifiez vos droits CPF</h2>
 
@@ -379,7 +240,145 @@
 
             </form>
           </section>
-        </aside>
+
+          <!-- ── Process flowchart ── -->
+          <div class="contact-section contact-section-white">
+            <h2 class="contact-section-title">{{contact_process_title}}</h2>
+            <p class="contact-section-intro">{{contact_process_intro}}</p>
+
+            <div class="flowchart" aria-label="Étapes du parcours">
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">1</div>
+                <div class="flowchart-box">
+                  <img class="flowchart-image" src="{{contact_step_1_image}}" alt="" loading="lazy" />
+                  <div class="flowchart-content">
+                    <span class="flowchart-icon">{{contact_step_1_icon}}</span>
+                    <div class="flowchart-text">
+                      <h3>{{contact_step_1_title}}</h3>
+                      <p>{{contact_step_1_text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">2</div>
+                <div class="flowchart-box">
+                  <img class="flowchart-image" src="{{contact_step_2_image}}" alt="" loading="lazy" />
+                  <div class="flowchart-content">
+                    <span class="flowchart-icon">{{contact_step_2_icon}}</span>
+                    <div class="flowchart-text">
+                      <h3>{{contact_step_2_title}}</h3>
+                      <p>{{contact_step_2_text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">3</div>
+                <div class="flowchart-box">
+                  <img class="flowchart-image" src="{{contact_step_3_image}}" alt="" loading="lazy" />
+                  <div class="flowchart-content">
+                    <span class="flowchart-icon">{{contact_step_3_icon}}</span>
+                    <div class="flowchart-text">
+                      <h3>{{contact_step_3_title}}</h3>
+                      <p>{{contact_step_3_text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node">
+                <div class="flowchart-badge">4</div>
+                <div class="flowchart-box">
+                  <img class="flowchart-image" src="{{contact_step_4_image}}" alt="" loading="lazy" />
+                  <div class="flowchart-content">
+                    <span class="flowchart-icon">{{contact_step_4_icon}}</span>
+                    <div class="flowchart-text">
+                      <h3>{{contact_step_4_title}}</h3>
+                      <p>{{contact_step_4_text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flowchart-arrow" aria-hidden="true">↓</div>
+
+              <div class="flowchart-node flowchart-node-success">
+                <div class="flowchart-badge flowchart-badge-success">✓</div>
+                <div class="flowchart-box flowchart-box-success">
+                  <img class="flowchart-image" src="{{contact_step_5_image}}" alt="" loading="lazy" />
+                  <div class="flowchart-content">
+                    <span class="flowchart-icon">{{contact_step_5_icon}}</span>
+                    <div class="flowchart-text">
+                      <h3>{{contact_step_5_title}}</h3>
+                      <p>{{contact_step_5_text}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ── Urgency section ── -->
+          <div class="contact-section contact-section-urgency">
+
+            <div class="urgency-alert">
+              <div class="urgency-alert-icon" aria-hidden="true">⚠️</div>
+              <div class="urgency-alert-body">
+                <h2>{{contact_urgency_title}}</h2>
+                <p>{{contact_urgency_text}}</p>
+              </div>
+            </div>
+
+            <!-- Cost evolution -->
+            <div class="urgency-costs">
+              <div class="urgency-cost-item urgency-cost-past">
+                <span class="urgency-cost-when">{{contact_urgency_before_label}}</span>
+                <span class="urgency-cost-amount">{{contact_urgency_before_amount}}</span>
+                <span class="urgency-cost-what">{{contact_urgency_before_tag}}</span>
+              </div>
+              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
+              <div class="urgency-cost-item urgency-cost-now">
+                <span class="urgency-cost-when">{{contact_urgency_now_label}}</span>
+                <span class="urgency-cost-amount">{{contact_urgency_now_amount}}</span>
+                <span class="urgency-cost-what">{{contact_urgency_now_tag}}</span>
+              </div>
+              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
+              <div class="urgency-cost-item urgency-cost-future">
+                <span class="urgency-cost-when">{{contact_urgency_future_label}}</span>
+                <span class="urgency-cost-amount">{{contact_urgency_future_amount}}</span>
+                <span class="urgency-cost-what">{{contact_urgency_future_tag}}</span>
+              </div>
+            </div>
+
+            <!-- Exception notice -->
+            <div class="urgency-chomage">
+              <span aria-hidden="true">✅</span>
+              <p>{{contact_urgency_exception_text}}</p>
+            </div>
+
+          </div>
+
+          <!-- Mobile CTA -->
+          <div class="formation-mobile-cta">
+            <a href="#contact" class="btn">{{contact_mobile_cta_label}}</a>
+          </div>
+
+        </div><!-- /page-content -->
+
+        <!-- ═══════════════════════════════
+             RIGHT COLUMN — floating form
+             ═══════════════════════════════ -->
 
       </div>
     </main>

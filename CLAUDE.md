@@ -190,7 +190,7 @@ Automated system to generate a new client site from an email.
 
 Every change to `main.css` or `script.js` requires bumping the version query param in all HTML files, otherwise Cloudflare serves stale cached files.
 
-Current versions: `main.css?v=18`, `script.js?v=29`
+Current versions: `main.css?v=19`, `script.js?v=29`
 
 ```bash
 # Bump CSS (replace N with current version)
