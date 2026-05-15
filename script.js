@@ -1775,7 +1775,7 @@ function initForm4(form, config) {
  *   injected dynamically.
  * - thank-you and privacy pages are skipped (no form to scroll to).
  */
-function initHeaderCta() {
+function initHeaderCta() { /* disabled — red CTA buttons removed */ return;
   // Remove any leftover green bar on all pages
   document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
 
@@ -1934,7 +1934,6 @@ async function init() {
 
     // Remove any hardcoded green CPF bar and ensure the orange header CTA
     // is present on every page (static formation pages, blog, contact, etc.)
-    initHeaderCta();
 
 
     // Display security code on the thank-you page if present in URL.

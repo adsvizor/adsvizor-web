@@ -211,7 +211,6 @@ function assembleHTML(f, config, allFormations) {
     <div class="cpf-cta-bar">
       <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-${f.slug}"
         onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
-        Vérifier mes droits CPF →
       </button>
     </div>
     <header>
