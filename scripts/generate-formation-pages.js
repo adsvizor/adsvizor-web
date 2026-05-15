@@ -208,11 +208,6 @@ function assembleHTML(f, config, allFormations) {
   </head>
 
   <body>
-    <div class="cpf-cta-bar">
-      <button class="cpf-cta-bar-btn" type="button" data-cta-id="cpf-bar-${f.slug}"
-        onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){var i=document.querySelector('#contact input:not([type=hidden])');if(i)i.focus({preventScroll:true});},600)">
-      </button>
-    </div>
     <header>
       <div>
         <a href="/" class="site-logo-link"><picture><source srcset="/logo.webp" type="image/webp" /><img src="/logo.png" alt="${logoText}" class="site-logo" width="200" height="200" /></picture></a>
