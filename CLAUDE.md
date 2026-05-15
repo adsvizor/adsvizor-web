@@ -59,6 +59,27 @@ Client-specific pages work automatically: `http://localhost:5500/formations.html
 - `scripts/generate-formation-pages.js` — generates static pages + sitemap from config.json
 - `functions/_middleware.js` — routes *.html to client directory; serves landing.html on root domain; handles 301 redirects via REDIRECTS_301 map (old flat URLs → new category URLs)
 
+## Form versions (feature flag)
+
+script.js supports four form variants, selected by priority:
+
+1. **`?form=N` URL param** — overrides everything; useful for A/B testing without deploying
+2. **`config.active_form`** in `clients/{slug}/config.json` — production switch (e.g. `"active_form": "4"`)
+3. **`data-form="3"` on `<form>`** → form3 (default when no flag set)
+4. **`data-simple="true"` on `<form>`** → form2
+5. **(no attribute)** → form1 (classic 2-step)
+
+| Version | Flow | Key difference |
+|---------|------|----------------|
+| form1 | Step1 (name/phone/email/consent) → Step2 (status/formation) | Classic multi-step |
+| form2 | Single-step | Simple |
+| form3 | 0 (consent) → 1 (formation) → 2 (status) → 3a/3b (result) → 4 (coords) | Full funnel |
+| form4 | 1 (formation) → 2 (status) → 3a/3b (result) → 4 (coords + consent) | No intro; consent at end; no email |
+
+To activate form4 site-wide: add `"active_form": "4"` to `clients/formations/config.json`.
+To test locally without deploying: append `?form=4` to any URL.
+To revert: remove or change `active_form` in config.json.
+
 ## Key config.json fields
 
 - `client_slug`, `offer_id`, `page_version` — included in lead payloads
@@ -169,7 +190,7 @@ Automated system to generate a new client site from an email.
 
 Every change to `main.css` or `script.js` requires bumping the version query param in all HTML files, otherwise Cloudflare serves stale cached files.
 
-Current versions: `main.css?v=15`, `script.js?v=27`
+Current versions: `main.css?v=18`, `script.js?v=28`
 
 ```bash
 # Bump CSS (replace N with current version)

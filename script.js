@@ -1485,6 +1485,283 @@ function initForm3(form, config) {
   showStep('0', false);
 }
 
+
+// =========================
+// 7d) FUNNEL FORM (form4)
+// =========================
+
+/**
+ * Form4: form3 without step 0, consent checkbox moved to step 4, email removed from step 4.
+ * Activate: set "active_form": "4" in config.json  OR  append ?form=4 to any URL.
+ * To revert: change active_form to "3" (or remove it) in config.json.
+ *
+ * Flow: 1 (formation) → 2 (statut) → 3a/3b (résultat) → 4 (coordonnées + consent).
+ */
+function initForm4(form, config) {
+  let lastResultStep = '3b';
+
+  const STEPPER_STATES = {
+    '1':  ['active', null,     null],
+    '2':  ['done',   'active', null],
+    '3a': ['done',   'done',   'active'],
+    '3b': ['done',   'done',   'active'],
+    '4':  ['done',   'done',   'active'],
+  };
+
+  const stepperEl = form.querySelector('.f3-stepper');
+
+  function updateStepper(sid) {
+    if (!stepperEl) return;
+    const states = STEPPER_STATES[sid] || [null, null, null];
+    // Stepper always visible (no step 0 intro)
+    stepperEl.classList.remove('f3-stepper--hidden');
+    stepperEl.querySelectorAll('.f3-stepper-step').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (states[i]) el.classList.add(states[i]);
+    });
+    stepperEl.querySelectorAll('.f3-stepper-line').forEach((el, i) => {
+      el.classList.toggle('done', states[i] === 'done');
+    });
+  }
+
+  function showStep(id, scroll = true) {
+    const sid = String(id);
+    form.querySelectorAll('.f3-step').forEach(s => {
+      const show = s.dataset.step === sid;
+      s.hidden = !show;
+      s.style.display = show ? '' : 'none';
+    });
+    updateStepper(sid);
+    clearFormError(form);
+    if (scroll) {
+      const card = form.closest('section');
+      if (card && window.innerWidth < 768) {
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      }
+    }
+  }
+
+  // ── DOM modifications ──
+
+  // Hide step 0 (intro screen — not used in form4)
+  const step0 = form.querySelector('.f3-step[data-step="0"]');
+  if (step0) { step0.hidden = true; step0.style.display = 'none'; }
+
+  // Hide "← Retour" in step 1 (nowhere to go back to)
+  const backTo0Btn = form.querySelector('[data-action="back-to-0"]');
+  if (backTo0Btn) { backTo0Btn.hidden = true; backTo0Btn.style.display = 'none'; }
+
+  // Modify step 4: remove email, add real consent checkbox, rename submit button
+  const step4 = form.querySelector('.f3-step[data-step="4"]');
+  if (step4) {
+    // Remove email field
+    const emailInput = step4.querySelector('#email');
+    if (emailInput) {
+      const emailWrap = emailInput.closest('div');
+      if (emailWrap) emailWrap.remove();
+    }
+
+    // Replace hidden consent_marketing with a real checkbox
+    const hiddenConsent = step4.querySelector('input[name="consent_marketing"]');
+    if (hiddenConsent) hiddenConsent.remove();
+
+    const consentLabel = document.createElement('label');
+    consentLabel.className = 'f3-checkbox-row';
+    consentLabel.innerHTML =
+      '<input type="checkbox" id="f4_consent" name="consent_marketing" />'
+      + '<span class="f3-consent-text">J’accepte d’être recontacté(e) par un conseiller en formations pour vérifier mes droits CPF.</span>';
+    const btnRow4 = step4.querySelector('.f3-btn-row');
+    if (btnRow4) step4.insertBefore(consentLabel, btnRow4);
+    else step4.appendChild(consentLabel);
+
+    // Rename submit button
+    const submitBtn4 = step4.querySelector('button[type="submit"]');
+    if (submitBtn4) submitBtn4.textContent = 'Recevoir un conseil Gratuit';
+  }
+
+  // Rename step 3b "to-4" button → "Étape suivante"
+  const btn3bTo4 = form.querySelector('.f3-step[data-step="3b"] [data-action="to-4"]');
+  if (btn3bTo4) btn3bTo4.textContent = 'Étape suivante →';
+
+  // Rename step 3a "to-4" button → "Étape suivante"
+  const btn3aTo4 = form.querySelector('.f3-step[data-step="3a"] [data-action="to-4"]');
+  if (btn3aTo4) btn3aTo4.textContent = 'Étape suivante →';
+
+  // ── Step 1: radio enables "Suivant →" ──
+  const btnTo2 = form.querySelector('[data-action="to-2"]');
+  form.querySelectorAll('[name="formation_choice"]').forEach(r => {
+    r.addEventListener('change', () => { if (btnTo2) btnTo2.disabled = false; });
+  });
+
+  // ── Pré-sélection formation (static formation pages) ──
+  const preselectFormation = form.dataset.preselectFormation;
+  if (preselectFormation) {
+    const matchingRadio = form.querySelector(`[name="formation_choice"][value="${preselectFormation}"]`);
+    if (matchingRadio) {
+      matchingRadio.checked = true;
+      const hiddenF = form.querySelector('#formation_interest_val');
+      if (hiddenF) {
+        hiddenF.value = preselectFormation === 'permis-cases'
+          ? 'Permis de conduire / CACES'
+          : preselectFormation;
+      }
+      if (btnTo2) btnTo2.disabled = false;
+    }
+  }
+
+  // ── Step 2: radio enables "Voir mes résultats →" ──
+  const btnResult = form.querySelector('[data-action="result"]');
+  form.querySelectorAll('[name="professional_status"]').forEach(r => {
+    r.addEventListener('change', () => { if (btnResult) btnResult.disabled = false; });
+  });
+
+  // ── Navigation ──
+  form.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.type === 'submit' || btn.disabled) return;
+    const action = btn.dataset.action;
+
+    if (action === 'to-2')      { showStep('2'); return; }
+    if (action === 'to-4')      { showStep('4'); return; }
+    if (action === 'back-to-1') { showStep('1'); return; }
+    if (action === 'back-to-2') { showStep('2'); return; }
+    if (action === 'back-to-3') { showStep(lastResultStep); return; }
+
+    if (action === 'result') {
+      const status    = form.querySelector('[name="professional_status"]:checked')?.value;
+      const formation = form.querySelector('[name="formation_choice"]:checked')?.value;
+
+      const hiddenF = form.querySelector('#formation_interest_val');
+      if (hiddenF) {
+        hiddenF.value = formation === 'permis-cases'
+          ? 'Permis de conduire / CACES'
+          : (formation || '');
+      }
+
+      const ineligible = status === 'etudiant'
+        || status === 'fonction_publique'
+        || formation === 'permis-cases';
+
+      lastResultStep = ineligible ? '3a' : '3b';
+      showStep(lastResultStep);
+    }
+  });
+
+  // ── form_start event ──
+  const formStartOnce = (() => {
+    let fired = false;
+    return () => {
+      if (fired) return; fired = true;
+      emitEvent('form_start', { client_slug: config.client_slug, offer_id: form.dataset.offerId || config.offer_id });
+    };
+  })();
+  form.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('focus',  formStartOnce, { passive: true });
+    el.addEventListener('change', formStartOnce, { passive: true });
+  });
+
+  form.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('input-error'), { passive: true });
+  });
+
+  // ── Submit ──
+  const submitBtn     = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn?.textContent || '';
+
+  // bfcache restore: reset to step 1
+  window.addEventListener('pageshow', e => {
+    if (!e.persisted || !submitBtn) return;
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('btn-loading');
+    if (originalLabel) submitBtn.textContent = originalLabel;
+    clearFormError(form);
+    showStep('1', false);
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    clearFormError(form);
+
+    if (!config.form_action || config.form_action === 'APPS_SCRIPT_URL') {
+      showFormError(form, "Le formulaire n'est pas encore configuré.");
+      return;
+    }
+
+    // Honeypot
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot?.value.trim()) return;
+
+    // Validate consent checkbox first
+    const consentCb = form.querySelector('#f4_consent');
+    if (consentCb && !consentCb.checked) {
+      consentCb.classList.add('input-error');
+      showFormError(form, "Veuillez accepter d'être recontacté(e) pour continuer.");
+      return;
+    }
+
+    // Validate required fields (only visible step 4)
+    let valid = true, phoneInvalid = false;
+    for (const inp of form.querySelectorAll('input[required]')) {
+      const stepEl = inp.closest('.f3-step');
+      if (stepEl && stepEl.hidden) continue;
+      const empty    = !inp.value.trim();
+      const badPhone = inp.type === 'tel' && !empty && !isValidFrenchPhone(inp.value);
+      inp.classList.toggle('input-error', empty || badPhone);
+      if (badPhone) phoneInvalid = true;
+      if (empty || badPhone) valid = false;
+    }
+
+    if (!valid) {
+      showFormError(form, phoneInvalid
+        ? 'Numéro de téléphone invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).'
+        : 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.textContent = '';
+    }
+
+    try {
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
+      const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
+
+      emitEvent('form_submit', {
+        status:       'attempt',
+        client_slug:  payload.client_slug,
+        offer_id:     payload.offer_id,
+        page_version: payload.page_version,
+        utm_source:   payload.utm.source,
+        utm_medium:   payload.utm.medium,
+        utm_campaign: payload.utm.campaign,
+        utm_term:     payload.utm.term,
+        utm_content:  payload.utm.content
+      });
+
+      await postLead(config.form_action, payload);
+      saveEnhancedConversionsData(payload);
+      emitEvent('form_submit', { status: 'success', client_slug: payload.client_slug, security_code: securityCode });
+      window.location.href = `thank-you.html?code=${securityCode}`;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.';
+      emitEvent('form_submit', { status: 'error', message });
+      showFormError(form, message);
+      savePendingLead(buildLeadPayload(form, config), message);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-loading');
+        if (originalLabel) submitBtn.textContent = originalLabel;
+      }
+    }
+  });
+
+  // Start at step 1 (no intro)
+  showStep('1', false);
+}
+
 // =========================
 // CPF CTA Bar
 // =========================
@@ -1614,11 +1891,17 @@ async function init() {
     retryPendingLead(config.form_action).catch(() => {});
 
     // Init form BEFORE body.ready so the correct state is set before the page is visible.
+    // Feature flag:  config.active_form = "4"  OR  ?form=4 URL param  → form4 (new UX)
     // data-form="3"       → funnel éligibilité multi-étapes (form3)
     // data-simple="true"  → formulaire simple 1-étape (form2)
     // (aucun attribut)    → formulaire classique 2-étapes (form1 — revert: supprimer data-form/data-simple)
     if (form) {
-      if (form.dataset.form === "3") {
+      // ?form=N in URL overrides config.active_form (useful for testing without deploying)
+      const formOverride = new URLSearchParams(window.location.search).get('form')
+        || String(config.active_form || '');
+      if (formOverride === '4') {
+        initForm4(form, config);
+      } else if (form.dataset.form === "3") {
         initForm3(form, config);
       } else if (form.dataset.simple === "true") {
         initSimpleForm(form, config);

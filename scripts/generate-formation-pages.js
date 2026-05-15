@@ -398,7 +398,6 @@ ${buildSubpagesNav(f, allFormations)}
 
               <!-- ── Étape 4 : coordonnées ── -->
               <div class="f3-step" data-step="4" hidden style="display:none">
-                <p class="f3-question">Vos coordonnées</p>
                 <div class="form-name-row">
                   <div>
                     <label for="first_name">${config.field_first_name_label}</label>
