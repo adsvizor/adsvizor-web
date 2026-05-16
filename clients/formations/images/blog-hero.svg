@@ -167,6 +167,4 @@
     <text x="37" y="91" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#d97706" font-weight="600">Astuces</text>
   </g>
 
-  <!-- Connecting dots between book and bottom cards -->
-  <line x1="450" y1="330" x2="450" y2="345" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.4"/>
-</svg>
+  <!-- Connect

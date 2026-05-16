@@ -1348,7 +1348,13 @@ function initForm3(form, config) {
     const action = btn.dataset.action;
 
     if (action === 'to-1')      { showStep('1'); return; }
-    if (action === 'to-2')      { showStep('2'); return; }
+    if (action === 'to-2') {
+      const f4Formation = form.querySelector('[name="formation_choice"]:checked')?.value || '';
+      sendPartialLead(form, config, '1', {
+        formation_interest: f4Formation === 'permis-cases' ? 'Permis de conduire / CACES' : f4Formation,
+      });
+      showStep('2'); return;
+    }
     if (action === 'to-4')      { showStep('4'); return; }
     if (action === 'back-to-0') { showStep('0'); return; }
     if (action === 'back-to-1') { showStep('1'); return; }
@@ -1489,6 +1495,36 @@ function initForm3(form, config) {
 // =========================
 // 7d) FUNNEL FORM (form4)
 // =========================
+
+// =========================
+// Partial lead — best-effort send at each funnel step
+// =========================
+
+async function sendPartialLead(form, config, step, extraData) {
+  if (!config.form_action || config.form_action === 'APPS_SCRIPT_URL') return;
+  try {
+    const utm = {};
+    ['source','medium','campaign','term','content'].forEach(k => {
+      const el = form.querySelector('#utm_' + k);
+      utm[k] = el ? el.value : '';
+    });
+    const sqEl = form.querySelector('#search_query');
+    const payload = {
+      partial:           true,
+      partial_step:      step,
+      client_slug:       config.client_slug || '',
+      offer_id:          config.offer_id    || form.dataset.offerId || '',
+      page_version:      config.page_version || '',
+      consent_url:       window.location.href,
+      consent_timestamp: new Date().toISOString(),
+      consent_text:      'partial',
+      utm,
+      search_query: sqEl ? sqEl.value : '',
+      ...extraData,
+    };
+    await postLead(config.form_action, payload);
+  } catch (_) { /* silent fail — partials are best-effort */ }
+}
 
 /**
  * Form4: form3 without step 0, consent checkbox moved to step 4, email removed from step 4.
@@ -1641,6 +1677,11 @@ function initForm4(form, config) {
       const ineligible = status === 'etudiant'
         || status === 'fonction_publique'
         || formation === 'permis-cases';
+
+      sendPartialLead(form, config, '2', {
+        formation_interest: formation === 'permis-cases' ? 'Permis de conduire / CACES' : (formation || ''),
+        professional_status: status || '',
+      });
 
       lastResultStep = ineligible ? '3a' : '3b';
       showStep(lastResultStep);
@@ -1932,7 +1973,13 @@ function initForm5(form, config) {
     if (!btn || btn.type === 'submit' || btn.disabled) return;
     const action = btn.dataset.action;
 
-    if (action === 'to-2')      { showStep('2'); return; }
+    if (action === 'to-2') {
+      const f5Formation = selFormation ? selFormation.value : '';
+      sendPartialLead(form, config, '1', {
+        formation_interest: f5Formation === 'permis-cases' ? 'Permis de conduire / CACES' : f5Formation,
+      });
+      showStep('2'); return;
+    }
     if (action === 'to-4')      { showStep('4'); return; }
     if (action === 'back-to-1') { showStep('1'); return; }
     if (action === 'back-to-2') { showStep('2'); return; }
@@ -1946,6 +1993,10 @@ function initForm5(form, config) {
       if (hiddenF) hiddenF.value = formation === 'permis-cases' ? 'Permis de conduire / CACES' : (formation || '');
 
       const ineligible = status === 'etudiant' || status === 'fonction_publique' || formation === 'permis-cases';
+      sendPartialLead(form, config, '2', {
+        formation_interest: formation === 'permis-cases' ? 'Permis de conduire / CACES' : (formation || ''),
+        professional_status: status || '',
+      });
       lastResultStep = ineligible ? '3a' : '3b';
       showStep(lastResultStep);
     }

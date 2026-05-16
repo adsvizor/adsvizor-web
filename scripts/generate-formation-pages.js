@@ -509,14 +509,4 @@ for (const f of formations) {
 }
 
 // Generate sitemap.xml at repo root
-const sitemapPath = path.join(ROOT, 'sitemap.xml');
-const sitemap = buildSitemap(formations, config, baseUrl);
-writeFileSync(sitemapPath, sitemap, 'utf-8');
-console.log(`\n[sitemap] sitemap.xml generated`);
-console.log(`   → ${baseUrl}/sitemap.xml`);
-
-console.log(`\n[done] ${formations.length} pages generated.`);
-console.log(`\nNext steps:`);
-console.log(`  git add clients/${CLIENT_SLUG}/pages/formation-*.html`);
-console.log(`  git commit -m "feat(${CLIENT_SLUG}): generate static formation pages"`);
-console.log(`  git push`);
+const sitemapPath = pat
