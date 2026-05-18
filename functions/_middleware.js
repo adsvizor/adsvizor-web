@@ -113,6 +113,13 @@ export async function onRequest(context) {
             rootHtml = rootHtml.replaceAll(`{{${key}}}`, value);
           }
         }
+        // Inject hero image preload in <head> so the browser starts fetching
+        // the image immediately at parse time — before any JS runs.
+        // This is the primary fix for LCP on the hero image.
+        if (config.hero_image_url) {
+          const preloadTag = `  <link rel="preload" as="image" href="${config.hero_image_url}" fetchpriority="high">\n`;
+          rootHtml = rootHtml.replace('</head>', preloadTag + '</head>');
+        }
       }
     } catch (_) { /* serve template as-is if config fetch fails */ }
 
