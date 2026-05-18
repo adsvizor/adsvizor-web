@@ -2537,18 +2537,6 @@ async function init() {
     // Inject active_* keys for formation detail page BEFORE placeholder rendering.
     resolveActiveFormation(config);
 
-    // Preload hero image as early as possible to improve LCP.
-    // The src is a {{placeholder}} so the browser can't discover it at parse time;
-    // injecting a <link rel="preload"> right after config loads is the earliest we can act.
-    if (config.hero_image_url) {
-      const preload = document.createElement('link');
-      preload.rel = 'preload';
-      preload.as = 'image';
-      preload.href = config.hero_image_url;
-      preload.fetchPriority = 'high';
-      document.head.appendChild(preload);
-    }
-
     // Apply config values to head first (title/meta), then render placeholders.
     applyConfigToHead(config);
     walkAndReplaceTextNodes(document.body, config);
