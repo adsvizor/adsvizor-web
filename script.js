@@ -2107,6 +2107,326 @@ function initForm5(form, config) {
 }
 
 // =========================
+// Form 6 — Form5 (select dropdowns) with:
+//   • Step 3b: simplified eligible message, no badges/gratuit label
+//   • Step 4: no consent checkbox (implicit via legal notice); renamed submit button
+//   • Step 4: small RGPD legal notice at bottom
+// Activate: "active_form": "6" in config.json  OR  ?form=6 in URL
+// =========================
+
+function initForm6(form, config) {
+  let lastResultStep = '3b';
+
+  const STEPPER_STATES = {
+    '1':  ['active', null,     null],
+    '2':  ['done',   'active', null],
+    '3a': ['done',   'done',   'active'],
+    '3b': ['done',   'done',   'active'],
+    '4':  ['done',   'done',   'active'],
+  };
+
+  const stepperEl = form.querySelector('.f3-stepper');
+
+  function updateStepper(sid) {
+    if (!stepperEl) return;
+    const states = STEPPER_STATES[sid] || [null, null, null];
+    stepperEl.classList.remove('f3-stepper--hidden');
+    stepperEl.querySelectorAll('.f3-stepper-step').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (states[i]) el.classList.add(states[i]);
+    });
+    stepperEl.querySelectorAll('.f3-stepper-line').forEach((el, i) => {
+      el.classList.toggle('done', states[i] === 'done');
+    });
+  }
+
+  function showStep(id, scroll = true) {
+    const sid = String(id);
+    form.querySelectorAll('.f3-step').forEach(s => {
+      const show = s.dataset.step === sid;
+      s.hidden = !show;
+      s.style.display = show ? '' : 'none';
+    });
+    updateStepper(sid);
+    clearFormError(form);
+    if (scroll) {
+      const card = form.closest('section');
+      if (card && window.innerWidth < 768) {
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      }
+    }
+  }
+
+  // ── Hide step 0 ──
+  const step0 = form.querySelector('.f3-step[data-step="0"]');
+  if (step0) { step0.hidden = true; step0.style.display = 'none'; }
+
+  const backTo0Btn = form.querySelector('[data-action="back-to-0"]');
+  if (backTo0Btn) { backTo0Btn.hidden = true; backTo0Btn.style.display = 'none'; }
+
+  // ── Replace step 1 radio group with <select> ──
+  const step1 = form.querySelector('.f3-step[data-step="1"]');
+  let selFormation = null;
+  if (step1) {
+    const radioGroup1 = step1.querySelector('.f3-options');
+    if (radioGroup1) {
+      const radios1 = radioGroup1.querySelectorAll('input[type="radio"]');
+      selFormation = document.createElement('select');
+      selFormation.name = 'formation_choice';
+      selFormation.className = 'f5-select';
+      selFormation.required = true;
+      const defOpt = document.createElement('option');
+      defOpt.value = '';
+      defOpt.textContent = '— Choisissez votre formation —';
+      defOpt.disabled = true;
+      defOpt.selected = true;
+      selFormation.appendChild(defOpt);
+      radios1.forEach(r => {
+        const lbl = r.closest('label');
+        const opt = document.createElement('option');
+        opt.value = r.value;
+        const span = lbl ? lbl.querySelector('.f3-opt-label') : null;
+        opt.textContent = span ? span.textContent : r.value;
+        selFormation.appendChild(opt);
+      });
+      radioGroup1.replaceWith(selFormation);
+    }
+  }
+
+  // ── Replace step 2 radio group with <select> ──
+  const step2 = form.querySelector('.f3-step[data-step="2"]');
+  let selStatus = null;
+  if (step2) {
+    const radioGroup2 = step2.querySelector('.f3-options');
+    if (radioGroup2) {
+      const radios2 = radioGroup2.querySelectorAll('input[type="radio"]');
+      selStatus = document.createElement('select');
+      selStatus.name = 'professional_status';
+      selStatus.className = 'f5-select';
+      selStatus.required = true;
+      const defOpt2 = document.createElement('option');
+      defOpt2.value = '';
+      defOpt2.textContent = '— Sélectionnez votre statut —';
+      defOpt2.disabled = true;
+      defOpt2.selected = true;
+      selStatus.appendChild(defOpt2);
+      radios2.forEach(r => {
+        const lbl = r.closest('label');
+        const opt = document.createElement('option');
+        opt.value = r.value;
+        const span = lbl ? lbl.querySelector('.f3-opt-label') : null;
+        opt.textContent = span ? span.textContent : r.value;
+        selStatus.appendChild(opt);
+      });
+      radioGroup2.replaceWith(selStatus);
+    }
+  }
+
+  // ── Modify step 3b: simplified eligible message (no badges, no gratuit label) ──
+  const step3b = form.querySelector('.f3-step[data-step="3b"]');
+  if (step3b) {
+    const card = step3b.querySelector('.f3-result-card--eligible');
+    if (card) {
+      const emoji = card.querySelector('.f3-result-emoji');
+      card.innerHTML = '';
+      if (emoji) card.appendChild(emoji);
+
+      const title = document.createElement('p');
+      title.className = 'f3-result-title f3-result-title--good';
+      title.textContent = 'Félicitations — vous êtes éligible !';
+      card.appendChild(title);
+
+      const msg = document.createElement('p');
+      msg.className = 'f3-result-text';
+      msg.textContent = 'Maintenant, informez-vous gratuitement et sans engagement sur la formation.';
+      card.appendChild(msg);
+    }
+    const btn3bTo4 = step3b.querySelector('[data-action="to-4"]');
+    if (btn3bTo4) btn3bTo4.textContent = 'Continuer →';
+  }
+
+  // ── Rename step 3a "to-4" button ──
+  const btn3aTo4 = form.querySelector('.f3-step[data-step="3a"] [data-action="to-4"]');
+  if (btn3aTo4) btn3aTo4.textContent = 'Étape suivante →';
+
+  // ── Modify step 4: remove email, NO checkbox, rename submit, add legal notice ──
+  const step4 = form.querySelector('.f3-step[data-step="4"]');
+  if (step4) {
+    // Remove email field
+    const emailInput = step4.querySelector('#email');
+    if (emailInput) { const w = emailInput.closest('div'); if (w) w.remove(); }
+
+    // Keep hidden consent_marketing="true" — implicit consent via legal notice below
+
+    // Rename submit button
+    const submitBtn4 = step4.querySelector('button[type="submit"]');
+    if (submitBtn4) submitBtn4.textContent = "J’envoie ma demande au centre";
+
+    // Add RGPD legal notice (very small) after the btn row
+    const legalNotice = document.createElement('p');
+    legalNotice.className = 'f6-legal-notice';
+    legalNotice.innerHTML = 'En cliquant sur « J’envoie ma demande », vous déclarez avoir pris connaissance de la politique de protection des données de <a href="https://formations.adsvizor.com/" target="_blank" rel="noopener">formations.adsvizor.com</a> et acceptez d’être recontacté par le centre de formation pour obtenir plus d’informations.';
+    step4.appendChild(legalNotice);
+  }
+
+  // ── Wire step 1 select → enable "Suivant" ──
+  const btnTo2 = form.querySelector('[data-action="to-2"]');
+  if (selFormation && btnTo2) {
+    btnTo2.disabled = true;
+    selFormation.addEventListener('change', () => { btnTo2.disabled = !selFormation.value; });
+  }
+
+  // ── Wire step 2 select → enable "Voir mes résultats" ──
+  const btnResult = form.querySelector('[data-action="result"]');
+  if (selStatus && btnResult) {
+    btnResult.disabled = true;
+    selStatus.addEventListener('change', () => { btnResult.disabled = !selStatus.value; });
+  }
+
+  // ── Pré-sélection formation (static pages) ──
+  const preselectFormation = form.dataset.preselectFormation;
+  if (preselectFormation && selFormation) {
+    selFormation.value = preselectFormation;
+    if (selFormation.value && btnTo2) btnTo2.disabled = false;
+    const hiddenF = form.querySelector('#formation_interest_val');
+    if (hiddenF) hiddenF.value = preselectFormation === 'permis-cases' ? 'Permis de conduire / CACES' : preselectFormation;
+  }
+
+  // ── Navigation ──
+  form.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.type === 'submit' || btn.disabled) return;
+    const action = btn.dataset.action;
+
+    if (action === 'to-2') {
+      const f6Formation = selFormation ? selFormation.value : '';
+      sendPartialLead(form, config, '1', {
+        formation_interest: f6Formation === 'permis-cases' ? 'Permis de conduire / CACES' : f6Formation,
+      });
+      showStep('2'); return;
+    }
+    if (action === 'to-4')      { showStep('4'); return; }
+    if (action === 'back-to-1') { showStep('1'); return; }
+    if (action === 'back-to-2') { showStep('2'); return; }
+    if (action === 'back-to-3') { showStep(lastResultStep); return; }
+
+    if (action === 'result') {
+      const status    = selStatus ? selStatus.value : '';
+      const formation = selFormation ? selFormation.value : '';
+
+      const hiddenF = form.querySelector('#formation_interest_val');
+      if (hiddenF) hiddenF.value = formation === 'permis-cases' ? 'Permis de conduire / CACES' : (formation || '');
+
+      const ineligible = status === 'etudiant' || status === 'fonction_publique' || formation === 'permis-cases';
+      sendPartialLead(form, config, '2', {
+        formation_interest: formation === 'permis-cases' ? 'Permis de conduire / CACES' : (formation || ''),
+        professional_status: status || '',
+      });
+      lastResultStep = ineligible ? '3a' : '3b';
+      showStep(lastResultStep);
+    }
+  });
+
+  // ── form_start event ──
+  const formStartOnce = (() => {
+    let fired = false;
+    return () => {
+      if (fired) return; fired = true;
+      emitEvent('form_start', { client_slug: config.client_slug, offer_id: form.dataset.offerId || config.offer_id });
+    };
+  })();
+  form.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('focus',  formStartOnce, { passive: true });
+    el.addEventListener('change', formStartOnce, { passive: true });
+  });
+  form.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('input-error'), { passive: true });
+  });
+
+  // ── Submit ──
+  const submitBtn     = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn?.textContent || '';
+
+  window.addEventListener('pageshow', e => {
+    if (!e.persisted || !submitBtn) return;
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('btn-loading');
+    if (originalLabel) submitBtn.textContent = originalLabel;
+    clearFormError(form);
+    showStep('1', false);
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    clearFormError(form);
+
+    if (!config.form_action || config.form_action === 'APPS_SCRIPT_URL') {
+      showFormError(form, "Le formulaire n'est pas encore configuré.");
+      return;
+    }
+
+    const honeypot = form.querySelector('input[name="hp_trap"]');
+    if (honeypot?.value.trim()) return;
+
+    // No consent checkbox — implicit consent via visible legal notice
+    let valid = true, phoneInvalid = false;
+    for (const inp of form.querySelectorAll('input[required]')) {
+      const stepEl = inp.closest('.f3-step');
+      if (stepEl && stepEl.hidden) continue;
+      const empty    = !inp.value.trim();
+      const badPhone = inp.type === 'tel' && !empty && !isValidFrenchPhone(inp.value);
+      inp.classList.toggle('input-error', empty || badPhone);
+      if (badPhone) phoneInvalid = true;
+      if (empty || badPhone) valid = false;
+    }
+
+    if (!valid) {
+      showFormError(form, phoneInvalid
+        ? 'Numéro de téléphone invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).'
+        : 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.textContent = '';
+    }
+
+    try {
+      const securityCode = String(Math.floor(100000 + Math.random() * 900000));
+      const payload = buildLeadPayload(form, config);
+      payload.security_code = securityCode;
+
+      emitEvent('form_submit', {
+        status: 'attempt', client_slug: payload.client_slug, offer_id: payload.offer_id,
+        page_version: payload.page_version, utm_source: payload.utm.source,
+        utm_medium: payload.utm.medium, utm_campaign: payload.utm.campaign,
+        utm_term: payload.utm.term, utm_content: payload.utm.content
+      });
+
+      await postLead(config.form_action, payload);
+      saveEnhancedConversionsData(payload);
+      emitEvent('form_submit', { status: 'success', client_slug: payload.client_slug, security_code: securityCode });
+      window.location.href = `thank-you.html?code=${securityCode}`;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.';
+      emitEvent('form_submit', { status: 'error', message });
+      showFormError(form, message);
+      savePendingLead(buildLeadPayload(form, config), message);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-loading');
+        if (originalLabel) submitBtn.textContent = originalLabel;
+      }
+    }
+  });
+
+  showStep('1', false);
+}
+
+
+// =========================
 // CPF CTA Bar
 // =========================
 
@@ -2243,7 +2563,9 @@ async function init() {
       // ?form=N in URL overrides config.active_form (useful for testing without deploying)
       const formOverride = new URLSearchParams(window.location.search).get('form')
         || String(config.active_form || '');
-      if (formOverride === '5') {
+      if (formOverride === '6') {
+        initForm6(form, config);
+      } else if (formOverride === '5') {
         initForm5(form, config);
       } else if (formOverride === '4') {
         initForm4(form, config);
