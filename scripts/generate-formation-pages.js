@@ -509,4 +509,10 @@ for (const f of formations) {
   const filePath     = path.join(outDir, hrefRelative);
   mkdirSync(path.dirname(filePath), { recursive: true });   // ensure subdirectory exists
   const html = assembleHTML(f, config, formations);
-  writeFileSync(file
+  writeFileSync(filePath, html, 'utf-8');
+  console.log(`✅ clients/${CLIENT_SLUG}/pages/${hrefRelative}`);
+  console.log(`   → ${baseUrl}${f.href}`);
+}
+
+// Generate sitemap.xml at repo root
+const sitemapPath = pat
