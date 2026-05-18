@@ -23,7 +23,7 @@
     <meta name="robots" content="index, follow" />
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://formations.adsvizor.com/"},{"@type":"ListItem","position":2,"name":"Bureautique & Informatique","item":"https://formations.adsvizor.com/bureautique/"},{"@type":"ListItem","position":3,"name":"Formation Excel CPF — Apprendre Microsoft Excel Débutant à Expert | AdsVizor","item":"https://formations.adsvizor.com/bureautique/formation-excel.html"}]}</script>
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <style>body{visibility:hidden}</style>
+    <style>body{visibility:hidden}</style><script>document.body.classList.add('ready')</script>
     <link rel="preload" href="/main.css?v=20" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/main.css?v=20" /></noscript>
     <script defer src="/script.js?v=31"></script>
@@ -364,14 +364,20 @@
     <footer>
       <p>© 2026 AdsVizor — Formations professionnelles en ligne.</p>
     </footer>
-    <!-- Google tag (gtag.js) — loaded after render for better PageSpeed -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
-    gtag('config', 'AW-18122720723', { send_page_view: false });
-  </script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
+  gtag('config', 'AW-18122720723', { send_page_view: false });
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3';
+      document.head.appendChild(s);
+    }, 1500);
+  });
+</script>
 </body>
 </html>

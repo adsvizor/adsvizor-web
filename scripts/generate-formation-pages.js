@@ -180,10 +180,10 @@ function assembleHTML(f, config, allFormations) {
     <link rel="preconnect" href="https://images.unsplash.com" />
 
     <link rel="preload" as="image" href="${f.image_url}" fetchpriority="high" />
-    <style>body{visibility:hidden}</style>
-    <link rel="preload" href="/main.css?v=10" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/main.css?v=10" /></noscript>
-    <script defer src="/script.js?v=21"></script>
+    <style>body{visibility:hidden}</style><script>document.body.classList.add('ready')</script>
+    <link rel="preload" href="/main.css?v=20" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/main.css?v=20" /></noscript>
+    <script defer src="/script.js?v=31"></script>
   <style>
     .site-logo { height: 60px; width: auto; }
     @media (min-width: 768px) { .site-logo { height: 72px; } }
@@ -196,15 +196,6 @@ function assembleHTML(f, config, allFormations) {
       header nav { display: block !important; }
     }
   </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
-    gtag('config', 'AW-18122720723', { send_page_view: false });
-  </script>
   </head>
 
   <body>
@@ -434,6 +425,21 @@ ${buildSubpagesNav(f, allFormations)}
     <footer>
       <p>${footerTxt}</p>
     </footer>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
+  gtag('config', 'AW-18122720723', { send_page_view: false });
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3';
+      document.head.appendChild(s);
+    }, 1500);
+  });
+</script>
   </body>
 </html>
 `;
@@ -503,10 +509,4 @@ for (const f of formations) {
   const filePath     = path.join(outDir, hrefRelative);
   mkdirSync(path.dirname(filePath), { recursive: true });   // ensure subdirectory exists
   const html = assembleHTML(f, config, formations);
-  writeFileSync(filePath, html, 'utf-8');
-  console.log(`✅ clients/${CLIENT_SLUG}/pages/${hrefRelative}`);
-  console.log(`   → ${baseUrl}${f.href}`);
-}
-
-// Generate sitemap.xml at repo root
-const sitemapPath = pat
+  writeFileSync(file
