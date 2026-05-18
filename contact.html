@@ -189,8 +189,9 @@
                   <div class="f3-result-emoji">🏆</div>
                   <p class="f3-result-title f3-result-title--good">Félicitations — vous êtes éligible !</p>
                   <p class="f3-result-text">Votre profil correspond aux critères CPF. Financez votre formation sans avance de frais via Mon Compte Formation.</p>
+                  <p class="f3-gratuit-label">✅ 100% gratuit &amp; sans engagement</p>
                   <div class="f3-eligible-badges">
-                    <span>✅ 100% financé</span>
+                    
                     <span>⏱️ Réponse sous 24h</span>
                   </div>
                 </div>
@@ -332,36 +333,67 @@
           <!-- ── Urgency section ── -->
           <div class="contact-section contact-section-urgency">
 
-            <div class="urgency-alert">
-              <div class="urgency-alert-icon" aria-hidden="true">⚠️</div>
-              <div class="urgency-alert-body">
+            <div class="urgency-header">
+              <div class="urgency-header-icon" aria-hidden="true">⏳</div>
+              <div class="urgency-header-body">
                 <h2>{{contact_urgency_title}}</h2>
                 <p>{{contact_urgency_text}}</p>
               </div>
             </div>
 
-            <!-- Cost evolution -->
-            <div class="urgency-costs">
-              <div class="urgency-cost-item urgency-cost-past">
-                <span class="urgency-cost-when">{{contact_urgency_before_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_before_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_before_tag}}</span>
+            <div class="urgency-pain-grid">
+
+              <!-- Pain 1 : complexité administrative -->
+              <div class="urgency-pain-card">
+                <img class="urgency-pain-img" src="{{urgency_pain_1_image}}" alt="" loading="lazy" />
+                <div class="urgency-pain-body">
+                  <span class="urgency-pain-icon" aria-hidden="true">📋</span>
+                  <h3>{{urgency_pain_1_title}}</h3>
+                  <p>{{urgency_pain_1_text}}</p>
+                </div>
               </div>
-              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
-              <div class="urgency-cost-item urgency-cost-now">
-                <span class="urgency-cost-when">{{contact_urgency_now_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_now_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_now_tag}}</span>
+
+              <!-- Pain 2 : reste à charge en hausse -->
+              <div class="urgency-pain-card urgency-pain-card--costs">
+                <div class="urgency-pain-body">
+                  <span class="urgency-pain-icon" aria-hidden="true">📈</span>
+                  <h3>{{urgency_pain_2_title}}</h3>
+                  <p>{{urgency_pain_2_text}}</p>
+                </div>
+                <div class="urgency-costs">
+                  <div class="urgency-cost-item urgency-cost-past">
+                    <span class="urgency-cost-when">{{contact_urgency_before_label}}</span>
+                    <span class="urgency-cost-amount">{{contact_urgency_before_amount}}</span>
+                    <span class="urgency-cost-what">{{contact_urgency_before_tag}}</span>
+                  </div>
+                  <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
+                  <div class="urgency-cost-item urgency-cost-now">
+                    <span class="urgency-cost-when">{{contact_urgency_now_label}}</span>
+                    <span class="urgency-cost-amount">{{contact_urgency_now_amount}}</span>
+                    <span class="urgency-cost-what">{{contact_urgency_now_tag}}</span>
+                  </div>
+                  <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
+                  <div class="urgency-cost-item urgency-cost-future">
+                    <span class="urgency-cost-when">{{contact_urgency_future_label}}</span>
+                    <span class="urgency-cost-amount">{{contact_urgency_future_amount}}</span>
+                    <span class="urgency-cost-what">{{contact_urgency_future_tag}}</span>
+                  </div>
+                </div>
               </div>
-              <div class="urgency-cost-arrow" aria-hidden="true">▶</div>
-              <div class="urgency-cost-item urgency-cost-future">
-                <span class="urgency-cost-when">{{contact_urgency_future_label}}</span>
-                <span class="urgency-cost-amount">{{contact_urgency_future_amount}}</span>
-                <span class="urgency-cost-what">{{contact_urgency_future_tag}}</span>
+
+              <!-- Pain 3 : formations retirées -->
+              <div class="urgency-pain-card">
+                <img class="urgency-pain-img" src="{{urgency_pain_3_image}}" alt="" loading="lazy" />
+                <div class="urgency-pain-body">
+                  <span class="urgency-pain-icon" aria-hidden="true">🚫</span>
+                  <h3>{{urgency_pain_3_title}}</h3>
+                  <p>{{urgency_pain_3_text}}</p>
+                </div>
               </div>
+
             </div>
 
-            <!-- Exception notice -->
+            <!-- Exception demandeurs d'emploi -->
             <div class="urgency-chomage">
               <span aria-hidden="true">✅</span>
               <p>{{contact_urgency_exception_text}}</p>
