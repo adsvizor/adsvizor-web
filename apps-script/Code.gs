@@ -1,9 +1,14 @@
 /**
- * AdsVizor Lead Capture — Google Apps Script Web App  v8
+ * AdsVizor Lead Capture — Google Apps Script Web App  v9
  *
  * Source of truth: this file lives at apps-script/Code.gs in the repo.
  * To deploy: copy entire contents → paste into script.google.com editor →
  *            save → Deploy → Manage deployments → New version.
+ *
+ * Changes in v9:
+ * - Upsert key priority: email → phone → consent_ip
+ *   Partial leads (steps 1 & 2) arrive without email/phone; matching by IP
+ *   ensures they update the same row rather than creating duplicates.
  *
  * Changes in v8:
  * - visitor_email is now OPTIONAL (simple 1-step form has no email field)
@@ -99,10 +104,11 @@ function doPost(e) {
     const clientSlug = asString_(payload.client_slug).trim();
     if (!clientSlug) return jsonResponse_({ status: "error", message: "client_slug is required." });
 
-    // email is optional — simple 1-step form omits it; use phone as fallback upsert key
-    const email = asString_(payload.visitor_email).trim().toLowerCase();
+    // email is optional — simple 1-step form omits it; use phone then IP as fallback upsert keys
+    const email     = asString_(payload.visitor_email).trim().toLowerCase();
     if (email && !isValidEmail_(email)) return jsonResponse_({ status: "error", message: "visitor_email is invalid." });
-    const phone = asString_(payload.visitor_phone).trim();
+    const phone     = asString_(payload.visitor_phone).trim();
+    const consentIp = asString_(payload.consent_ip).trim();
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     if (!ss) return jsonResponse_({ status: "error", message: "No active spreadsheet." });
@@ -129,20 +135,28 @@ function doPost(e) {
       const utm       = (payload.utm && typeof payload.utm === "object") ? payload.utm : {};
       const formation = mergeFormation_(payload.formation_interest, payload.visitor_message);
 
-      const emailColIdx = colMap["Email"];
-      const phoneColIdx = colMap["Téléphone"];
+      const emailColIdx    = colMap["Email"];
+      const phoneColIdx    = colMap["Téléphone"];
+      const consentIpColIdx = colMap["Consent IP"];
       const data = sheet.getDataRange().getValues();
       let existingSheetRow = -1;
 
-      // Upsert key: email when provided, phone number as fallback
+      // Upsert key priority: email → phone → consent_ip
+      // Partial leads (steps 1 & 2) arrive without email/phone; IP matching
+      // prevents duplicate rows for the same visitor session.
       for (let i = 1; i < data.length; i++) {
-        if (email) {
+        if (email && emailColIdx !== undefined) {
           if (asString_(data[i][emailColIdx]).trim().toLowerCase() === email) {
             existingSheetRow = i + 1; // 1-based
             break;
           }
-        } else if (phone) {
+        } else if (phone && phoneColIdx !== undefined) {
           if (asString_(data[i][phoneColIdx]).trim() === phone) {
+            existingSheetRow = i + 1; // 1-based
+            break;
+          }
+        } else if (consentIp && consentIpColIdx !== undefined) {
+          if (asString_(data[i][consentIpColIdx]).trim() === consentIp) {
             existingSheetRow = i + 1; // 1-based
             break;
           }
