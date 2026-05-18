@@ -120,6 +120,11 @@ export async function onRequest(context) {
           const preloadTag = `  <link rel="preload" as="image" href="${config.hero_image_url}" fetchpriority="high">\n`;
           rootHtml = rootHtml.replace('</head>', preloadTag + '</head>');
         }
+        // Mark body as server-rendered so CSS reveals it immediately,
+        // bypassing the JS-driven FOUC guard (body.ready). This eliminates
+        // the config fetch latency from LCP since all placeholders are
+        // already replaced above.
+        rootHtml = rootHtml.replace('<body', '<body class="server-rendered"');
       }
     } catch (_) { /* serve template as-is if config fetch fails */ }
 
