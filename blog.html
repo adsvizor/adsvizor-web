@@ -403,14 +403,21 @@
       <p>{{footer_text}}</p>
     </footer>
 
-  <!-- Google tag (gtag.js) — loaded after render for better PageSpeed -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3"></script>
+  <!-- Google tag — deferred until after page load to avoid blocking LCP/TBT -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'GT-KD7C7TR3', { send_page_view: false });
     gtag('config', 'AW-18122720723', { send_page_view: false });
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-KD7C7TR3';
+        document.head.appendChild(s);
+      }, 1500);
+    });
   </script>
   <script src="/script.js?v=31"></script>
   </body>
