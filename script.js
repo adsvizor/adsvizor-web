@@ -1867,8 +1867,10 @@ function initForm5(form, config) {
       const radios1 = radioGroup1.querySelectorAll('input[type="radio"]');
       selFormation = document.createElement('select');
       selFormation.name = 'formation_choice';
+      selFormation.id = 'formation_choice_select';
       selFormation.className = 'f5-select';
       selFormation.required = true;
+      selFormation.setAttribute('aria-label', 'Formation souhaitée');
       const defOpt = document.createElement('option');
       defOpt.value = '';
       defOpt.textContent = '— Choisissez votre formation —';
@@ -1896,8 +1898,10 @@ function initForm5(form, config) {
       const radios2 = radioGroup2.querySelectorAll('input[type="radio"]');
       selStatus = document.createElement('select');
       selStatus.name = 'professional_status';
+      selStatus.id = 'professional_status_select';
       selStatus.className = 'f5-select';
       selStatus.required = true;
+      selStatus.setAttribute('aria-label', 'Statut professionnel');
       const defOpt2 = document.createElement('option');
       defOpt2.value = '';
       defOpt2.textContent = '— Sélectionnez votre statut —';
@@ -2173,8 +2177,10 @@ function initForm6(form, config) {
       const radios1 = radioGroup1.querySelectorAll('input[type="radio"]');
       selFormation = document.createElement('select');
       selFormation.name = 'formation_choice';
+      selFormation.id = 'formation_choice_select';
       selFormation.className = 'f5-select';
       selFormation.required = true;
+      selFormation.setAttribute('aria-label', 'Formation souhaitée');
       const defOpt = document.createElement('option');
       defOpt.value = '';
       defOpt.textContent = '— Choisissez votre formation —';
@@ -2202,8 +2208,10 @@ function initForm6(form, config) {
       const radios2 = radioGroup2.querySelectorAll('input[type="radio"]');
       selStatus = document.createElement('select');
       selStatus.name = 'professional_status';
+      selStatus.id = 'professional_status_select';
       selStatus.className = 'f5-select';
       selStatus.required = true;
+      selStatus.setAttribute('aria-label', 'Statut professionnel');
       const defOpt2 = document.createElement('option');
       defOpt2.value = '';
       defOpt2.textContent = '— Sélectionnez votre statut —';
