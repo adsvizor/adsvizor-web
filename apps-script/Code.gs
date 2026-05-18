@@ -135,33 +135,39 @@ function doPost(e) {
       const utm       = (payload.utm && typeof payload.utm === "object") ? payload.utm : {};
       const formation = mergeFormation_(payload.formation_interest, payload.visitor_message);
 
-      const emailColIdx    = colMap["Email"];
-      const phoneColIdx    = colMap["Téléphone"];
+      const emailColIdx     = colMap["Email"];
+      const phoneColIdx     = colMap["Téléphone"];
       const consentIpColIdx = colMap["Consent IP"];
       const data = sheet.getDataRange().getValues();
-      let existingSheetRow = -1;
 
-      // Upsert key priority: email → phone → consent_ip
-      // Partial leads (steps 1 & 2) arrive without email/phone; IP matching
-      // prevents duplicate rows for the same visitor session.
+      // Single pass — collect best candidate for each key, then pick highest priority.
+      // This handles the case where a partial (no phone) is later matched by a full
+      // submission that has a phone: the IP match bridges the gap.
+      let rowByEmail = -1, rowByPhone = -1, rowByIp = -1;
+
       for (let i = 1; i < data.length; i++) {
-        if (email && emailColIdx !== undefined) {
+        if (rowByEmail === -1 && email && emailColIdx !== undefined) {
           if (asString_(data[i][emailColIdx]).trim().toLowerCase() === email) {
-            existingSheetRow = i + 1; // 1-based
-            break;
-          }
-        } else if (phone && phoneColIdx !== undefined) {
-          if (asString_(data[i][phoneColIdx]).trim() === phone) {
-            existingSheetRow = i + 1; // 1-based
-            break;
-          }
-        } else if (consentIp && consentIpColIdx !== undefined) {
-          if (asString_(data[i][consentIpColIdx]).trim() === consentIp) {
-            existingSheetRow = i + 1; // 1-based
-            break;
+            rowByEmail = i + 1;
           }
         }
+        if (rowByPhone === -1 && phone && phoneColIdx !== undefined) {
+          if (asString_(data[i][phoneColIdx]).trim() === phone) {
+            rowByPhone = i + 1;
+          }
+        }
+        if (rowByIp === -1 && consentIp && consentIpColIdx !== undefined) {
+          if (asString_(data[i][consentIpColIdx]).trim() === consentIp) {
+            rowByIp = i + 1;
+          }
+        }
+        if (rowByEmail > 0 && rowByPhone > 0 && rowByIp > 0) break; // all found early
       }
+
+      // Priority: email > phone > IP
+      const existingSheetRow = rowByEmail > 0 ? rowByEmail
+                             : rowByPhone > 0 ? rowByPhone
+                             : rowByIp;
 
       if (existingSheetRow > 0) {
         // ── UPDATE ──────────────────────────────────────────────────────
