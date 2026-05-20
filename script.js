@@ -1814,6 +1814,319 @@ if (originalLabel) submitBtn.textContent = originalLabel;
 });
 showStep('1', false);
 }
+
+function initForm7(form, config) {
+  // Step slot mapping (reuses existing HTML data-step attributes):
+  //   data-step="1" → COORDS    (rebuilt: nom + prénom + téléphone)
+  //   data-step="4" → FORMATION (rebuilt: formation dropdown, using radios extracted from step1)
+  //   data-step="2" → STATUS    (radio group converted to select)
+  //   data-step="3b"→ ELIGIBLE result
+  //   data-step="3a"→ INELIGIBLE result
+  // Navigation: 1 → 4 → 2 → 3b|3a
+
+  const STEPPER_STATES = {
+    '1':  ['active', null,    null  ],
+    '4':  ['done',   'active',null  ],
+    '2':  ['done',   'done',  'active'],
+    '3b': ['done',   'done',  'done'],
+    '3a': ['done',   'done',  'done'],
+  };
+
+  const stepperEl = form.querySelector('.f3-stepper');
+  function updateStepper(sid) {
+    if (!stepperEl) return;
+    const states = STEPPER_STATES[sid] || [null,null,null];
+    stepperEl.classList.remove('f3-stepper--hidden');
+    stepperEl.querySelectorAll('.f3-stepper-step').forEach((el,i) => {
+      el.classList.remove('active','done');
+      if (states[i]) el.classList.add(states[i]);
+    });
+    stepperEl.querySelectorAll('.f3-stepper-line').forEach((el,i) => {
+      el.classList.toggle('done', states[i] === 'done');
+    });
+  }
+
+  function showStep(id, scroll=true) {
+    const sid = String(id);
+    form.querySelectorAll('.f3-step').forEach(s => {
+      const show = s.dataset.step === sid;
+      s.hidden = !show; s.style.display = show ? '' : 'none';
+    });
+    updateStepper(sid);
+    clearFormError(form);
+    if (scroll) {
+      const card = form.closest('section');
+      if (card && window.innerWidth < 768)
+        setTimeout(() => card.scrollIntoView({behavior:'smooth',block:'nearest'}), 50);
+    }
+  }
+
+  // Hide step0 (intro, not used)
+  const step0 = form.querySelector('.f3-step[data-step="0"]');
+  if (step0) { step0.hidden=true; step0.style.display='none'; }
+
+  // ── Extract formation options from step1 BEFORE rebuilding it ──────────────
+  const step1El = form.querySelector('.f3-step[data-step="1"]');
+  const formationOptions = [];
+  if (step1El) {
+    step1El.querySelectorAll('input[type="radio"]').forEach(r => {
+      const lbl  = r.closest('label');
+      const span = lbl ? lbl.querySelector('.f3-opt-label') : null;
+      formationOptions.push({ value: r.value, label: span ? span.textContent.trim() : r.value });
+    });
+  }
+
+  // ── STEP 1: rebuild as COORDS (Nom + Prénom + Téléphone) ───────────────────
+  if (step1El) {
+    step1El.innerHTML = '';
+
+    const titleEl = document.createElement('p');
+    titleEl.className = 'f3-step-title';
+    titleEl.textContent = 'Recevez votre bilan CPF gratuit et sans engagement.';
+    titleEl.style.fontWeight = '700';
+    step1El.appendChild(titleEl);
+
+    [
+      {name:'last_name', id:'f7_nom',    label:'Nom',       ph:'Ex : Dupont',    ac:'family-name', type:'text'},
+      {name:'first_name',id:'f7_prenom', label:'Prénom',    ph:'Ex : Marie',     ac:'given-name',  type:'text'},
+      {name:'phone',     id:'f7_tel',    label:'Téléphone', ph:'06 12 34 56 78', ac:'tel',         type:'tel'},
+    ].forEach(({name,id,label,ph,ac,type}) => {
+      const d = document.createElement('div');
+      d.innerHTML = '<label for="'+id+'">'+label+'</label>'
+        +'<input type="'+type+'" id="'+id+'" name="'+name+'" placeholder="'+ph+'" required autocomplete="'+ac+'" />';
+      step1El.appendChild(d);
+    });
+
+    const btnRow = document.createElement('div');
+    btnRow.className = 'f3-btn-row';
+    const btnNext = document.createElement('button');
+    btnNext.type='button'; btnNext.className='btn-next';
+    btnNext.dataset.action='to-formation';
+    btnNext.textContent='Vérifier mon éligibilité CPF →';
+    btnRow.appendChild(btnNext);
+    step1El.appendChild(btnRow);
+  }
+
+  // ── STEP 4: rebuild as FORMATION dropdown ──────────────────────────────────
+  const step4El = form.querySelector('.f3-step[data-step="4"]');
+  let selFormation = null;
+  if (step4El) {
+    step4El.innerHTML = '';
+
+    const titleEl = document.createElement('p');
+    titleEl.className = 'f3-step-title';
+    titleEl.textContent = 'Quelle formation vous intéresse ?';
+    titleEl.style.fontWeight = '700';
+    step4El.appendChild(titleEl);
+
+    selFormation = document.createElement('select');
+    selFormation.name='formation_choice'; selFormation.id='f7_formation';
+    selFormation.className='f5-select'; selFormation.required=true;
+    selFormation.setAttribute('aria-label','Formation souhaitée');
+    const defOpt = document.createElement('option');
+    defOpt.value=''; defOpt.textContent='— Choisissez votre formation —';
+    defOpt.disabled=true; defOpt.selected=true;
+    selFormation.appendChild(defOpt);
+    formationOptions.forEach(fo => {
+      const opt = document.createElement('option');
+      opt.value=fo.value; opt.textContent=fo.label;
+      selFormation.appendChild(opt);
+    });
+    step4El.appendChild(selFormation);
+
+    const btnRow = document.createElement('div');
+    btnRow.className = 'f3-btn-row f3-step-nav';
+    const btnBack = document.createElement('button');
+    btnBack.type='button'; btnBack.className='btn-back';
+    btnBack.dataset.action='back-to-1'; btnBack.textContent='← Retour';
+    const btnNext = document.createElement('button');
+    btnNext.type='button'; btnNext.className='btn-next';
+    btnNext.dataset.action='to-status'; btnNext.disabled=true;
+    btnNext.textContent='Continuer →';
+    selFormation.addEventListener('change', () => { btnNext.disabled=!selFormation.value; });
+    btnRow.appendChild(btnBack);
+    btnRow.appendChild(btnNext);
+    step4El.appendChild(btnRow);
+  }
+
+  // ── STEP 2: convert STATUS radios → select ─────────────────────────────────
+  const step2El = form.querySelector('.f3-step[data-step="2"]');
+  let selStatus = null;
+  if (step2El) {
+    const radioGroup = step2El.querySelector('.f3-options');
+    if (radioGroup) {
+      const radios = radioGroup.querySelectorAll('input[type="radio"]');
+      selStatus = document.createElement('select');
+      selStatus.name='professional_status'; selStatus.id='f7_status';
+      selStatus.className='f5-select'; selStatus.required=true;
+      selStatus.setAttribute('aria-label','Statut professionnel');
+      const defOpt = document.createElement('option');
+      defOpt.value=''; defOpt.textContent='— Sélectionnez votre statut —';
+      defOpt.disabled=true; defOpt.selected=true;
+      selStatus.appendChild(defOpt);
+      radios.forEach(r => {
+        const lbl  = r.closest('label');
+        const span = lbl ? lbl.querySelector('.f3-opt-label') : null;
+        const opt  = document.createElement('option');
+        opt.value=r.value; opt.textContent=span ? span.textContent.trim() : r.value;
+        selStatus.appendChild(opt);
+      });
+      radioGroup.replaceWith(selStatus);
+    }
+    // Back button: back-to-1 → back-to-formation
+    const backBtn = step2El.querySelector('[data-action="back-to-1"]');
+    if (backBtn) backBtn.dataset.action = 'back-to-formation';
+    // Result button: disable until status selected
+    const resultBtn = step2El.querySelector('[data-action="result"]');
+    if (resultBtn) {
+      resultBtn.disabled = true;
+      selStatus?.addEventListener('change', () => { resultBtn.disabled=!selStatus.value; });
+    }
+  }
+
+  // ── STEP 3b: eligible result ───────────────────────────────────────────────
+  const step3bEl = form.querySelector('.f3-step[data-step="3b"]');
+  if (step3bEl) {
+    const card = step3bEl.querySelector('.f3-result-card--eligible, .f3-result-card');
+    if (card) {
+      const emoji = card.querySelector('.f3-result-emoji');
+      card.innerHTML = '';
+      if (emoji) card.appendChild(emoji);
+      const t = document.createElement('p'); t.className='f3-result-title f3-result-title--good';
+      t.textContent = 'Félicitations — vous êtes éligible !'; card.appendChild(t);
+      const m = document.createElement('p'); m.className='f3-result-text';
+      m.textContent = 'Votre dossier CPF a bien été transmis. Un conseiller vous rappelle sous 48h pour finaliser votre financement gratuitement.';
+      card.appendChild(m);
+    }
+    step3bEl.querySelectorAll('[data-action="to-4"],[data-action="back-to-2"]').forEach(b => b.remove());
+    // Spinner shown while lead posts
+    const spin3b = document.createElement('div'); spin3b.className='f7-result-spinner';
+    spin3b.innerHTML='<div class="f7-spinner-ring"></div><p class="f7-spinner-label">Envoi en cours…</p>';
+    step3bEl.appendChild(spin3b);
+  }
+
+  // ── STEP 3a: ineligible result ─────────────────────────────────────────────
+  const step3aEl = form.querySelector('.f3-step[data-step="3a"]');
+  if (step3aEl) {
+    const card = step3aEl.querySelector('.f3-result-card--ineligible, .f3-result-card, .f3-result-card--eligible');
+    if (card) {
+      const emoji = card.querySelector('.f3-result-emoji');
+      card.innerHTML = '';
+      if (emoji) card.appendChild(emoji);
+      const t = document.createElement('p'); t.className='f3-result-title';
+      t.textContent = 'Malheureusement, vous n\'êtes pas éligible :('; card.appendChild(t);
+      const m = document.createElement('p'); m.className='f3-result-text';
+      m.textContent = 'Votre dossier CPF a bien été transmis. Un conseiller vous rappelle sous 48h pour étudier les alternatives disponibles.';
+      card.appendChild(m);
+    }
+    step3aEl.querySelectorAll('[data-action="to-4"],[data-action="back-to-2"]').forEach(b => b.remove());
+    // Spinner shown while lead posts
+    const spin3a = document.createElement('div'); spin3a.className='f7-result-spinner';
+    spin3a.innerHTML='<div class="f7-spinner-ring"></div><p class="f7-spinner-label">Envoi en cours…</p>';
+    step3aEl.appendChild(spin3a);
+  }
+
+  // Prevent accidental form submit (submission handled via click router)
+  form.addEventListener('submit', e => e.preventDefault());
+
+  // ── Analytics ──────────────────────────────────────────────────────────────
+  const formStartOnce = (() => {
+    let fired=false;
+    return () => {
+      if (fired) return; fired=true;
+      emitEvent('form_start',{client_slug:config.client_slug,offer_id:form.dataset.offerId||config.offer_id});
+    };
+  })();
+  form.querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('focus',  formStartOnce, {passive:true});
+    el.addEventListener('change', formStartOnce, {passive:true});
+  });
+  form.querySelectorAll('input').forEach(el =>
+    el.addEventListener('input', ()=>el.classList.remove('input-error'), {passive:true})
+  );
+
+  // ── Click router ───────────────────────────────────────────────────────────
+  form.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.disabled) return;
+    const action = btn.dataset.action;
+
+    if (action === 'to-formation') {
+      const nomEl    = form.querySelector('#f7_nom');
+      const prenomEl = form.querySelector('#f7_prenom');
+      const telEl    = form.querySelector('#f7_tel');
+      let valid = true;
+      if (nomEl    && !nomEl.value.trim())    { nomEl.classList.add('input-error');    valid=false; }
+      if (prenomEl && !prenomEl.value.trim()) { prenomEl.classList.add('input-error'); valid=false; }
+      if (telEl) {
+        const empty=!telEl.value.trim(), bad=!empty&&!isValidFrenchPhone(telEl.value);
+        telEl.classList.toggle('input-error', empty||bad);
+        if (empty||bad) valid=false;
+      }
+      if (!valid) {
+        showFormError(form, telEl?.classList.contains('input-error') && telEl.value.trim()
+          ? 'Numéro invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).'
+          : 'Veuillez remplir tous les champs obligatoires.');
+        return;
+      }
+      clearFormError(form);
+      sendPartialLead(form, config, '1', {
+        last_name:  nomEl?.value.trim()    || '',
+        first_name: prenomEl?.value.trim() || '',
+        phone:      telEl?.value.trim()    || '',
+      });
+      showStep('4'); return;
+    }
+
+    if (action === 'to-status') {
+      const formation = selFormation?.value || '';
+      const hf = form.querySelector('#formation_interest_val');
+      if (hf) hf.value = formation==='permis-cases' ? 'Permis de conduire / CACES' : formation;
+      sendPartialLead(form, config, '2', {
+        formation_interest: formation==='permis-cases' ? 'Permis de conduire / CACES' : formation,
+      });
+      showStep('2'); return;
+    }
+
+    if (action === 'result') {
+      const status    = selStatus?.value    || '';
+      const formation = selFormation?.value || '';
+      const hf = form.querySelector('#formation_interest_val');
+      if (hf) hf.value = formation==='permis-cases' ? 'Permis de conduire / CACES' : formation;
+      const ineligible = status==='etudiant' || status==='fonction_publique' || formation==='permis-cases';
+      const securityCode = String(Math.floor(100000+Math.random()*900000));
+      const payload = buildLeadPayload(form, config);
+      payload.professional_status = status;
+      payload.formation_interest  = formation==='permis-cases' ? 'Permis de conduire / CACES' : formation;
+      payload.security_code = securityCode;
+      emitEvent('form_submit',{status:'attempt',client_slug:payload.client_slug,offer_id:payload.offer_id});
+      const doRedirect = () => { window.location.href = 'thank-you.html?code=' + securityCode; };
+      showStep(ineligible ? '3a' : '3b');
+      // Show spinner immediately
+      const resultEl = form.querySelector('.f3-step[data-step="' + (ineligible ? '3a' : '3b') + '"]');
+      const spinnerEl = resultEl && resultEl.querySelector('.f7-result-spinner');
+      if (spinnerEl) spinnerEl.style.display = 'flex';
+      // Wait for BOTH: lead sent + minimum reading time (2.5s)
+      const minRead = new Promise(res => setTimeout(res, 2500));
+      const send = postLead(config.form_action, payload)
+        .then(() => {
+          saveEnhancedConversionsData(payload);
+          emitEvent('form_submit',{status:'success',client_slug:payload.client_slug,security_code:securityCode});
+        })
+        .catch(err => savePendingLead(payload, err instanceof Error ? err.message : 'error'));
+      Promise.all([send, minRead]).then(doRedirect);
+      return;
+    }
+
+    if (action === 'back-to-1')         { showStep('1'); return; }
+    if (action === 'back-to-formation') { showStep('4'); return; }
+  });
+
+  window.addEventListener('pageshow', e => { if (e.persisted) showStep('1',false); });
+  showStep('1', false);
+}
+
+
 function initHeaderCta() {  return;
 document.querySelectorAll(".cpf-cta-bar").forEach(el => el.remove());
 if (document.querySelector(".thankyou") || document.querySelector(".privacy-content")) return;
@@ -1892,7 +2205,9 @@ retryPendingLead(config.form_action).catch(() => {});
 if (form) {
 const formOverride = new URLSearchParams(window.location.search).get('form')
 || String(config.active_form || '');
-if (formOverride === '6') {
+if (formOverride === '7') {
+initForm7(form, config);
+} else if (formOverride === '6') {
 initForm6(form, config);
 } else if (formOverride === '5') {
 initForm5(form, config);
