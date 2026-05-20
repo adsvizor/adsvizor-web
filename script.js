@@ -1665,7 +1665,7 @@ msg.textContent = 'Maintenant, informez-vous gratuitement et sans engagement sur
 card.appendChild(msg);
 }
 const btn3bTo4 = step3b.querySelector('[data-action="to-4"]');
-if (btn3bTo4) btn3bTo4.textContent = 'Continuer →';
+if (btn3bTo4) btn3bTo4.textContent = 'Obtenir mon accompagnement CPF gratuit →';
 }
 const btn3aTo4 = form.querySelector('.f3-step[data-step="3a"] [data-action="to-4"]');
 if (btn3aTo4) btn3aTo4.textContent = 'Étape suivante →';
@@ -1673,11 +1673,17 @@ const step4 = form.querySelector('.f3-step[data-step="4"]');
 if (step4) {
 const emailInput = step4.querySelector('#email');
 if (emailInput) { const w = emailInput.closest('div'); if (w) w.remove(); }
+const reassurance = document.createElement('p');
+reassurance.className = 'f6-reassurance';
+reassurance.textContent = '🔒 Un conseiller vous rappelle sous 48h — un seul appel, sans relance ni spam.';
+const firstField = step4.querySelector('div');
+if (firstField) step4.insertBefore(reassurance, firstField);
+else step4.prepend(reassurance);
 const submitBtn4 = step4.querySelector('button[type="submit"]');
-if (submitBtn4) submitBtn4.textContent = "J’envoie ma demande au centre";
+if (submitBtn4) submitBtn4.textContent = "Je réserve mon accompagnement gratuit";
 const legalNotice = document.createElement('p');
 legalNotice.className = 'f6-legal-notice';
-legalNotice.innerHTML = 'En cliquant sur « J’envoie ma demande », vous déclarez avoir pris connaissance de la politique de protection des données de <a href="https://formations.adsvizor.com/" target="_blank" rel="noopener">formations.adsvizor.com</a> et acceptez d’être recontacté par le centre de formation pour obtenir plus d’informations.';
+legalNotice.innerHTML = 'En cliquant sur « Je réserve », vous déclarez avoir pris connaissance de la politique de protection des données de <a href="https://formations.adsvizor.com/" target="_blank" rel="noopener">formations.adsvizor.com</a> et acceptez d’être recontacté par un conseiller pour obtenir plus d’informations.';
 step4.appendChild(legalNotice);
 }
 const btnTo2 = form.querySelector('[data-action="to-2"]');
