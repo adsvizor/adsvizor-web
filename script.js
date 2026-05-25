@@ -110,6 +110,9 @@ return el;
 const PENDING_LEAD_KEY = "adsvizor_pending_lead";
 const PENDING_LEAD_TTL = 48 * 60 * 60 * 1000;
 function savePendingLead(payload, errorReason) {
+// Don't save if lead has no useful visitor data — avoids replaying empty leads
+const hasData = payload && (payload.visitor_phone || payload.visitor_name || payload.visitor_email);
+if (!hasData) return;
 try {
 localStorage.setItem(PENDING_LEAD_KEY, JSON.stringify({
 payload,
@@ -1861,9 +1864,14 @@ function initForm7(form, config) {
     }
   }
 
-  // Hide step0 (intro, not used)
+  // Hide step0 (intro, not used) — but check its consent checkbox
+  // so buildLeadPayload reads consent_marketing = true
   const step0 = form.querySelector('.f3-step[data-step="0"]');
-  if (step0) { step0.hidden=true; step0.style.display='none'; }
+  if (step0) {
+    step0.hidden=true; step0.style.display='none';
+    const cb = step0.querySelector('input[name="consent_marketing"]');
+    if (cb) cb.checked = true;
+  }
 
   // ── Extract formation options from step1 BEFORE rebuilding it ──────────────
   const step1El = form.querySelector('.f3-step[data-step="1"]');
@@ -2055,25 +2063,25 @@ function initForm7(form, config) {
       const nomEl    = form.querySelector('#f7_nom');
       const prenomEl = form.querySelector('#f7_prenom');
       const telEl    = form.querySelector('#f7_tel');
+      // If elements are missing the form wasn't properly initialised — abort silently
+      if (!nomEl || !prenomEl || !telEl) return;
       let valid = true;
-      if (nomEl    && !nomEl.value.trim())    { nomEl.classList.add('input-error');    valid=false; }
-      if (prenomEl && !prenomEl.value.trim()) { prenomEl.classList.add('input-error'); valid=false; }
-      if (telEl) {
-        const empty=!telEl.value.trim(), bad=!empty&&!isValidFrenchPhone(telEl.value);
-        telEl.classList.toggle('input-error', empty||bad);
-        if (empty||bad) valid=false;
-      }
+      if (!nomEl.value.trim())    { nomEl.classList.add('input-error');    valid=false; }
+      if (!prenomEl.value.trim()) { prenomEl.classList.add('input-error'); valid=false; }
+      const empty=!telEl.value.trim(), bad=!empty&&!isValidFrenchPhone(telEl.value);
+      telEl.classList.toggle('input-error', empty||bad);
+      if (empty||bad) valid=false;
       if (!valid) {
-        showFormError(form, telEl?.classList.contains('input-error') && telEl.value.trim()
+        showFormError(form, bad
           ? 'Numéro invalide. Entrez un numéro français à 10 chiffres (ex : 06 12 34 56 78).'
           : 'Veuillez remplir tous les champs obligatoires.');
         return;
       }
       clearFormError(form);
       sendPartialLead(form, config, '1', {
-        last_name:  nomEl?.value.trim()    || '',
-        first_name: prenomEl?.value.trim() || '',
-        phone:      telEl?.value.trim()    || '',
+        last_name:  nomEl.value.trim(),
+        first_name: prenomEl.value.trim(),
+        phone:      telEl.value.trim(),
       });
       showStep('4'); return;
     }
