@@ -96,8 +96,21 @@ Use explicit, stable selectors:
 - Use fetch-based POST (not native `method="post"` form submit).
 - Disable submit button while in flight.
 - Show `[data-form-error]` block above the form on error.
-- On success, redirect to `thank-you.html`.
-- Emit `form_start` on first focus/input, `form_submit` on submit attempt.
+- On success, redirect to `thank-you.html?code=XXXXXX`.
+- Emit `form_start` on first focus/input, `form_submit` on submit attempt, `form_partial` on partial sends.
+
+**Form variant selection (priority order):**
+1. `?form=N` URL param — overrides all (A/B testing)
+2. `config.active_form` in `config.json` — production switch
+3. `data-form="3"` on `<form>` → form3
+4. `data-simple="true"` on `<form>` → form2
+5. No attribute → form1
+
+**Active variant:** form7 (coords-first). Flow: Coordonnées → Formation → Statut → Result → redirect.
+- `sendPartialLead` fires at coords step and formation step — lead captured before result shown
+- `Promise.all([postLead, minRead 2.5s])` guards the redirect — always 2.5s min reading time
+- Never call `sendPartialLead` with empty fields; abort if required DOM elements are missing
+- `savePendingLead` must not save leads without visitor_phone/name/email
 
 ## 4. CSS conventions
 

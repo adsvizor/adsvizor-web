@@ -61,10 +61,10 @@ Client-specific pages work automatically: `http://localhost:5500/formations.html
 
 ## Form versions (feature flag)
 
-script.js supports four form variants, selected by priority:
+script.js supports seven form variants, selected by priority:
 
 1. **`?form=N` URL param** — overrides everything; useful for A/B testing without deploying
-2. **`config.active_form`** in `clients/{slug}/config.json` — production switch (e.g. `"active_form": "4"`)
+2. **`config.active_form`** in `clients/{slug}/config.json` — production switch (e.g. `"active_form": "7"`)
 3. **`data-form="3"` on `<form>`** → form3 (default when no flag set)
 4. **`data-simple="true"` on `<form>`** → form2
 5. **(no attribute)** → form1 (classic 2-step)
@@ -75,10 +75,20 @@ script.js supports four form variants, selected by priority:
 | form2 | Single-step | Simple |
 | form3 | 0 (consent) → 1 (formation) → 2 (status) → 3a/3b (result) → 4 (coords) | Full funnel |
 | form4 | 1 (formation) → 2 (status) → 3a/3b (result) → 4 (coords + consent) | No intro; consent at end; no email |
+| form5 | 1 (formation select) → 2 (status select) → 3a/3b (result) → 4 (coords + consent) | Selects instead of radio cards |
+| form6 | Same as form5 + reassurance banner + reframed CTAs | Reduced abandonment on step 4 |
+| form7 | 1 (coords: nom+prénom+tel) → 4 (formation) → 2 (status) → 3b/3a (result → redirect) | **Coords-first** — lead captured before result shown |
 
-To activate form4 site-wide: add `"active_form": "4"` to `clients/formations/config.json`.
-To test locally without deploying: append `?form=4` to any URL.
-To revert: remove or change `active_form` in config.json.
+**form7 specifics (active in production):**
+- Step0 hidden but consent checkbox auto-checked → `consent_marketing: true` in every payload
+- `sendPartialLead` at step1 (coords) and step4 (formation) — real data captured immediately
+- Result screen: eligibility message + spinner; redirects via `Promise.all([postLead, minRead 2.5s])`
+- Validation aborts if `#f7_nom / #f7_prenom / #f7_tel` absent — prevents empty leads on other pages
+- `savePendingLead` guards: skips payloads with no visitor_phone/name/email
+
+**Currently active:** `"active_form": "7"` in `clients/formations/config.json`.
+To test locally: append `?form=N` to any URL.
+To revert: change or remove `active_form` in config.json.
 
 ## Key config.json fields
 
@@ -168,4 +178,15 @@ Automated system to generate a new client site from an email.
 
 **Key files:**
 - `scripts/webuilder-agent.js` — Node.js agent: extracts catalog text, searches Brave API for reviews + competitor sites, calls Claude claude-opus-4-6 (max_tokens: 12000) to generate complete config.json
-- `.github/workflows/webuilder-agent.yml` — triggers on PR 
+- `.github/workflows/webuilder-agent.yml` — triggers on PR
+
+**Why Brave API + what the search results are used for:**
+
+When a new client is onboarded, Claude needs to write convincing marketing copy for their website (e.g. the `why_us_*` fields) but knows nothing about that client's market or reputation. Before calling Claude, the agent runs two searches via Brave API:
+
+1. **Customer reviews** (`searchBusinessReviews`) — searches for `avis clients "BusinessName"`, `${sector} ${city} avis Google`, etc. Brave returns snippets (title + short description) which are injected directly into Claude's prompt as `=== AVIS CLIENTS & REVIEWS WEB ===`.
+2. **Competitor sites** (`researchCompetitorSites`) — searches for rival landing pages in the same sector and city. The agent fetches up to 4 competitor URLs, strips their HTML, and keeps up to 2,500 characters of readable text per site, injected as `=== SITES CONCURRENTS ===`.
+
+Claude is then instructed to use this material to write specific, credible `why_us_*` arguments — e.g. "Noté 4.8/5 par nos clients" — instead of generic placeholder text.
+
+Brave is used (rather than Google) because it provides a clean, affordable JSON search API that works headlessly in GitHub Actions without bot-detection or scraping restrictions.

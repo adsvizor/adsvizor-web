@@ -1,6 +1,6 @@
 # Project Progress & Roadmap
 
-Last updated: 2026-05-03
+Last updated: 2026-05-21
 
 Owner: Fabrice  
 Company: AdsVizor
@@ -210,6 +210,38 @@ Pipeline complet d'onboarding client automatisé : email → site live en ~10 mi
 
 **Premier client Webuilder :**
 - `pompes-chaleur` — Confort Énergie, installateur PAC à Lyon → `pompes-chaleur.adsvizor.com` ✅
+
+### Phase 9 — Google Ads Quality Score fix (2026-05) ✅
+
+**Root cause:** All 39 static formation pages still had `body{visibility:hidden}` waiting on `config.json` fetch + GTM loading `async` in `<head>` — same performance issues already fixed on `index.html`.
+
+**Fixes applied to all 39 static pages:**
+- Added inline `<script>document.body.classList.add('ready')</script>` immediately after `<style>body{visibility:hidden}</style>` — page visible at HTML parse time, no network delay
+- Removed GTM from `<head>`; replaced with deferred loader: `window.addEventListener('load', () => setTimeout(() => { /* append GTM script */ }, 1500))`
+- PageSpeed score ~99 on formation pages (was ~60)
+- `generate-formation-pages.js` template updated — future pages auto-include fixes
+- CSS/JS cache-busted: `main.css?v=20`, `script.js?v=31`
+
+**Expected result:** Google Ads "Landing page experience" moves from Below Average → Average/Above Average within 1–2 weeks of recrawl.
+
+### Phase 10 — Form7: coords-first funnel (2026-05) ✅
+
+**Problem:** Users were abandoning the form at the last step (coords) after seeing the eligibility result — no incentive to complete once result was revealed.
+
+**Solution:** Inverted funnel — personal data collected first, result shown at the end.
+
+**Flow:** Coords (nom+prénom+tel) → Formation → Statut → Result (eligible/ineligible) → redirect thank-you
+
+**Key implementation details:**
+- Reuses existing HTML `data-step` slots: step1→coords, step4→formation, step2→status, step3b/3a→results
+- Step0 (consent) hidden; checkbox auto-checked for `consent_marketing: true`
+- `sendPartialLead` fires at step1 (real coords captured immediately) and step4 (formation)
+- Result screen: eligibility text + spinner while lead posts
+- Redirect via `Promise.all([postLead, new Promise(res => setTimeout(res, 2500))])` — always 2.5s minimum reading time, waits for send if slower
+- Validation guard: if `#f7_nom / #f7_prenom / #f7_tel` missing in DOM → silent abort (prevents empty leads from other pages)
+- `savePendingLead` guard: skips empty payloads (no phone/name/email)
+- CSS: form card `border-radius: 0` (square corners), `.f3-step-title` bold, stepper margin reduced
+- Active via `"active_form": "7"` in `clients/formations/config.json`
 
 ---
 

@@ -106,23 +106,38 @@ Unresolved placeholders render as literal `{{key}}` text (intentionally visible 
 ## 5. Lead capture flow
 
 ```
-Browser
+Browser (form7)
+  → sendPartialLead at step 1 (coords) and step 4 (formation)   ← lead captured early
+  → Promise.all([postLead, minRead 2.5s]) at result step         ← full lead + min reading time
   → POST JSON to /api/leads (Cloudflare Worker — CORS proxy)
+  → Worker injects server-side fields (IP, UA, city, region)
   → forwards to Google Apps Script endpoint
-  → appended to Google Sheet
+  → appended to Google Sheet (26 columns A–Z)
+  → redirect to thank-you.html?code=XXXXXX
+```
 
-Payload:
+**Full lead payload (form7):**
+```json
 {
-  "client_slug": "...", "offer_id": "...",
-  "visitor_name": "...", "visitor_email": "...", "visitor_phone": "...", "visitor_message": "...",
-  "utm": { "source": "...", "medium": "...", "campaign": "...", "term": "...", "content": "..." },
-  "page_version": "...", "consent_marketing": null
+  "client_slug": "formations", "offer_id": "...", "page_version": "...",
+  "visitor_name": "Prénom Nom", "visitor_phone": "+33612345678",
+  "visitor_email": null,
+  "formation_interest": "Excel", "professional_status": "salarie",
+  "security_code": "738291",
+  "utm": { "source": "google", "medium": "cpc", "campaign": "...", "term": "...", "content": "..." },
+  "consent_marketing": true,
+  "consent_url": "https://formations.adsvizor.com/...",
+  "consent_text": "J'accepte d'être recontacté(e)...",
+  "consent_timestamp": "...",
+  "search_query": "..."
 }
 ```
 
-On success → redirect to `thank-you.html`. On error → `[data-form-error]` block displayed above the form.
+**Partial lead payload** (sent at step 1 and step 4, `partial: true`, `consent_text: "partial"`).
 
-The Worker (`cloudflare-worker.js`) enforces an origin allowlist: `adsvizor.com`, `*.adsvizor.com`, `localhost:5500`, `127.0.0.1:5500`. Requests without an Origin header are rejected (403).
+`savePendingLead` guards: skips payloads with no `visitor_phone / visitor_name / visitor_email` to prevent empty leads from being saved or retried.
+
+The Worker (`cloudflare-worker.js`) enforces an origin allowlist: `adsvizor.com`, `*.adsvizor.com`, `localhost:*`, `127.0.0.1:*`. Requests without an Origin header are rejected (403).
 
 ## 6. Blog agent
 
@@ -276,10 +291,15 @@ The middleware detects `hostParts.length === 2` (or `www.`) and serves `landing.
 JS-rendered pages (`formation-detail.html?f=bureautique`) hurt Google Ads Quality Score because the crawler may see placeholder content before JS executes. Static pages solve this.
 
 `scripts/generate-formation-pages.js` reads `clients/{slug}/config.json` and generates:
-- `clients/{slug}/pages/formation-{slug}.html` — one per formation in `cpf_formations`
+- `clients/{slug}/pages/{category}/formation-{slug}.html` — one per formation, organised by category
 - `sitemap.xml` at repo root — all pages indexed
 
 Each static page has the keyword hardcoded in `<title>`, `<meta description>`, `<h1>`, and `<link rel="canonical">`. `script.js` still runs for form handling, UTM capture, analytics.
+
+**Performance (critical for Quality Score):**
+- `body{visibility:hidden}` removed immediately by inline `<script>document.body.classList.add('ready')</script>` — page visible at HTML parse time, no network delay
+- GTM removed from `<head>`; deferred 1.5s after `window.load` to eliminate TBT
+- Both fixes applied to all 39 pages AND baked into the generator template
 
 Run after any formation content change: `node scripts/generate-formation-pages.js`
 

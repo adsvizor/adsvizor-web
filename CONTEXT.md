@@ -15,7 +15,10 @@ Pipeline complet "Webuilder" : email → site client auto-généré + DNS config
    - Ouvre un PR GitHub
 3. GitHub Actions (webuilder-agent.yml) se déclenche sur le PR
    - Lit NOTES.md
-   - Recherche web : avis clients + scraping de 4 sites concurrents (via Brave Search API)
+   - Recherche web via Brave Search API (en parallèle) :
+     - Avis clients : snippets de reviews Google pour le business → injectés dans le prompt Claude
+     - Concurrents : scraping de 4 sites rivaux (texte brut, max 2500 chars/site) → injectés dans le prompt Claude
+     - Objectif : permettre à Claude d'écrire des arguments `why_us_*` crédibles et spécifiques ("Noté 4.8/5 par nos clients") plutôt que du texte générique
    - Appelle Claude API (claude-opus-4-6) pour générer config.json complet
    - Écrit `clients/{slug}/config.json` + `clients/{slug}/agent.config.json`
    - Poste un commentaire ✅ sur le PR
@@ -52,8 +55,10 @@ github.com/adsvizor/adsvizor-web
 1. Lit `webuilder/{slug}/NOTES.md`
 2. Télécharge et extrait le texte du catalogue (PDF/DOCX/XLSX via Drive links)
 3. Recherche web en parallèle (si BRAVE_API_KEY présent) :
-   - Avis clients / reviews Google pour le business
-   - Scraping de 4 sites concurrents dans le même secteur
+   - Avis clients / reviews Google pour le business (snippets Brave, pas de fetch)
+   - Scraping de 4 sites concurrents dans le même secteur (texte brut, max 2500 chars/site)
+   - Ces deux blocs sont injectés dans le prompt Claude pour qu'il écrive des arguments why_us spécifiques et crédibles plutôt que des placeholders génériques
+   - Brave est utilisé (plutôt que Google) car il expose une API JSON simple, sans bot-detection, qui fonctionne en headless dans GitHub Actions
 4. Appelle Claude claude-opus-4-6 (max_tokens: 12000) avec catalog + reviews + concurrents
 5. Génère un config.json complet avec TOUS les champs requis :
    - SEO, hero, stats, benefits, why_us, form (labels inclus), thank-you, contact page (steps 1-5), blog (4 posts avec dates/tags), privacy, footer
