@@ -65,6 +65,41 @@ docs/                     — project documentation
 
 ## Adding a new client
 
+### Automated — Webuilder pipeline (recommended)
+
+Send a single email and the site is generated and deployed automatically.
+
+**1. Prepare your information**
+- Business name, address, phone, email, and service area
+- A short description of what you do (e.g. "installateur de pompes à chaleur à Lyon")
+- Your catalog of services as a PDF, Word doc, or Excel file
+
+**2. Send the trigger email**
+- To: `webuilder@adsvizor.com`
+- Subject: `WEBUILDER: {slug} - Brief description` (e.g. `WEBUILDER: pompes-chaleur - Installateur PAC Lyon`)
+- Body: business info — name, address, phone, email, service area, brands
+- Attach your catalog file (PDF, DOCX, or XLSX)
+
+**3. Wait ~5 minutes**
+- Apps Script picks up the email and opens a GitHub Pull Request automatically
+- The agent reads your catalog, searches for reviews and competitor sites via Brave API, then calls Claude to generate the full `config.json`
+
+**4. Review the Pull Request**
+- The agent posts a ✅ comment with the generated config, or asks follow-up questions if info was missing
+- If it asked questions, reply in the PR comment or push an updated NOTES.md
+- Check `clients/{slug}/config.json` to verify the content looks correct
+
+**5. Merge the PR**
+- Cloudflare Pages deploys the static site automatically on merge
+- A second workflow (`webuilder-dns.yml`) creates the CNAME and configures the custom domain
+- Site is live at `{slug}.adsvizor.com` in ~2 minutes
+
+> **Tips:** The richer your catalog and business description, the better the generated copy. You can always edit `config.json` directly after the fact to fine-tune any text.
+
+---
+
+### Manual (advanced)
+
 1. Create `clients/{slug}/config.json` (copy from `clients/formations/config.json`)
 2. Create `clients/{slug}/agent.config.json` (copy from `clients/formations/agent.config.json`)
 3. Create `data/{slug}/blog-history.json` with `{"posts": []}`
